@@ -31,6 +31,7 @@ export function templateTitle(p: Plan): string {
   const dim = p.dimension ? DIMENSION_LABEL[p.dimension].toLowerCase() : "";
   const sec = p.secondary ? ` and ${DIMENSION_LABEL[p.secondary].toLowerCase()}` : "";
   const measure = p.metric === "trial_count" ? "trials" : METRIC_LABEL[p.metric].toLowerCase();
+  if (p.chart === "scatter") return `${e} trials: enrollment by start date`;
   switch (p.intent) {
     case "time_trend": return `${e} ${measure} per ${p.granularity ?? "year"}${p.secondary ? ` by ${DIMENSION_LABEL[p.secondary].toLowerCase()}` : ""}`;
     case "distribution": return `${e} ${measure} by ${dim}${sec}`;
@@ -47,7 +48,8 @@ export function planSummary(p: Plan): string {
   const chart = p.chart.replace("_", " ");
   const measure = METRIC_PHRASE[p.metric];
   const parts: string[] = [];
-  if (p.intent === "time_trend") parts.push(`${measure} per ${p.granularity ?? "year"}`);
+  if (p.chart === "scatter") parts.push("enrollment against start date, one point per trial");
+  else if (p.intent === "time_trend") parts.push(`${measure} per ${p.granularity ?? "year"}`);
   else if (p.intent === "network") parts.push(`which ${p.edge_kind ? EDGE_LABEL[p.edge_kind].toLowerCase() : "entity"} pairs co-occur`);
   else if (p.intent === "count") parts.push(measure);
   else if (p.intent === "lookup") parts.push("a list of trials");

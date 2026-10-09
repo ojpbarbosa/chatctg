@@ -25,10 +25,12 @@ describe("titles", () => {
     expect(templateTitle(base({ intent: "network", dimension: null, edge_kind: "sponsor_drug", chart: "network_graph" }))).toBe("Sponsor–drug network for Pembrolizumab trials");
     expect(templateTitle(base({ intent: "comparison", arms: [{ label: "a", query: {} }, { label: "b", query: {} }] }))).toBe("a vs b: trials by phase");
     expect(templateTitle(base({ intent: "count", chart: "single_value", dimension: null }))).toBe("Pembrolizumab trials");
+    expect(templateTitle(base({ intent: "lookup", chart: "scatter", dimension: null }))).toBe("Pembrolizumab trials: enrollment by start date");
   });
   it("summarises the plan for the titler", () => {
     expect(planSummary(base({ intent: "time_trend", dimension: "start_year", secondary: "phase", granularity: "year", chart: "line", entities: { drugs: ["pembrolizumab"], conditions: [], sponsors: [], countries: [], start_year: 2015, end_year: null, limit: null } })))
       .toBe("A line chart of the number of trials per year, split by phase, for pembrolizumab, started from 2015.");
+    expect(planSummary(base({ intent: "lookup", chart: "scatter", dimension: null }))).toBe("A scatter chart of enrollment against start date, one point per trial, for pembrolizumab.");
   });
   it("subtitle states counts, truncation, counting rule and the data date", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) };

@@ -36,6 +36,16 @@ describe("runQuery", () => {
     expect(body.visualization.data.some((d) => Number(d.study_count) > 0)).toBe(true);
     expect(body.meta.interpretation.secondary_dimension).toBeNull();
   });
+  it("a bar asked for over a second grouping lands as a stacked bar with a series", async () => {
+    const deps = fakeDeps({ intent: { choice: "distribution" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "bar" } }, {});
+    const body = okBody(await runQuery(req("Trials by phase and sponsor class as a bar chart"), deps));
+    if (body.visualization?.type !== "stacked_bar") throw new Error(body.visualization?.type);
+    expect(body.visualization.encoding.series).toEqual({ field: "series", label: "Sponsor class", values: ["Industry", "NIH", "Other (academic, hospital)"] });
+    expect(body.meta.interpretation.chart).toMatchObject({ chosen: "bar", applied: "stacked_bar" });
+    expect(body.meta.notes.join(" ")).toMatch(/stacked/);
+    const phase3 = body.visualization.data.filter((r) => r.phase_key === "PHASE3");
+    expect(phase3.map((r) => [r.series, r.trial_count])).toEqual([["Industry", 4], ["NIH", 0], ["Other (academic, hospital)", 0]]);
+  });
   it("comparison: one fetch per arm, grouped bar with two series", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));
@@ -55,6 +65,14 @@ describe("runQuery", () => {
     expect(okBody(await runQuery(req("list the trials"), fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "table" } }, {}))).visualization?.type).toBe("table");
     expect(okBody(await runQuery(req("scatter of enrollment vs start"), fakeDeps({ intent: { choice: "distribution" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }, {}))).visualization?.type).toBe("scatter");
     expect(okBody(await runQuery(req("which countries"), fakeDeps({ intent: { choice: "geographic" }, chart: { choice: "map" } }, {}))).visualization?.type).toBe("map");
+  });
+  it("a lookup draws a scatter when one is asked for, over the full fetch", async () => {
+    const deps = fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }, {});
+    const body = okBody(await runQuery(req("Show a plot of individual lupus trials by enrollment and start date"), deps));
+    if (body.visualization?.type !== "scatter") throw new Error(body.visualization?.type);
+    expect(body.meta.interpretation.chart).toMatchObject({ chosen: "scatter", applied: "scatter", explicit: true });
+    expect(body.visualization.data).toHaveLength(10);   // twelve studies, one without a start date, one without an enrollment
+    expect(deps.ctgov.maxStudies).toEqual([3000]);
   });
   it("uses the LLM title and falls back to the template", async () => {
     const deps = fakeDeps({}, {});

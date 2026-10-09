@@ -36,7 +36,10 @@ export function defaultChart(intent: Intent, dimension: Dimension | null, second
   }
 }
 
-/** The matrix from the spec: what the data shape of an intent can render. */
+/**
+ * The matrix from the spec: what the data shape of an intent can render. `scatter` is in the set only when the chart was asked for explicitly.
+ * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
+ */
 export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
   const set = new Set<ChartType>([defaultChart(intent, dimension, secondary)]);
   switch (intent) {
@@ -54,6 +57,8 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
       set.add("bar"); if (dimension === "country") set.add("map"); break;
     case "geographic":
       set.add("map"); set.add("bar"); break;
+    case "lookup":
+      if (explicit) set.add("scatter"); break;
     default: break;
   }
   return [...set];
@@ -137,17 +142,25 @@ export function plan(input: PlanInput): PlanResult {
     else if ((intent === "distribution" || intent === "comparison") && dimension && OPEN_DIMENSIONS.includes(dimension)) limit = DEFAULT_LIMITS.open_distribution;
   }
 
-  // 5. Chart: Jev's choice, validated against the shape.
+  // 5. Chart: Jev's choice, validated against the shape. The shape is checked as if the chart were explicit, so a scatter the
+  // shape could draw but nobody asked for gets its own reason.
   const chosen: ChartType = request.chart ?? a.chart.choice;
   const explicit = request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
-  const allowed = allowedCharts(intent, dimension, secondary, explicit);
   let applied = chosen; let reason: string | null = null;
-  if (!allowed.includes(chosen)) {
+  if (!allowedCharts(intent, dimension, secondary, true).includes(chosen)) {
     applied = defaultChart(intent, dimension, secondary);
     reason = `${chosen} cannot render a ${intent.replace("_", " ")}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}; using ${applied}`;
   } else if (chosen === "scatter" && !explicit) {
     applied = defaultChart(intent, dimension, secondary);
     reason = "scatter plots one point per trial and is only used when asked for; using " + applied;
+  }
+  // A bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes.
+  if (secondary && applied === "bar") {
+    applied = "stacked_bar";
+    reason = `a bar chart has one bar per category, so the split by ${DIMENSION_LABEL[secondary].toLowerCase()} is stacked; using stacked_bar`;
+  } else if (secondary && applied === "histogram") {
+    notes.push(`A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown in a histogram.`);
+    secondary = null;
   }
 
   if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;

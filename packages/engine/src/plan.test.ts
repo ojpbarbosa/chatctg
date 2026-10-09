@@ -40,8 +40,8 @@ describe("plan: dimensions", () => {
   it("time trends always run over start_year with the granularity", async () => {
     const p = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "phase" }, granularity: { choice: "quarter" }, chart: { choice: "line" } }), entities: none, request: req(), models }));
     expect(p.dimension).toBe("start_year"); expect(p.secondary).toBe("phase"); expect(p.granularity).toBe("quarter"); expect(p.chart).toBe("line");
-    const b = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
-    expect(b.chart).toBe("bar");
+    const b = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
+    expect(b.chart).toBe("bar"); expect(b.secondary).toBeNull();
   });
   it("a distribution over start_year becomes a time trend", async () => {
     const p = okPlan(plan({ answers: await answers({ dimension: { choice: "start_year" } }), entities: none, request: req(), models }));
@@ -123,10 +123,24 @@ describe("chart matrix", () => {
     const bad = okPlan(plan({ answers: await answers({ chart: { choice: "line" } }), entities: none, request: req(), models }));
     expect(bad.chart).toBe("bar"); expect(bad.interpretation.chart.chosen).toBe("line"); expect(bad.interpretation.chart.reason).toMatch(/line/);
   });
-  it("scatter needs an explicit ask", async () => {
-    expect(okPlan(plan({ answers: await answers({ chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models })).chart).toBe("bar");
+  it("scatter needs an explicit ask, and says so when it was not", async () => {
+    const unasked = okPlan(plan({ answers: await answers({ chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models }));
+    expect(unasked.chart).toBe("bar");
+    expect(unasked.interpretation.chart).toEqual({ chosen: "scatter", applied: "bar", explicit: false, reason: "scatter plots one point per trial and is only used when asked for; using bar" });
     const named = okPlan(plan({ answers: await answers({ chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models }));
     expect(named.chart).toBe("scatter"); expect(named.interpretation.chart.explicit).toBe(true);
+    const ranking = okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" }, chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models }));
+    expect(ranking.interpretation.chart.reason).toBe("scatter cannot render a ranking over sponsor; using bar");
+  });
+  it("a lookup is a table unless a scatter is asked for", async () => {
+    const asked = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models }));
+    expect(asked.chart).toBe("scatter"); expect(asked.interpretation.chart).toMatchObject({ applied: "scatter", explicit: true, reason: null });
+    const unasked = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models }));
+    expect(unasked.chart).toBe("table"); expect(unasked.interpretation.chart.reason).toMatch(/only used when asked for; using table$/);
+    expect(okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "bar" } }), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
+    expect(okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "table" } }), entities: none, request: req(), models })).chart).toBe("table");
+    expect(allowedCharts("lookup", null, null, false)).toEqual(["table"]);
+    expect(allowedCharts("lookup", null, null, true).sort()).toEqual(["scatter", "table"]);
   });
   it("a request chart counts as explicit", async () => {
     expect(okPlan(plan({ answers: await answers({}), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
@@ -146,6 +160,24 @@ describe("plan: secondary grouping", () => {
     expect(g.notes.join(" ")).toMatch(/for a map/); expect(r.notes.join(" ")).toMatch(/for a ranking/); expect(c.notes.join(" ")).toMatch(/for a comparison/);
     const d2 = okPlan(plan({ answers: await answers({ intent: { choice: "distribution" }, dimension: { choice: "status" }, secondary_dimension: { choice: "phase" } }), entities: none, request: req(), models }));
     expect(d2.secondary).toBe("phase"); expect(d2.notes.join(" ")).not.toMatch(/second grouping/);
+  });
+  it("a bar over a second grouping is drawn stacked, with the reason", async () => {
+    const d = okPlan(plan({ answers: await answers({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
+    expect(d.chart).toBe("stacked_bar"); expect(d.secondary).toBe("sponsor_class");
+    expect(d.interpretation.chart).toEqual({ chosen: "bar", applied: "stacked_bar", explicit: false, reason: "a bar chart has one bar per category, so the split by sponsor class is stacked; using stacked_bar" });
+    const t = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "phase" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
+    expect(t.secondary).toBe("phase"); expect(t.chart).toBe("stacked_bar");
+    const r = okPlan(plan({ answers: await answers({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" } }), entities: none, request: req({ chart: "bar" }), models }));
+    expect(r.chart).toBe("stacked_bar"); expect(r.interpretation.chart).toMatchObject({ chosen: "bar", applied: "stacked_bar", explicit: true });
+    const g = okPlan(plan({ answers: await answers({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "grouped_bar" } }), entities: none, request: req(), models }));
+    expect(g.chart).toBe("grouped_bar"); expect(g.interpretation.chart.reason).toBeNull();
+  });
+  it("a histogram drops the second grouping with a note", async () => {
+    const h = okPlan(plan({ answers: await answers({ dimension: { choice: "enrollment" }, secondary_dimension: { choice: "phase" }, chart: { choice: "histogram" } }), entities: none, request: req(), models }));
+    expect(h.chart).toBe("histogram"); expect(h.secondary).toBeNull(); expect(h.interpretation.secondary_dimension).toBeNull();
+    expect(h.notes).toContain("A second grouping (phase) is not shown in a histogram.");
+    const plain = okPlan(plan({ answers: await answers({ dimension: { choice: "enrollment" }, chart: { choice: "histogram" } }), entities: none, request: req(), models }));
+    expect(plain.chart).toBe("histogram"); expect(plain.notes.join(" ")).not.toMatch(/histogram/);
   });
   it("a one-entity comparison becomes a distribution and keeps its secondary grouping", async () => {
     const p = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" } }), entities: { ...none, drugs: ["pembrolizumab"] }, request: req(), models }));
