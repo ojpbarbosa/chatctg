@@ -1,0 +1,18 @@
+{
+  "name": "@cheiron/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "vite build", "preview": "vite preview" },
+  "dependencies": {
+    "@cheiron/contracts": "*",
+    "@fontsource-variable/schibsted-grotesk": "^5.2.0",
+    "d3-force": "^3.0.0", "d3-geo": "^3.1.0", "d3-scale": "^4.0.2", "d3-scale-chromatic": "^3.1.0", "d3-selection": "^3.0.0", "d3-drag": "^3.0.0", "d3-zoom": "^3.0.0",
+    "i18n-iso-countries": "^7.13.0",
+    "react": "^19.0.0", "react-dom": "^19.0.0", "recharts": "^3.0.0", "topojson-client": "^3.1.0", "world-atlas": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/d3-force": "^3.0.10", "@types/d3-geo": "^3.1.0", "@types/d3-scale": "^4.0.9", "@types/d3-scale-chromatic": "^3.1.0", "@types/d3-selection": "^3.0.11", "@types/d3-drag": "^3.0.7", "@types/d3-zoom": "^3.0.8",
+    "@types/react": "^19.0.0", "@types/react-dom": "^19.0.0", "@types/topojson-client": "^3.1.5", "@vitejs/plugin-react": "^4.3.4", "vite": "^7.0.0"
+  }
+}
