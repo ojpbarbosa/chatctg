@@ -252,7 +252,7 @@ All errors are `{ error: { code, message, details? } }`.
 | Status | `code` | When |
 |---|---|---|
 | 400 | `invalid_request` | zod issues in `details` |
-| 422 | `not_answerable` | `in_scope < 0.5` or intent `other`; `details.meta` carries the interpretation |
+| 422 | `not_answerable` | `in_scope < 0.5` or intent `other`; `details.interpretation` carries the interpretation |
 | 502 | `upstream_failed` | `details.upstream` is `jev`, `openai` or `ctgov`, with the client's failure reason |
 | 504 | `timeout` | the 40 s overall budget was exceeded |
 | 500 | `internal` | anything else; logged with a request id |
