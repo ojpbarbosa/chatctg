@@ -31,7 +31,7 @@ Without keys the API still starts and logs a warning per missing key. `/query` t
 ```bash
 npm run dev                  # API on http://localhost:3001 (tsx watch) and web on http://localhost:5173 (Vite, proxies the API)
 npm run build && npm start   # builds the web app into apps/api/public; one process on 3001 serves both
-npm run check                # typecheck, lint and the vitest suite (182 tests in 23 files, all offline)
+npm run check                # typecheck, lint and the vitest suite (209 tests in 24 files, all offline)
 npm run eval:jev             # runs eval/queries.json through the live Jev and rewrites eval/report.md
 npm run eval:extract         # benchmarks the extractor models (pending, see Validation)
 npm run examples             # five live runs into examples/ (pending, see Example runs)
@@ -78,7 +78,7 @@ The web app has a question box with five example chips, a history sidebar (the l
 | `end_year` | integer | no | 1900–2100, and not before `start_year` when both are given |
 | `intent` | enum | no | one of the nine intents; replaces Jev's intent and skips the scope check (a "did you mean" chip sends this) |
 | `chart` | enum | no | one of the ten chart types; treated as an explicit ask and validated by the compatibility matrix |
-| `max_studies` | integer | no | 100–10,000; default 3,000 |
+| `max_studies` | integer | no | 100–10,000; default 3,000; the most studies read per arm (a count reads 50 and a table only its rows) |
 | `citations_per_datum` | integer | no | 0–25; default 5; 0 turns citations off |
 
 The entity, phase, status, year, `intent` and `chart` fields the caller sets are listed in `meta.interpretation.provided_fields`. The entity, phase, status and year fields are also passed to Jev in its state, so Jev knows a drug was given and does not need to infer one.
@@ -123,11 +123,11 @@ Row conventions:
 | `orientation` | `horizontal` for rankings and for open dimensions (sponsor, drug, condition, country) outside a comparison; else `vertical` |
 | `sort` | `value_desc` when horizontal; else `x_order` |
 
-Row: `{ [x.field]: label, [x.field]_key: key, [y.field]: number, iso3?, study_count, citations }`. `iso3` is present when the dimension is `country`.
+Row: `{ [x.field]: label, [x.field]_key: key, [y.field]: number, iso3?, study_count, citations }`. `iso3` is present when the dimension is `country`. With `value_desc`, the rows and `x.order` come sorted by value, highest first; a ranking over a closed dimension such as phase is re-sorted, and ties keep the dimension's order.
 
 #### `grouped_bar` and `stacked_bar`
 
-As `bar`, plus `series: { field: "series", label, values }`. `label` names the secondary dimension ("Sponsor class") or, in a comparison, what the arms are ("Drug", "Condition", "Sponsor", "Country"). `values` lists the series labels in order. There is one row per category and series, zero-filled: `{ [x.field], [x.field]_key, series, [y.field], study_count, citations }`. An open secondary dimension (sponsor, drug, condition, country) keeps its top 8 series.
+As `bar`, plus `series: { field: "series", label, values }`. `label` names the secondary dimension ("Sponsor class") or, in a comparison, what the arms are ("Drug", "Condition", "Sponsor", "Country"). `values` lists the series labels in order. There is one row per category and series, zero-filled: `{ [x.field], [x.field]_key, series, [y.field], study_count, citations }`. An open secondary dimension (sponsor, drug, condition, country) keeps its top 8 series. A `bar` is never sent with series rows: a `bar` asked for over a secondary dimension is drawn as `stacked_bar` (see [Chart compatibility](#chart-compatibility)).
 
 #### `line`
 
@@ -141,7 +141,7 @@ Row: `{ period, series?, [y.field], study_count, citations }`. Periods are gap-f
 
 #### `histogram`
 
-`x: { field, type: "ordinal", label, bins: [{ label, min, max }] }` and `y`. Over enrollment the bins are `1–50`, `51–100`, `101–200`, `201–500`, `501–1000` and `1001+` (the last with `max: null`). Only bins with data are listed. Row: `{ [x.field]: bin label, [x.field]_key, [y.field], study_count, citations }`.
+`x: { field, type: "ordinal", label, bins: [{ label, min, max }] }` and `y`. Over enrollment the bins are `1–50`, `51–100`, `101–200`, `201–500`, `501–1000` and `1001+` (the last with `max: null`). Only bins with data are listed. Row: `{ [x.field]: bin label, [x.field]_key, [y.field], study_count, citations }`. A histogram has no series, so a secondary dimension is dropped with a note.
 
 #### `scatter`
 
@@ -163,7 +163,7 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `edges` | `{ source_field: "source", target_field: "target", weight_field: "weight" }` |
 | `layout` | `"force"` |
 
-`data` is an object here, not an array: `{ nodes: [{ id, label, kind, size, study_count }], edges: [{ source, target, weight, study_count, citations }] }`. A node id is `<kind>:<lowercased value>`, such as `sponsor:merck` or `drug:pembrolizumab`. A node's `size` and `study_count` are the number of studies it appears in. An edge's `weight` and `study_count` are the number of studies where both ends co-occur. Edges carry the citations.
+`data` is an object here, not an array: `{ nodes: [{ id, label, kind, size, study_count }], edges: [{ source, target, weight, study_count, citations }] }`. A node id is `<kind>:<lowercased value>`, such as `sponsor:merck` or `drug:pembrolizumab`. A node's `size` and `study_count` are the number of studies it appears in. An edge's `weight` and `study_count` are the number of studies where both ends co-occur. Edges carry the citations. Only the `limit` heaviest edges are kept (40 by default, or the N the question names), and then the nodes they touch; sorting by weight makes the weight-1 edges the first to go, and a graph made only of weight-1 edges still shows `limit` of them. When edges are cut, the subtitle says "N strongest links shown" and `meta.warnings` says "Only the N strongest links of M are shown."
 
 #### `map`
 
@@ -171,11 +171,11 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 
 #### `table`
 
-`columns` is a list of `{ field, label, type }`: `nct_id` (string), `title` (string), `status` (string), `phases` (list), `start_date` (date), `sponsor` (string), `conditions` (list), `enrollment` (number). `sort` is `{ field: "start_date", direction: "desc" }`. There is one row per study, the 25 most recently started by default, and each row cites itself.
+`columns` is a list of `{ field, label, type }`: `nct_id` (string), `title` (string), `status` (string), `phases` (list), `start_date` (date), `sponsor` (string), `conditions` (list), `enrollment` (number). `sort` is `{ field: "start_date", direction: "desc" }`. There is one row per study, the 25 most recently started by default (or the N the question names), and each row cites itself. Only those rows are fetched: the registry returns the most recently started first, so the first page, sized to the row count, holds them. A table is not a sample, so `coverage.truncated` is false; when the registry holds more trials, the subtitle says "25 most recently started shown" and `meta.notes` gives the total.
 
 #### `single_value`
 
-`value: { field: "value", label, unit }`. There is exactly one row: `{ value, label: "trials", study_count, citations }`. `value` is the registry's `totalCount`, which is exact. Only the 50 most recently started studies are read, for the citations.
+`value: { field: "value", label, unit }`. There is exactly one row: `{ value, label: "trials", study_count, citations }`. `value` is the registry's `totalCount`, which is exact. Only the 50 most recently started studies are read (one page with `pageSize=50`), for the citations.
 
 ### `meta`
 
@@ -198,12 +198,12 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `interpretation.models` | `{ judge, extractor, titler }` | the model ids used |
 | `arms` | `{ label, filters }[]` | one per fetch sequence; `filters` are the exact registry parameters |
 | `source` | `{ name, api_version, data_timestamp, requests }` | `requests` lists every registry URL sent, with its `total_count` and the number `fetched` |
-| `coverage` | `{ total_count, fetched_count, truncated, sorted_by, studies_without_value, omitted_categories }` | how much of the registry the answer covers; `sorted_by` is always `StartDate:desc` |
+| `coverage` | `{ total_count, fetched_count, truncated, sorted_by, studies_without_value, omitted_categories }` | how much of the registry the answer covers; `sorted_by` is always `StartDate:desc`. For a comparison, `total_count` is the sum of the arms' totals, which can count a trial matching two arms twice. `truncated` is false for a count and a table, which are exact |
 | `units` | `{ y }` | `trials` or `participants` |
 | `granularity` | enum or null | as in the interpretation |
 | `timing` | `{ jev_ms, extract_ms, fetch_ms, title_ms, aggregate_ms, total_ms }` | milliseconds per stage |
-| `notes` | string[] | counting rules and fallbacks that were applied |
-| `warnings` | string[] | truncation, unplotted points, unmapped countries |
+| `notes` | string[] | counting rules and fallbacks that were applied, the trials left out for lack of a value, and the overlap of comparison arms |
+| `warnings` | string[] | truncation, unplotted points, unmapped countries, network links cut to the limit |
 | `version` | string | `cheiron/0.1.0` |
 
 Example response, trimmed. This one is illustrative and is not registry data. The real response for this question will be `examples/distribution-melanoma-phases.json` once the example runs land. This one was produced offline by the same engine with the test doubles: Jev scripted to answer `distribution`, `phase` and `bar`, the extractor returning `melanoma`, and the twelve-study test sample in `packages/engine/src/test-studies.ts` in place of the registry. So the counts, NCT IDs, titles, judge model (`fake`), version fields and timings are test values. The shape is real, and the full response passed the contract validation.
@@ -213,7 +213,7 @@ Example response, trimmed. This one is illustrative and is not registry data. Th
   "visualization": {
     "type": "bar",
     "title": "Melanoma trials by phase",
-    "subtitle": "12 trials on ClinicalTrials.gov · counted once per phase · data as of 2026-10-08",
+    "subtitle": "12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08",
     "encoding": {
       "x": { "field": "phase", "type": "ordinal", "label": "Phase",
              "order": ["Early Phase 1", "Phase 1", "Phase 2", "Phase 3", "Not applicable"] },
@@ -259,7 +259,8 @@ Example response, trimmed. This one is illustrative and is not registry data. Th
     "units": { "y": "trials" },
     "granularity": null,
     "timing": { "jev_ms": 0, "extract_ms": 0, "fetch_ms": 0, "title_ms": 0, "aggregate_ms": 0, "total_ms": 9 },
-    "notes": ["A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial)."],
+    "notes": ["A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
+              "1 trial without a phase is not shown."],
     "warnings": [],
     "version": "cheiron/0.1.0"
   }
@@ -274,7 +275,7 @@ Every error has the shape `{ "error": { "code", "message", "details"? } }`.
 |---|---|---|---|
 | 400 | `invalid_request` | the body fails the schema | the zod issues |
 | 422 | `not_answerable` | Jev's `in_scope` is below 0.5, or the intent is `other` | `interpretation`: the full interpretation, so the caller sees what was understood |
-| 502 | `upstream_failed` | Jev, OpenAI or ClinicalTrials.gov failed after its retries | `upstream` (`jev`, `openai` or `ctgov`), `reason` and `detail` |
+| 502 | `upstream_failed` | Jev, OpenAI or ClinicalTrials.gov failed after its retries | `upstream` (`jev`, `openai` or `ctgov`), `reason` and `detail`; after a 401 or 403 from Jev or OpenAI, `detail` is the status alone, because the body can echo the key |
 | 504 | `timeout` | the 40 s overall budget ran out | none |
 | 500 | `internal` | anything else, including a response that fails its own contract | `issues` or `detail` |
 
@@ -310,10 +311,10 @@ curl -N localhost:3001/query/stream -H 'content-type: application/json' -d '{"qu
 
 `GET /schema` returns `{ request, response }`, each a JSON Schema (draft 2020-12) generated from the zod contract by `z.toJSONSchema`. zod 4 drops refinements from the export, so the rule that `end_year` is not before `start_year` is enforced by the API but does not appear in the schema.
 
-`GET /health` returns the version and the registry's data version, cached for ten minutes. From the Docker smoke test on 2026-10-09:
+`GET /health` returns the version and the registry's data version, cached for ten minutes, in snake_case like the rest of the API. The values below are from the Docker smoke test on 2026-10-09; the fields were renamed from `apiVersion` and `dataTimestamp` after it:
 
 ```json
-{ "ok": true, "version": "cheiron/0.1.0", "apiVersion": "2.0.5", "dataTimestamp": "2026-10-08T09:00:05" }
+{ "ok": true, "version": "cheiron/0.1.0", "api_version": "2.0.5", "data_timestamp": "2026-10-08T09:00:05" }
 ```
 
 When the registry cannot be reached and no version is cached, both registry fields read `"unknown"`.
@@ -343,7 +344,7 @@ Jev receives a small state, `{ question, provided }`, where `provided` holds the
 | `in_scope` | noul | Can a registry of trials (conditions, interventions, phases, status, sponsors, sites, dates, enrollment, study type, eligibility) answer it? | always, unless the request sets `intent` |
 | `intent` | choice | `time_trend`, `distribution`, `comparison`, `ranking`, `geographic`, `network`, `count`, `lookup`, `other` | unless the request sets `intent` |
 | `dimension` | choice | `phase`, `status`, `sponsor_class`, `sponsor`, `intervention_type`, `drug`, `condition`, `country`, `start_year`, `enrollment`, `study_type`, `sex`, `age_group`, `none` | all intents but `network`, `count`, `lookup` |
-| `secondary_dimension` | choice | the same list | as `dimension`, unless it equals the primary or is `start_year` outside a time trend. Used only for `time_trend` and `distribution`; dropped with a note for `comparison`, `ranking` and `geographic` |
+| `secondary_dimension` | choice | the same list | as `dimension`, unless it equals the primary or is `start_year` outside a time trend. Used only for `time_trend` and `distribution`; dropped with a note for `comparison`, `ranking` and `geographic`, and under a `histogram` |
 | `chart` | choice | `bar`, `grouped_bar`, `stacked_bar`, `line`, `histogram`, `scatter`, `network_graph`, `map`, `table`, `single_value` | unless the request sets `chart` |
 | `chart_named` | noul | Does the user name a visual form (chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie)? | always |
 | `granularity` | choice | `year`, `quarter`, `month` | when the dimension is `start_year` |
@@ -373,7 +374,7 @@ Before the chart is chosen, the planner makes the answers consistent with each o
 - A distribution over `start_year` becomes a time trend (note).
 - A time trend always runs over `start_year`. A different dimension that Jev named becomes the secondary dimension, if there is none.
 - A geographic question always runs over `country`.
-- A secondary dimension is used only for a time trend or a distribution. For a comparison, ranking or geographic question it is dropped (note), and the note is added only when one was dropped. This is checked after the comparison fallback, so a one-entity comparison shown as a distribution keeps its secondary dimension.
+- A secondary dimension is used only for a time trend or a distribution. For a comparison, ranking or geographic question it is dropped (note), and the note is added only when one was dropped. This is checked after the comparison fallback, so a one-entity comparison shown as a distribution keeps its secondary dimension. It is also dropped when the chart applied is a `histogram` (note), which has no series.
 - A network, count or lookup has no dimension, and its metric is `trial_count`.
 - A distribution, ranking or comparison with no dimension falls back to `phase` (note).
 - A comparison needs two or more arms. The arms come from the first entity list with two or more members, in the order drugs, conditions, sponsors, countries; the other lists apply to every arm as common filters. With fewer than two, it becomes a distribution (note).
@@ -386,17 +387,19 @@ Jev's chart (or the request's) is applied when the matrix allows it for the inte
 
 | Intent | Data shape | Default | Also allowed |
 |---|---|---|---|
-| `time_trend` | buckets over time, optional series | `line` | `bar`; `stacked_bar` with a secondary dimension; `scatter` when explicit |
-| `distribution` | buckets over a dimension, optional series | `bar`; `stacked_bar` with a secondary dimension; `histogram` over enrollment | `bar` in every case; `stacked_bar` and `grouped_bar` with a secondary dimension; `scatter` when explicit |
+| `time_trend` | buckets over time, optional series | `line` | `bar` (drawn as `stacked_bar` with a secondary dimension); `stacked_bar` with a secondary dimension; `scatter` when explicit |
+| `distribution` | buckets over a dimension, optional series | `bar`; `stacked_bar` with a secondary dimension; `histogram` over enrollment (without a secondary dimension) | `bar` in every case (drawn as `stacked_bar` with a secondary dimension); `stacked_bar` and `grouped_bar` with a secondary dimension; `scatter` when explicit |
 | `comparison` | arms × dimension | `grouped_bar`; `line` over start year | `stacked_bar`; `scatter` when explicit |
 | `ranking` | top N over an open dimension | `bar`, horizontal and value-sorted | `map` over country |
 | `geographic` | buckets over country | `map` | `bar` (top 15) |
 | `network` | nodes and edges | `network_graph` | none |
 | `count` | one number | `single_value` | none |
-| `lookup` | rows of studies | `table` | none |
+| `lookup` | rows of studies | `table` | `scatter` when explicit |
 | `other` | none | none (422) | none |
 
-`scatter` plots one point per trial, which no aggregate intent asks for by itself, so it is applied only on an explicit ask.
+`scatter` plots one point per trial, which no aggregate intent asks for by itself, so it is applied only on an explicit ask (`chart_named ≥ 0.6`, or `chart` in the request). A scatter Jev picks without an explicit ask falls back to the default chart with the reason "scatter plots one point per trial and is only used when asked for; using" and the default's name. A lookup can draw one, because the question set describes a plot of individual trials as a `lookup`: in the evaluation, "Show a scatter plot of enrollment against start date for lupus trials" answered `lookup` with chart `scatter` (`chart_named` 0.99). Such a scatter reads the whole fetch (up to `max_studies`), while a table reads only its rows.
+
+With a secondary dimension, two allowed charts are adjusted rather than refused, so the chart the question named is kept as closely as the shape permits. A `bar` holds one value per category, so it is drawn as `stacked_bar`, and `meta.interpretation.chart` records `chosen: "bar"`, `applied: "stacked_bar"` and the reason. A `histogram` has no series, so the secondary dimension is dropped with a note and the histogram is drawn.
 
 ### What Jev cannot do, and what does it instead
 
@@ -430,11 +433,13 @@ A study's drug identity is its set of intervention MeSH terms when the registry 
 
 ### Multi-valued counting
 
-Phases, intervention types, drugs, conditions, countries and age groups can hold several values per study. A study counts once per distinct value, so a Phase 1/2 trial counts in Phase 1 and in Phase 2, and the bucket totals can exceed the number of trials. Whenever that happens, `meta.notes` and the subtitle say so ("counted once per phase"). A study without a value for the dimension (or without an enrollment, when the metric needs one) is counted in `coverage.studies_without_value` and left out of the buckets. Open dimensions keep the top N by value, and the number dropped goes to `coverage.omitted_categories`.
+Phases, intervention types, drugs, conditions, countries and age groups can hold several values per study. A study counts once per distinct value, so a Phase 1/2 trial counts in Phase 1 and in Phase 2, and the bucket totals can exceed the number of trials. Whenever that happens, `meta.notes` and the subtitle say so ("counted once per phase"). A study without a value for the dimension (or without an enrollment, when the metric needs one, or without a value for the secondary dimension) is counted in `coverage.studies_without_value` and left out of the buckets. `meta.notes` and the subtitle say how many and why: "1 trial without a phase is not shown" in the notes and "1 trial without a phase not shown" in the subtitle, or "without an enrollment count" when the metric needs one. A scatter states the trials without a start date or an enrollment count the same way. Open dimensions keep the top N by value, and the number dropped goes to `coverage.omitted_categories`.
 
 ### Truncation and sort order
 
-Every request uses `pageSize=1000`, `sort=StartDate:desc`, `format=json`, and `countTotal=true` on the first page. Pages follow `nextPageToken` until `max_studies` (default 3,000) or the end. The registry's `totalCount` is always reported. When the fetch stops early, `coverage.truncated` is true, `meta.warnings` says so, and the subtitle reads "N trials on ClinicalTrials.gov · based on the 3,000 most recently started". Sorting by start date descending makes the truncated sample deterministic and explainable. A single value never depends on the sample: it is the registry's `totalCount`.
+Every request uses `sort=StartDate:desc`, `format=json`, `countTotal=true` on the first page, and `pageSize=1000`, except that the first page asks for no more than the cap: a count reads one page of 50 (`pageSize=50`) and a table one page of its row count (25 by default). Pages follow `nextPageToken` until the cap (`max_studies`, default 3,000, for every other chart) or the end. The registry's `totalCount` is always reported. When the fetch stops early, `coverage.truncated` is true, `meta.warnings` says so, and the subtitle reads "N trials on ClinicalTrials.gov · based on the 3,000 most recently started". Sorting by start date descending makes the truncated sample deterministic and explainable. A single value never depends on the sample: it is the registry's `totalCount`. A table is not a sample either: it is the N most recently started trials.
+
+A comparison's subtitle states each arm's total ("Pembrolizumab 2,973 · Nivolumab 1,734 trials on ClinicalTrials.gov") rather than their sum, because a trial that involves both drugs matches both arms. `coverage.total_count` is still the sum, and `meta.notes` says it can count such a trial twice.
 
 A page of 1,000 studies took about 0.8 s when measured on 2026-10-09, so the default cap costs about 2.5 s in the worst case. Pages within an arm are fetched one after another, because each needs the previous page's token. Arms are fetched in parallel.
 
@@ -489,20 +494,20 @@ A network edge cites the studies where both ends co-occur. Its `field` joins the
 
 ## Example runs
 
-Pending. The five runs below are produced by `npm run examples` (`examples/run.ts`), which sends each request through the same engine against the live APIs, writes `examples/<slug>.json` (the request, the status and the full response), and generates the table in `examples/README.md` with each run's chart type, total trials, Jev time and total time. The script and its output land once a valid OpenAI key is in place; until then this section lists what each run exercises, not its results.
+Pending. The five runs below are produced by `npm run examples` (`examples/run.ts`), which sends each request through the same engine against the live APIs, writes `examples/<slug>.json` (the request, the status and the full response), and generates the table in `examples/README.md` with each run's chart type, total trials, Jev time and total time. It exits non-zero when any run fails. The script is in place and typechecks; its output lands once a valid OpenAI key is in place, so until then this section lists what each run exercises, not its results.
 
 | Slug | Request | Chart it exercises |
 |---|---|---|
 | `time-trend-pembrolizumab` | "How has the number of trials for this drug changed per year since 2015?" with `drug_name: "Pembrolizumab"` | `line` |
 | `distribution-melanoma-phases` | "How are melanoma trials distributed across phases?" | `bar` |
 | `comparison-pembrolizumab-nivolumab` | "Compare phases for trials involving pembrolizumab vs nivolumab" | `grouped_bar` |
-| `geographic-lupus-recruiting` | "Which countries have the most recruiting trials for lupus?" | `map` (or `bar`) |
+| `geographic-lupus-recruiting` | "Which countries have the most recruiting trials for lupus?" with `chart: "map"` | `map` |
 | `network-sponsors-drugs-melanoma` | "Show a network of sponsors and drugs for melanoma trials" with `citations_per_datum: 3` | `network_graph` |
 
 - **Time trend.** The question says "this drug", and the drug comes from a structured field. This checks that request fields replace extraction and that the time window becomes an Essie date range.
 - **Distribution.** Phases are multi-valued, so this checks the once-per-phase counting, its note, and phase-bucket citations.
 - **Comparison.** Two arms, one fetch sequence each, merged into series labelled by drug.
-- **Geographic.** This checks the recruiting threshold, the country mapping to ISO codes, and the world map. In the Jev evaluation this question's raw chart answer was `bar` (0.79), which the matrix allows for a geographic intent, so this run may draw a bar chart of the top 15 countries rather than a map. "Where are CAR-T trials run?" drew `map` (0.74) in the same evaluation.
+- **Geographic.** This checks the recruiting threshold, the country mapping to ISO codes, the world map, and the request-level chart override. In the Jev evaluation this question's raw chart answer was `bar` (0.79), which the matrix allows for a geographic intent, so without an override it would draw a bar chart of the top 15 countries. The request sets `chart: "map"`, which counts as an explicit ask, so the run always draws the map and lists `chart` in `provided_fields`.
 - **Network.** Sponsor–drug edges over MeSH identities, pruning to the 40 heaviest edges, and two-ended edge citations.
 
 Each run is to be checked by hand: the chart matches the question, every excerpt matches its bucket, each URL in `meta.source.requests` returns the stated `totalCount`, and the subtitle is true.
@@ -569,18 +574,18 @@ Pending. `npm run eval:extract` sends the questions with labelled entities to `g
 
 ### Tests
 
-`npm run check` runs the typecheck, eslint and 182 vitest tests in 23 files. Every test runs offline. In the engine and API tests, Jev is a scripted fake that returns well-formed distributions, and ClinicalTrials.gov is a fake client over twelve hand-built studies that exercise every counting rule (several phases, no start date, no enrollment, several countries, combinations, a drug with no MeSH terms). The clients' own tests inject `fetch` in place of the network.
+`npm run check` runs the typecheck, eslint and 209 vitest tests in 24 files. Every test runs offline. In the engine and API tests, Jev is a scripted fake that returns well-formed distributions, and ClinicalTrials.gov is a fake client, like the real one stopping when its signal is aborted, over twelve hand-built studies that exercise every counting rule (several phases, no start date, no enrollment, several countries, combinations, a drug with no MeSH terms) or over the two recorded registry pages. The clients' own tests inject `fetch` in place of the network.
 
 | Package | Tests | What they pin |
 |---|---|---|
 | `contracts` | 13 | defaults, rejection of unknown fields, the year order, the caps, each chart's spec shape, the JSON Schema export, the error shape |
-| `judgment` | 20 | answer validation (a missing option, a distribution that does not sum to 1, a wrong type, a noul outside [0, 1], a choice that exists only on the prototype chain), retries on 429 with `retry-after`, no retry on 401, never throwing; the question set uses exactly the contract's enums, every option has a `what`, every choice has a way out, the state holds only the provided fields |
-| `ctgov` | 21 | the URL builder (quoting, `AND`/`OR`, Essie ranges, the 19 fields), paging and truncation, the cache, no retry on 400, one retry on 503, progress per page, normalization of a registry-shaped record, the country mapping |
-| `engine` | 99 | the planner (thresholds, normalization, arms, limits, the compatibility matrix on representative cells, explicit scatter), identity sets and citation fields per dimension, bucketing (multi-valued counting, gap filling, quarters, top N, secondary series, sums and medians, enrollment bins), merged arms, graphs (weights, pairs, pruning, collaborators), points and rows, the spec for every chart type, extraction parsing, and `runQuery` end to end with fakes (every intent, overrides, 422, 502 per upstream, 504, a thrown error becoming a 500, the title fallback, an exact count) |
-| `apps/api` | 7 | the routes, 400 with issues, 422, and the SSE event order on success and on failure |
+| `judgment` | 20 | answer validation (a missing option, a distribution that does not sum to 1, a wrong type, a noul outside [0, 1], a choice that exists only on the prototype chain), retries on 429 with `retry-after`, no retry on 401 and only the status in an auth failure's detail, never throwing; the question set uses exactly the contract's enums, every option has a `what`, every choice has a way out, the state holds only the provided fields |
+| `ctgov` | 26 | the URL builder (quoting, `AND`/`OR`, Essie ranges, the 19 fields), paging and truncation, a first page sized to the cap, the cache, no retry on 400, one retry on 503, progress per page, normalization of a registry-shaped record, the country mapping (every spelling in the recorded pages, a trailing parenthetical, names on the prototype chain), the fake client's abort |
+| `engine` | 119 | the planner (thresholds, normalization, arms, limits, the compatibility matrix on representative cells, explicit scatter and its reason, a lookup's scatter, a bar over a secondary dimension drawn stacked, a histogram dropping it), identity sets and citation fields per dimension, bucketing (multi-valued counting, gap filling, quarters, top N, secondary series, sums and medians, enrollment bins, why a study was left out), merged arms, graphs (weights, pairs, pruning that never empties the graph, collaborators), points and rows, the spec for every chart type (value-sorted rankings, per-arm totals, the not-shown line), extraction parsing and its auth-failure detail, `runQuery` end to end with fakes (every intent, overrides, fetch sizes, 422, 502 per upstream, 504 before and during the fetch, a thrown error becoming a 500, the title fallback, an exact count), and `runQuery` over the recorded registry pages |
+| `apps/api` | 9 | the routes, the snake_case `/health` body, 400 with issues, 422, the SSE event order on success and on failure, and the SSE headers flushed on open |
 | `apps/web` | 22 | each chart renders from a spec in jsdom, a table row click picks its citations, the palette, the stream parser (including events split across chunks, and a stream that closes without a result), the history cap |
 
-Two first pages (50 studies each) recorded from the live registry on 2026-10-09 are kept in `packages/ctgov/fixtures/`, each with the URL that produced it (`npm run fixtures:record`). No test loads them yet; the normalizer test uses a registry-shaped record written into the test.
+Two first pages (50 studies each) recorded from the live registry on 2026-10-09 are kept in `packages/ctgov/fixtures/`, each with the URL that produced it (`npm run fixtures:record`). `packages/engine/src/fixtures.test.ts` normalizes both and runs `runQuery` over them with the fake clients: a phase distribution, a sponsor–drug network and a country map, each validated against the contract with non-empty, cited data, plus a drug distribution that exercises the fallback to registered names for the trials the registry mapped to no MeSH term. `packages/ctgov/src/countries.test.ts` checks that every country spelling in the two pages maps to an ISO code (they include "Turkey (Türkiye)" and "Moldova").
 
 Cases pinned by tests:
 
@@ -639,7 +644,7 @@ Generated with Claude Code and adapted: the workspace boilerplate, the Recharts 
 How correctness was checked:
 
 - the labelled Jev evaluation against the live API (above);
-- offline tests with fakes for all three services, over a twelve-study sample built to exercise every counting rule (two pages recorded from the live registry are kept as fixtures, not yet loaded by a test);
+- offline tests with fakes for all three services, over a twelve-study sample built to exercise every counting rule and over two pages recorded from the live registry;
 - validation of every response against the contract, in the engine and in the tests for each chart type;
 - review of each task against the spec;
 - the example runs, to be checked by hand once the OpenAI key is replaced.
