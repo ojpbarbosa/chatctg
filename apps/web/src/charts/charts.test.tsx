@@ -173,18 +173,29 @@ describe("network, map, table and single value", () => {
   afterEach(() => { vi.useRealTimers(); });
   it("network: a circle per node and a line per edge once the simulation has ticked", async () => {
     vi.useFakeTimers();
-    const picked: string[] = [];
-    const { el, done } = await mount(<NetworkView viz={network} onPick={(_, l) => picked.push(l)} />, async () => { await vi.advanceTimersByTimeAsync(500); });
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<NetworkView viz={network} onPick={(c, l) => picked.push({ c, l })} />, async () => { await vi.advanceTimersByTimeAsync(500); });
     expect(el.querySelectorAll("circle")).toHaveLength(3);
     expect(el.querySelectorAll("line")).toHaveLength(2);
     expect(el.textContent).toContain("Sponsor");
     act(() => { el.querySelector("line")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
-    expect(picked).toHaveLength(1);
+    expect(picked).toEqual([{ c: network.data.edges[0]!.citations, l: "Pfizer — Aspirin (3)" }]);
+    picked.length = 0;
+    act(() => { el.querySelector("circle")!.parentElement!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: [...network.data.edges[0]!.citations, ...network.data.edges[1]!.citations], l: "Pfizer (5 trials)" }]);
     done();
   });
   it("map: a path per country once the topology loads, plus the sphere, with unmapped rows listed", async () => {
-    const { el, done } = await mount(<WorldMapView viz={map} onPick={noop} />, async () => { await new Promise((r) => setTimeout(r, 20)); });
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<WorldMapView viz={map} onPick={(c, l) => picked.push({ c, l })} />, async () => { await new Promise((r) => setTimeout(r, 20)); });
     expect(el.querySelectorAll("path")).toHaveLength(3);
+    const usa = [...el.querySelectorAll("path")].find((p) => p.querySelector("title")?.textContent?.includes("United States"))!;
+    expect(usa.querySelector("title")!.textContent).toBe("United States: 9 trials");
+    expect(usa.getAttribute("fill")).not.toBe("#eceef2");
+    const grey = [...el.querySelectorAll("path")].filter((p) => p.getAttribute("fill") === "#eceef2");
+    expect(grey).toHaveLength(0);
+    act(() => { usa.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: map.data[0]!.citations, l: "United States · 9" }]);
     expect(el.textContent).toContain("Not on the map: Kosovo 1");
     expect(el.textContent).toContain("Top: United States 9");
     done();
@@ -194,6 +205,17 @@ describe("network, map, table and single value", () => {
     expect(count(html, /<tr/g)).toBe(3);
     expect(html).toContain('href="https://clinicaltrials.gov/study/NCT00000002"');
     expect(html).toContain("1,200");
+  });
+  it("table: a row click picks its citations, the NCT link click does not", async () => {
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<TableView viz={table} onPick={(c, l) => picked.push({ c, l })} />, async () => {});
+    const tr = el.querySelectorAll("tbody tr")[0]!;
+    act(() => { tr.querySelectorAll("td")[1]!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: table.data[0]!.citations, l: "NCT00000001" }]);
+    picked.length = 0;
+    act(() => { tr.querySelector("a")!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })); });
+    expect(picked).toHaveLength(0);
+    done();
   });
   it("single value: the formatted number and its label", () => {
     const html = renderToStaticMarkup(<SingleValueView viz={single} onPick={noop} />);

@@ -24,8 +24,8 @@ export function WorldMapView({ viz, onPick }: { viz: MapViz; onPick: OnPick }) {
     <div className="chart">
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={viz.title} style={{ display: "block" }}>
         <path d={path({ type: "Sphere" }) ?? ""} fill="var(--raised)" />
-        {feats.map((f) => { const row = byNumeric.get(String(Number(f.id))); const v = row ? Number(row[field]) : 0;
-          return <path key={String(f.id)} d={path(f) ?? ""} fill={row ? sequential(0.15 + 0.85 * Math.sqrt(v / max)) : "#eceef2"} stroke="var(--bg)" strokeWidth={0.5} style={{ cursor: row ? "pointer" : "default" }} onClick={() => row && onPick(row.citations, `${row.country} · ${fmt(v)}`)}><title>{row ? `${row.country}: ${fmt(v)} ${viz.encoding.value.unit}` : f.properties?.name ?? ""}</title></path>; })}
+        {feats.map((f, i) => { const row = f.id === undefined || f.id === null ? undefined : byNumeric.get(String(Number(f.id))); const v = row ? Number(row[field]) : 0;
+          return <path key={f.id ?? `f${i}`} d={path(f) ?? ""} fill={row ? sequential(0.15 + 0.85 * Math.sqrt(v / max)) : "#eceef2"} stroke="var(--bg)" strokeWidth={0.5} style={{ cursor: row ? "pointer" : "default" }} onClick={() => row && onPick(row.citations, `${row.country} · ${fmt(v)}`)}><title>{row ? `${row.country}: ${fmt(v)} ${viz.encoding.value.unit}` : f.properties?.name ?? ""}</title></path>; })}
       </svg>
       <div className="foot" style={{ borderTop: 0, paddingTop: 4 }}>
         <span>Top: {[...viz.data].sort((a, b) => Number(b[field]) - Number(a[field])).slice(0, 5).map((r) => `${r.country} ${fmt(r[field])}`).join(" · ")}</span>
