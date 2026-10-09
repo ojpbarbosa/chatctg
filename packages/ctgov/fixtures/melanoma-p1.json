@@ -1,0 +1,4692 @@
+{
+ "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22melanoma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=50&countTotal=true&sort=StartDate%3Adesc",
+ "recorded_at": "2026-10-09T07:07:05.947Z",
+ "page": {
+  "totalCount": 3773,
+  "studies": [
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07170293",
+      "briefTitle": "Phase II Trial of Tunlametinib in Patients With NRAS Mutant Non-melanoma Refractory Solid Tumors"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2027-08-31"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-09-30"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Tianjin Medical University Second Hospital",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Solid Cancers"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 15
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Tunlametinib"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "China"
+       }
+      ]
+     }
+    },
+    "derivedSection": {}
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06739226",
+      "briefTitle": "Combination Immunotherapy Targeting Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-06-30"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Shenzhen Geno-Immune Medical Institute",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 30
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "Antigen-specific CAR T, CTL and DCvac to treat melanoma."
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "China"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07807878",
+      "briefTitle": "Trial of Temozolomide in BAP1 Mutated Patients With Advanced or Metastatic Cutaneous Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-06-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2030-01-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Assistance Publique Hopitaux De Marseille",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Cutaneous Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 28
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Temozolomide (TMZ)"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Temozolomide"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07621614",
+      "briefTitle": "A Study on How to Safely Guide Surgery for Melanoma and Similar Skin Tumors in Children Using Pathology and Genetic Information"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2027-05-15"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-07-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Children's Oncology Group",
+       "class": "NETWORK"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Clinical Stage 0 Cutaneous Melanoma AJCC v8",
+       "Clinical Stage I Cutaneous Melanoma AJCC v8",
+       "Clinical Stage II Cutaneous Melanoma AJCC v8",
+       "Cutaneous Melanocytic Neoplasm",
+       "Cutaneous Melanoma",
+       "Cutaneous Spitz Melanocytoma",
+       "Cutaneous Spitz Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 51
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Biospecimen Collection"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Chest Radiography"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Computed Tomography"
+       },
+       {
+        "type": "OTHER",
+        "name": "Fludeoxyglucose F-18"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Magnetic Resonance Imaging"
+       },
+       {
+        "type": "OTHER",
+        "name": "Patient Observation"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Positron Emission Tomography"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Re-Excision"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Sentinel Lymph Node Biopsy"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Ultrasound Imaging"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Wide Local Excision"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Specimen Handling"
+       },
+       {
+        "term": "X-Rays"
+       },
+       {
+        "term": "Fluorodeoxyglucose F18"
+       },
+       {
+        "term": "Magnetic Resonance Spectroscopy"
+       },
+       {
+        "term": "Watchful Waiting"
+       },
+       {
+        "term": "Observation"
+       },
+       {
+        "term": "Sentinel Lymph Node Biopsy"
+       },
+       {
+        "term": "High-Energy Shock Waves"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06708455",
+      "briefTitle": "Phase 2b of RAPA-201 Cell Therapy in Post-PD-(L)-1 Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-03-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-03-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Rapa Therapeutics LLC",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Malignant Melanoma With Metastasis",
+       "Malignant Melanoma",
+       "Malignant Melanoma Stage IIIc",
+       "Malignant Melanoma Stage IV"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 65
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "RAPA-201 Rapamycin Resistant T Cells"
+       },
+       {
+        "type": "DRUG",
+        "name": "Chemotherapy Prior to RAPA-201 Therapy"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07819474",
+      "briefTitle": "Optimizing Tumor-Infiltrating Lymphocyte (TIL) Harvest Site and Patient Selection With CD8-PET Imaging in Patients With"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-02-18"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-08-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "M.D. Anderson Cancer Center",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "ImaginAb, Inc."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Tumor Infiltrating Lymphocyte",
+       "CD8-PET",
+       "Advanced Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 6
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Crefmirlimb"
+       },
+       {
+        "type": "DEVICE",
+        "name": "PET/CT imaging"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {}
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT05903937",
+      "briefTitle": "Locoregional Administration of TIL and Lymphodepletion in Patients With Melanoma and Liver Metastases"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-01-31"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-12-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Vastra Gotaland Region",
+       "class": "OTHER_GOV"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Uveal Melanoma",
+       "Metastatic Cutaneous Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 6
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Autologous Tumor Infiltrating Lymphocytes"
+       },
+       {
+        "type": "DRUG",
+        "name": "Melphalan"
+       },
+       {
+        "type": "DRUG",
+        "name": "Interleukin-2"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Uveal Melanoma"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melphalan"
+       },
+       {
+        "term": "Interleukin-2"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07183852",
+      "briefTitle": "Locoregional or Systemic Administration of Autologous Tumor Infiltrating Lymphocytes in Patients With Metastatic Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2027-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-03"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Vastra Gotaland Region",
+       "class": "OTHER_GOV"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Metastatic Uveal Melanoma",
+       "Metastatic Cutaneous Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 18
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Autologous Tumor Infiltrating Lymphocytes (TIL)"
+       },
+       {
+        "type": "DRUG",
+        "name": "Melphalan"
+       },
+       {
+        "type": "DRUG",
+        "name": "Interleukin-2"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Uveal Melanoma"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melphalan"
+       },
+       {
+        "term": "Interleukin-2"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07862530",
+      "briefTitle": "Neoadjuvant RP2 + Nivolumab in Patients With Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-31"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-02-27"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Yana Najjar",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Replimune, Inc."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "MelanomaCutaneous Melanoma Resectable, Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 34
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "RP2 (vusolimogene oderparepvec)"
+       },
+       {
+        "type": "DRUG",
+        "name": "Nivolumab"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Definitive Surgical Resection"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Retinitis Pigmentosa 2"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07704918",
+      "briefTitle": "Aggressive Lipid Lowering Therapy in ICI-Treated Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-31"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of Colorado, Denver",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 40
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Statins (atorvastatin, rosuvastatin, simvastatin, or pravastatin), +/- ezetimibe, +/- PCSK9 inhibitor (alirocumab, evolocumab, inclisiran)"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Atherosclerosis"
+       },
+       {
+        "term": "Coronary Artery Disease"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Hydroxymethylglutaryl-CoA Reductase Inhibitors"
+       },
+       {
+        "term": "Atorvastatin"
+       },
+       {
+        "term": "Rosuvastatin Calcium"
+       },
+       {
+        "term": "Simvastatin"
+       },
+       {
+        "term": "Pravastatin"
+       },
+       {
+        "term": "Ezetimibe"
+       },
+       {
+        "term": "alirocumab"
+       },
+       {
+        "term": "evolocumab"
+       },
+       {
+        "term": "ALN-PCS"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07628894",
+      "briefTitle": "Circadian-Optimized Light Therapy for the Treatment of Patients With Advanced Melanoma Receiving Tumor-Infiltrating Lymphocyte Therapy"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-23"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-07-05"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "City of Hope Medical Center",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "National Cancer Institute (NCI)"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Advanced Cutaneous Melanoma",
+       "Clinical Stage III Cutaneous Melanoma AJCC v8",
+       "Clinical Stage IV Cutaneous Melanoma AJCC v8",
+       "Metastatic Cutaneous Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 8
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Biospecimen Collection"
+       },
+       {
+        "type": "OTHER",
+        "name": "Internet-Based Intervention"
+       },
+       {
+        "type": "OTHER",
+        "name": "Medical Device Usage and Evaluation"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Phototherapy"
+       },
+       {
+        "type": "OTHER",
+        "name": "Questionnaire Administration"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Therapeutic Tumor Infiltrating Lymphocytes"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Specimen Handling"
+       },
+       {
+        "term": "Phototherapy"
+       },
+       {
+        "term": "Ultraviolet Therapy"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07861022",
+      "briefTitle": "Biomechanical Characterization of Skin Properties Using Impact Based-Analysis Method (IBAM)"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-03"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Centre Hospitalier Universitaire Henri Mondor, Assistance Publique Hôpitaux de Paris",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin Cancer)",
+       "Skin Carcinoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "OBSERVATIONAL",
+      "enrollmentInfo": {
+       "count": 10
+      }
+     },
+     "armsInterventionsModule": {},
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Disease"
+       },
+       {
+        "term": "Margins of Excision"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07576725",
+      "briefTitle": "Low Dose, Reduced Frequency Nivolumab for the Treatment of Unresectable or Metastatic Cancer, AFFORD IO Trial"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-08-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Fred Hutchinson Cancer Center",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "The Wayne D. Kuni and Joan E. Kuni Foundation"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Clinical Stage III Cutaneous Melanoma AJCC v8",
+       "Clinical Stage III Cutaneous Merkel Cell Carcinoma AJCC v8",
+       "Clinical Stage IV Cutaneous Melanoma AJCC v8",
+       "Clinical Stage IV Cutaneous Merkel Cell Carcinoma AJCC v8",
+       "Hodgkin Lymphoma",
+       "Kaposi Sarcoma",
+       "Metastatic Acral Lentiginous Melanoma",
+       "Metastatic Basal Cell Carcinoma",
+       "Metastatic Cervical Carcinoma",
+       "Metastatic Clear Cell Renal Cell Carcinoma",
+       "Metastatic Colorectal Carcinoma",
+       "Metastatic Cutaneous Melanoma",
+       "Metastatic Head and Neck Squamous Cell Carcinoma",
+       "Metastatic Kaposi Sarcoma",
+       "Metastatic Lung Non-Small Cell Carcinoma",
+       "Metastatic Malignant Solid Neoplasm",
+       "Metastatic Merkel Cell Carcinoma",
+       "Metastatic Mucosal Melanoma",
+       "Metastatic Skin Squamous Cell Carcinoma",
+       "Metastatic Urothelial Carcinoma",
+       "Stage III Cervical Cancer AJCC v8",
+       "Stage III Colorectal Cancer AJCC v8",
+       "Stage III Head and Neck Cutaneous Squamous Cell Carcinoma AJCC v8",
+       "Stage III Lung Cancer AJCC v8",
+       "Stage III Renal Cell Cancer AJCC v8",
+       "Stage IV Cervical Cancer AJCC v8",
+       "Stage IV Colorectal Cancer AJCC v8",
+       "Stage IV Head and Neck Cutaneous Squamous Cell Carcinoma AJCC v8",
+       "Stage IV Lung Cancer AJCC v8",
+       "Stage IV Renal Cell Cancer AJCC v8",
+       "Unresectable Acral Lentiginous Melanoma",
+       "Unresectable Basal Cell Carcinoma",
+       "Unresectable Cervical Carcinoma",
+       "Unresectable Clear Cell Renal Cell Carcinoma",
+       "Unresectable Colorectal Carcinoma",
+       "Unresectable Cutaneous Melanoma",
+       "Unresectable Head and Neck Squamous Cell Carcinoma",
+       "Unresectable Lung Non-Small Cell Carcinoma",
+       "Unresectable Malignant Solid Neoplasm",
+       "Unresectable Merkel Cell Carcinoma",
+       "Unresectable Mucosal Melanoma",
+       "Unresectable Skin Squamous Cell Carcinoma",
+       "Unresectable Urothelial Carcinoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 50
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Biospecimen Collection"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Computed Tomography"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Magnetic Resonance Imaging"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Nivolumab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "Uganda"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Hodgkin Disease"
+       },
+       {
+        "term": "Sarcoma, Kaposi"
+       },
+       {
+        "term": "Carcinoma, Basal Cell"
+       },
+       {
+        "term": "Uterine Cervical Neoplasms"
+       },
+       {
+        "term": "Clear-cell metastatic renal cell carcinoma"
+       },
+       {
+        "term": "Colorectal Neoplasms"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Squamous Cell Carcinoma of Head and Neck"
+       },
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       },
+       {
+        "term": "Neoplasm Metastasis"
+       },
+       {
+        "term": "Carcinoma, Merkel Cell"
+       },
+       {
+        "term": "Carcinoma, Transitional Cell"
+       },
+       {
+        "term": "Lung Neoplasms"
+       },
+       {
+        "term": "Carcinoma, Renal Cell"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Specimen Handling"
+       },
+       {
+        "term": "Magnetic Resonance Spectroscopy"
+       },
+       {
+        "term": "Nivolumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07815574",
+      "briefTitle": "iSCIB1+ in Combination With Ipilimumab and Nivolumab as First-Line Treatment for Advanced Unresectable Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Scancell Ltd",
+       "class": "INDUSTRY"
+      },
+      "collaborators": [
+       {
+        "name": "PPD, Part of Thermo Fisher Scientific"
+       },
+       {
+        "name": "Egeen"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin Cancer)",
+       "Advanced Melanoma",
+       "Metastatic Melanoma",
+       "Skin Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE3"
+      ],
+      "enrollmentInfo": {
+       "count": 550
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "iSCIB1+"
+       },
+       {
+        "type": "DRUG",
+        "name": "Nivolumab & Ipilimumab"
+       },
+       {
+        "type": "OTHER",
+        "name": "Placebo"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United Kingdom"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Skin Neoplasms"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       },
+       {
+        "term": "Ipilimumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07689812",
+      "briefTitle": "A Multicenter Randomized Open-Label Trial Evaluating ctDNA-Guided Interruption Versus Standard of Care Immune-Checkpoint Inhibitor (ICI) Therapy In Patients With Advanced / Metastatic Solid Tumors."
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2033-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Natera, Inc.",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "NSCLC (Advanced Non-small Cell Lung Cancer)",
+       "NSCLC (Non-small Cell Lung Cancer)",
+       "NSCLC (Non-small Cell Lung Carcinoma)",
+       "NSCLC",
+       "Melanoma (Skin Cancer)",
+       "Melanoma (Skin) Stage IV",
+       "CRC",
+       "MSI High Colorectal Cancer",
+       "DMMR Colorectal Cancer",
+       "RCC, Renal Cell Cancer",
+       "RCC",
+       "Solid Tumors",
+       "Metastatic Solid Tumors",
+       "Advanced Solid Tumors",
+       "Advanced Solid Tumors Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 920
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DEVICE",
+        "name": "Signatera Genome ultra-sensitive ctDNA blood test"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Carcinoma, Renal Cell"
+       },
+       {
+        "term": "Colorectal Neoplasms"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07032701",
+      "briefTitle": "A Disposable Negative Pressure Wound Therapy Device (SNaP) to Promote Wound Healing in the Lower Limbs Following Mohs Micrographic Surgery for Non-melanoma Skin Cancer"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2030-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Jonsson Comprehensive Cancer Center",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Skin Carcinoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 60
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "OTHER",
+        "name": "Best Practice"
+       },
+       {
+        "type": "OTHER",
+        "name": "Educational Intervention"
+       },
+       {
+        "type": "OTHER",
+        "name": "Educational Intervention"
+       },
+       {
+        "type": "OTHER",
+        "name": "Electronic Health Record Review"
+       },
+       {
+        "type": "OTHER",
+        "name": "Follow-Up Care"
+       },
+       {
+        "type": "OTHER",
+        "name": "Follow-Up Care"
+       },
+       {
+        "type": "OTHER",
+        "name": "Medical Device Usage and Evaluation"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Negative Pressure Wound Therapy"
+       },
+       {
+        "type": "OTHER",
+        "name": "Photography"
+       },
+       {
+        "type": "OTHER",
+        "name": "Questionnaire Administration"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Practice Guidelines as Topic"
+       },
+       {
+        "term": "Standard of Care"
+       },
+       {
+        "term": "Early Intervention, Educational"
+       },
+       {
+        "term": "Educational Status"
+       },
+       {
+        "term": "Methods"
+       },
+       {
+        "term": "Aftercare"
+       },
+       {
+        "term": "Negative-Pressure Wound Therapy"
+       },
+       {
+        "term": "Photography"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07761871",
+      "briefTitle": "Exercise and Nutritional Intervention in Patients With Melanoma Receiving Immunotherapy"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-06"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Institute of Oncology Ljubljana",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Science and Research Centre Koper"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 40
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BEHAVIORAL",
+        "name": "Structured Resistance Exercise"
+       },
+       {
+        "type": "BEHAVIORAL",
+        "name": "Individualized Nutritional Support"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "Slovenia"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Sarcopenia"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07527325",
+      "briefTitle": "Fianlimab&Cemiplimab as TotalNeoadj The (TNT) ForMelanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-12"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-02-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of California, Irvine",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "UC Cancer Consortium"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin)"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 35
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Fianlimab"
+       },
+       {
+        "type": "DRUG",
+        "name": "Cemiplimab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "cemiplimab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07863024",
+      "briefTitle": "Safety and Efficacy Study in Adults With Advanced Solid Tumors Receiving REGN13089-M404-M2980, an Antibody-drug Conjugate That Targets MET Protein on Tumors"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-23"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2031-03-10"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Regeneron Pharmaceuticals",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Advanced Solid Tumors"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 320
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "REGN13089-M404-M2980"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Carcinoma, Renal Cell"
+       },
+       {
+        "term": "Colorectal Neoplasms"
+       },
+       {
+        "term": "Stomach Neoplasms"
+       },
+       {
+        "term": "Neoplasm Metastasis"
+       },
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       },
+       {
+        "term": "Uveal Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07459543",
+      "briefTitle": "A Study to Assess the Safety, and Tolerability of Nivolumab + Relatlimab Fixed-Dose Combination (FDC) In Unresectable or Metastatic Melanoma Participants In India"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-15"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-05-26"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Bristol-Myers Squibb",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Unresectable Melanoma",
+       "Metastatic Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE4"
+      ],
+      "enrollmentInfo": {
+       "count": 40
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Nivolumab + Relatlimab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       },
+       {
+        "country": "India"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Skin Neoplasms"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       },
+       {
+        "term": "relatlimab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07102212",
+      "briefTitle": "Telemedicine-mHealth Symptom Cluster Intervention for Advanced Cancer Patients: Finding Our Center Under Stress (FOCUS)"
+     },
+     "statusModule": {
+      "overallStatus": "SUSPENDED",
+      "startDateStruct": {
+       "date": "2026-11-15"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-08-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Ohio State University Comprehensive Cancer Center",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Ohio University"
+       },
+       {
+        "name": "National Cancer Institute (NCI)"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Lung Cancer",
+       "Breast Cancer",
+       "Prostate Cancer",
+       "Multiple Myeloma",
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 120
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BEHAVIORAL",
+        "name": "mHealth Intervention"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Lung Neoplasms"
+       },
+       {
+        "term": "Breast Neoplasms"
+       },
+       {
+        "term": "Prostatic Neoplasms"
+       },
+       {
+        "term": "Multiple Myeloma"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Neoplasms"
+       },
+       {
+        "term": "Anxiety Disorders"
+       },
+       {
+        "term": "Fatigue"
+       },
+       {
+        "term": "Depression"
+       },
+       {
+        "term": "Alzheimer Disease"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07838974",
+      "briefTitle": "Adding Anakinra and Tocilizumab to Nivolumab and Ipilimumab for the Treatment of Melanoma Patients 50 Years of Age or Older"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-11-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of Southern California",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "National Cancer Institute (NCI)"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 40
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "Anakinra"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Biospecimen Collection"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Computed Tomography"
+       },
+       {
+        "type": "OTHER",
+        "name": "Electronic Health Record Review"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Ipilimumab"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Magnetic Resonance Imaging"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Nivolumab"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Positron Emission Tomography"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Tocilizumab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Interleukin 1 Receptor Antagonist Protein"
+       },
+       {
+        "term": "Receptors, Interleukin-6"
+       },
+       {
+        "term": "Specimen Handling"
+       },
+       {
+        "term": "Ipilimumab"
+       },
+       {
+        "term": "CTLA-4 Antigen"
+       },
+       {
+        "term": "Magnetic Resonance Spectroscopy"
+       },
+       {
+        "term": "Nivolumab"
+       },
+       {
+        "term": "tocilizumab"
+       },
+       {
+        "term": "Immunoglobulin G"
+       },
+       {
+        "term": "Disulfides"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07660666",
+      "briefTitle": "Feasibility of an Enhanced Symptom Monitoring and Expedited Subspecialty Care Referral Intervention to Improve Side Effect Management for Patients With Melanoma Receiving an Immune Checkpoint Inhibitor"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-06-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "OHSU Knight Cancer Institute",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 50
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "OTHER",
+        "name": "Electronic Health Record Review"
+       },
+       {
+        "type": "OTHER",
+        "name": "Internet-Based Intervention"
+       },
+       {
+        "type": "BEHAVIORAL",
+        "name": "Patient Navigation"
+       },
+       {
+        "type": "OTHER",
+        "name": "Survey Administration"
+       },
+       {
+        "type": "OTHER",
+        "name": "Survey Administration"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Patient Navigation"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07817901",
+      "briefTitle": "Phase 1b/2 Clinical Trial to Evaluate the Safety and Efficacy of Combination Therapy With Pembrolizumab and Irinotecan in Patients With Metastatic or Recurrent Malignant Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Yonsei University",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Unresectable or Metastatic Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 46
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Pembrolizumab and Irinotecan"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "pembrolizumab"
+       },
+       {
+        "term": "Irinotecan"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07803562",
+      "briefTitle": "Low Dose Dexamethasone for the Prevention of Cytokine Release Syndrome Associated With Tebentafusp"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of California, San Diego",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Immunocore Ltd"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Uveal Melanoma, Metastatic"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 34
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Dexamethasone"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Uveal Melanoma"
+       },
+       {
+        "term": "Neoplasm Metastasis"
+       },
+       {
+        "term": "Cytokine Release Syndrome"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Dexamethasone"
+       },
+       {
+        "term": "Calcium Dobesilate"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07836712",
+      "briefTitle": "Multiple Adjunct Therapies to Improve Immunotherapy Treatment in Patients With Locally Advanced or Metastatic Melanoma or Advanced Hepatocellular Cancer"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-11-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-11-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of Southern California",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "National Cancer Institute (NCI)"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Advanced Hepatocellular Carcinoma",
+       "Advanced Melanoma",
+       "Locally Advanced Melanoma",
+       "Metastatic Melanoma",
+       "Stage III Hepatocellular Carcinoma AJCC v8",
+       "Stage IV Hepatocellular Carcinoma AJCC v8"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 46
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Biospecimen Collection"
+       },
+       {
+        "type": "DIETARY_SUPPLEMENT",
+        "name": "Cholecalciferol"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Computed Tomography"
+       },
+       {
+        "type": "DRUG",
+        "name": "Desloratadine"
+       },
+       {
+        "type": "OTHER",
+        "name": "Immunotherapy"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Infusion Procedure"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Infusion Procedure"
+       },
+       {
+        "type": "DRUG",
+        "name": "Magnesium Sulfate"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "Magnetic Resonance Imaging"
+       },
+       {
+        "type": "DRUG",
+        "name": "Propranolol"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Carcinoma, Hepatocellular"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Specimen Handling"
+       },
+       {
+        "term": "Cholecalciferol"
+       },
+       {
+        "term": "desloratadine"
+       },
+       {
+        "term": "Immunotherapy"
+       },
+       {
+        "term": "Adjuvants, Immunologic"
+       },
+       {
+        "term": "Magnesium Sulfate"
+       },
+       {
+        "term": "Magnetic Resonance Spectroscopy"
+       },
+       {
+        "term": "Propranolol"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07631325",
+      "briefTitle": "Axelopran and Nivolumab in PD-1-Refractory Metastatic Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-31"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-07-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "John Kirkwood",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Glycyx MOR Inc."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Unresectable Cutaneous Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 28
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Axelopran"
+       },
+       {
+        "type": "DRUG",
+        "name": "Nivolumab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07808515",
+      "briefTitle": "A Study Comparing Cemiplimab-based Treatments for Adult Participants With Locally Advanced Basal Cell Skin Cancer (laBCC)"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-15"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2030-11-13"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Regeneron Pharmaceuticals",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Locally Advanced Basal Cell Carcinoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 135
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Cemiplimab"
+       },
+       {
+        "type": "DRUG",
+        "name": "Vidutolimod"
+       },
+       {
+        "type": "DRUG",
+        "name": "Fianlimab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Skin Neoplasms"
+       },
+       {
+        "term": "Carcinoma, Basal Cell"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "cemiplimab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07005297",
+      "briefTitle": "Clinical Genetics Branch Eligibility Screening Survey"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-13"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2035-01-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "National Cancer Institute (NCI)",
+       "class": "NIH"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma",
+       "Li-Fraumeni Syndrome",
+       "Pulmonary Blastoma",
+       "Chordoma",
+       "Congenital Bone Marrow Failure Syndromes",
+       "Costello Syndrome",
+       "Fanconi Anemia",
+       "CFC Syndrome (CFCS)",
+       "Legius Syndrome",
+       "RASopathies"
+      ]
+     },
+     "designModule": {
+      "studyType": "OBSERVATIONAL",
+      "enrollmentInfo": {
+       "count": 1000
+      }
+     },
+     "armsInterventionsModule": {},
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Li-Fraumeni Syndrome"
+       },
+       {
+        "term": "Pulmonary Blastoma"
+       },
+       {
+        "term": "Chordoma"
+       },
+       {
+        "term": "Congenital Bone Marrow Failure Syndromes"
+       },
+       {
+        "term": "Costello Syndrome"
+       },
+       {
+        "term": "Fanconi Anemia"
+       },
+       {
+        "term": "Cardiofaciocutaneous syndrome"
+       },
+       {
+        "term": "Legius syndrome"
+       },
+       {
+        "term": "Melanoma, Cutaneous Malignant"
+       },
+       {
+        "term": "Neoplasms"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07328516",
+      "briefTitle": "Natural History Study of Early Life Exposures in Agriculture (ELEA)"
+     },
+     "statusModule": {
+      "overallStatus": "ENROLLING_BY_INVITATION",
+      "startDateStruct": {
+       "date": "2026-10-13"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12-23"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "National Cancer Institute (NCI)",
+       "class": "NIH"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Prostate Cancer",
+       "Leukemia",
+       "Breast Cancer",
+       "Melanoma",
+       "Colorectal Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "OBSERVATIONAL",
+      "enrollmentInfo": {
+       "count": 64277
+      }
+     },
+     "armsInterventionsModule": {},
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Prostatic Neoplasms"
+       },
+       {
+        "term": "Leukemia"
+       },
+       {
+        "term": "Breast Neoplasms"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Colorectal Neoplasms"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07661966",
+      "briefTitle": "Bright Light Therapy in Patients With Melanoma or Non-small Cell Lung Cancer (NSCLC) Who Are Receiving First-Line Immune Checkpoint Blockade"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-03"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Weill Medical College of Cornell University",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Circadian OS, Inc"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin Cancer)",
+       "NSCLC (Non-small Cell Lung Cancer)"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 12
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DEVICE",
+        "name": "Bright Light Therapy"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Ultraviolet Therapy"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06870994",
+      "briefTitle": "Intratumoral Targeted Hyperthermia Therapy (THT) for Cutaneous Metastatic Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2026-12-30"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Sona Nanotech Inc",
+       "class": "INDUSTRY"
+      },
+      "collaborators": [
+       {
+        "name": "Nova Scotia Health Authority"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Cutaneous Metastatic Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 10
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DEVICE",
+        "name": "Targeted Hyperthermia Therapy"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Hyperthermia"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07854522",
+      "briefTitle": "A Study of QL1706 Combined With OH2 Injection in Perioperative Treatment of Stage III Resectable Acral Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-09"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Peking University Cancer Hospital & Institute",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Qilu Pharmaceutical Co., Ltd."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma",
+       "Acral Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE4"
+      ],
+      "enrollmentInfo": {
+       "count": 76
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Iparomlimab and Tuvonralimab Injection (QL1706)"
+       },
+       {
+        "type": "DRUG",
+        "name": "OH2 Injection(Recombinant Human GM-CSF Oncolytic Type II Herpes Simplex Virus)"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07281924",
+      "briefTitle": "Hepzato Kit and Opdualag for Metastatic Melanoma and Liver Metastasis"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2030-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of Wisconsin, Madison",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Delcath Systems Inc."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Metastatic Melanoma",
+       "Liver Metastases"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 15
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Nivolumab and Relatlimab"
+       },
+       {
+        "type": "DEVICE",
+        "name": "Melphalan"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       },
+       {
+        "term": "relatlimab"
+       },
+       {
+        "term": "Opdualag"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07813533",
+      "briefTitle": "A Pilot Study to Examine the Efficacy and Tolerability of Sirolimus on Epidermal Nevi Lesions in Patients 6 Years Old and Above."
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-09"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Northwestern University",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Epidermal Nevi"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "EARLY_PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 14
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "sirolimus topical gel 0.2%"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nevus, Sebaceous of Jadassohn"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07847359",
+      "briefTitle": "Cryoablation Combined With Hepatic Arterial Infusion of Iparomlimab and Tuvonralimab (QL1706), Intravenous Dacarbazine, and Oral Lenvatinib in Patients With Liver Metastases From Malignant Melanoma: a Single-arm, Phase II, Prospective Trial"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Sun Yat-sen University",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin) Stage IV"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 28
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Cryoablation"
+       },
+       {
+        "type": "DRUG",
+        "name": "Iparomlimab and Tuvonralimab"
+       },
+       {
+        "type": "DRUG",
+        "name": "Dacarbazine"
+       },
+       {
+        "type": "DRUG",
+        "name": "Lenvatinib"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "China"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Cryosurgery"
+       },
+       {
+        "term": "Dacarbazine"
+       },
+       {
+        "term": "lenvatinib"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07815873",
+      "briefTitle": "Gut Microbiome in Patients With Lung and Melanoma Cancer and Intestinal Microbiota in Gynecologic Cancers"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-10-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "European Institute of Oncology",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Non Small Cell Lung Cancer",
+       "Melanoma (Skin Cancer)",
+       "Endometrial Cancer",
+       "Cervical Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 360
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "sample collection"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "Italy"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Endometrial Neoplasms"
+       },
+       {
+        "term": "Uterine Cervical Neoplasms"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Specimen Handling"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07796061",
+      "briefTitle": "Blood-Brain Barrier Disruption Using Exablate Magnetic Resonance-Guided Low Intensity Focused Ultrasound With Microbubbles in Combination With T-Cell Infusion in Patients With Newly Diagnosed Diffuse Midline Glioma (LIFT)"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2031-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Children's National Research Institute",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Focused Ultrasound Foundation"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Pontine Diffuse Midline Glioma",
+       "Diffuse Intrinsic Pontine Glioma",
+       "Thalamic Diffuse Midline Glioma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 45
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "BIOLOGICAL",
+        "name": "TAA-T Cell"
+       },
+       {
+        "type": "DEVICE",
+        "name": "BBB Disruption"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "CHILD",
+       "ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Diffuse Intrinsic Pontine Glioma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT06365619",
+      "briefTitle": "Neoadjuvant Ipilimumab/Nivolumab for Patients With Recurrent, High Risk, Resectable Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-08"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University of Utah",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 25
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Ipilimumab"
+       },
+       {
+        "type": "DRUG",
+        "name": "Nivolumab"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Ipilimumab"
+       },
+       {
+        "term": "Nivolumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07552597",
+      "briefTitle": "Superparamagnetic Iron Oxide for Sentinel Lymph Node Localization in Patients With Cutaneous Melanoma: MagMen-II"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2030-12-31"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Vastra Gotaland Region",
+       "class": "OTHER_GOV"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin Cancer)"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE3"
+      ],
+      "enrollmentInfo": {
+       "count": 254
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DEVICE",
+        "name": "Superparamagnetic Iron Oxide"
+       },
+       {
+        "type": "DRUG",
+        "name": "Technetium (99mTc)"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Technetium"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07700121",
+      "briefTitle": "PICSTAT Pilot Study for CD8 PET/CT-Guided Lifileucel Treatment in Advanced Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-10-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Abramson Cancer Center at Penn Medicine",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Iovance Biotherapeutics, Inc."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Unresectable or Metastatic Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "EARLY_PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 10
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "PROCEDURE",
+        "name": "Resection of PET (high) and PET (low) Tumors"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Lifileucel Manufacturing Clinical v Research"
+       },
+       {
+        "type": "DRUG",
+        "name": "Chemotherapy Regimen"
+       },
+       {
+        "type": "BIOLOGICAL",
+        "name": "Lifileucel Infusion"
+       },
+       {
+        "type": "DRUG",
+        "name": "IL-2"
+       },
+       {
+        "type": "PROCEDURE",
+        "name": "CD8 PET"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Drug Therapy"
+       },
+       {
+        "term": "Interleukin-2"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07747935",
+      "briefTitle": "Study of Neoadjuvant RBP-01 In Patients With Primary Uveal Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-10-01"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-04-01"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "ReBio Pharma",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Uveal Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 30
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "RBP-01"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {}
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Uveal Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07340619",
+      "briefTitle": "Clinical Trial Evaluating the Biological Activity of a New Drug Identified as Prifetrastat (PF-07248144), Combined With Fulvestrant for the Treatment of Patients With Hormone Receptor Positive (HR+) and HER2 Negative (HER2-) Breast Cancer Extended to Other Organs."
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09-18"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-11-18"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "UNICANCER",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Pfizer"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Metastatic (Stage IV) Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 51
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "prifetrastat monotherapy for 15 days then combination with fulvestrant"
+       },
+       {
+        "type": "DRUG",
+        "name": "prifetrastat in combination with fulvestrant"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       },
+       {
+        "country": "France"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Neoplasm Metastasis"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Fulvestrant"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07720726",
+      "briefTitle": "Impact of Dysport on PMFF Donor Scar"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09-14"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2029-06-30"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Vanderbilt University Medical Center",
+       "class": "OTHER"
+      },
+      "collaborators": [
+       {
+        "name": "Galderma R&D"
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Skin Cancer Excision Site",
+       "Basal Cell Carcinoma",
+       "Squamous Cell Carcinoma",
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE4"
+      ],
+      "enrollmentInfo": {
+       "count": 50
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Abobotulinumtoxin-A"
+       },
+       {
+        "type": "OTHER",
+        "name": "Control- Saline injection"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Carcinoma, Basal Cell"
+       },
+       {
+        "term": "Carcinoma, Squamous Cell"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Botulinum Toxins, Type A"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07820033",
+      "briefTitle": "Psilocybin-assisted Existential, Attachment and RelationaL (PEARL) Therapy for Patients With Advanced Cancer: A Randomized Controlled Trial"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09-14"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12-30"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "University Health Network, Toronto",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Advanced Cancer",
+       "Stage IV Solid Tumor Cancer",
+       "Stage IV Sarcoma of Bone",
+       "Stage IV Lymphoma",
+       "Stage IV Melanoma",
+       "Endocrine Cancer"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 46
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Psilocybin (25mg)"
+       },
+       {
+        "type": "DRUG",
+        "name": "Psilocybin (1mg)"
+       },
+       {
+        "type": "OTHER",
+        "name": "PEARL Therapy"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "Canada"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Osteosarcoma"
+       },
+       {
+        "term": "Lymphoma"
+       },
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Endocrine Gland Neoplasms"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Psilocybin"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07476326",
+      "briefTitle": "Pharmacokinetics, Safety, and Immunogenicity Comparison of Bmab1700 and Opdivo® as Adjuvant Monotherapy in Participants With Melanoma"
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09-09"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-08-16"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Biocon Biologics UK PLC",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 120
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "Bmab1700"
+       },
+       {
+        "type": "DRUG",
+        "name": "Opdivo"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Brazil"
+       },
+       {
+        "country": "Chile"
+       },
+       {
+        "country": "Chile"
+       },
+       {
+        "country": "Chile"
+       },
+       {
+        "country": "Chile"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Georgia"
+       },
+       {
+        "country": "Moldova"
+       },
+       {
+        "country": "Romania"
+       },
+       {
+        "country": "Romania"
+       },
+       {
+        "country": "Romania"
+       },
+       {
+        "country": "Serbia"
+       },
+       {
+        "country": "Serbia"
+       },
+       {
+        "country": "Serbia"
+       },
+       {
+        "country": "Serbia"
+       },
+       {
+        "country": "Serbia"
+       },
+       {
+        "country": "South Africa"
+       },
+       {
+        "country": "South Africa"
+       },
+       {
+        "country": "South Africa"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Spain"
+       },
+       {
+        "country": "Turkey (Türkiye)"
+       },
+       {
+        "country": "Turkey (Türkiye)"
+       },
+       {
+        "country": "Turkey (Türkiye)"
+       },
+       {
+        "country": "Ukraine"
+       },
+       {
+        "country": "Ukraine"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       },
+       {
+        "term": "Neoplasms"
+       },
+       {
+        "term": "Diabetes Mellitus, Insulin-Dependent, 12"
+       }
+      ]
+     },
+     "interventionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Nivolumab"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07830225",
+      "briefTitle": "A Pilot Study of ctDNA-Guided Immune Checkpoint Inhibitor Duration in Patients With Advanced Melanoma."
+     },
+     "statusModule": {
+      "overallStatus": "RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09-03"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-06-30"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Rutgers, The State University of New Jersey",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma (Skin Cancer)"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "NA"
+      ],
+      "enrollmentInfo": {
+       "count": 35
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "OTHER",
+        "name": "A Pilot Study of ctDNA-guided immune checkpoint inhibitor duration in patients with advanced melanoma"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07841925",
+      "briefTitle": "A Study of BL-M08D in Patients With Locally Advanced or Metastatic Melanoma and Other Solid Tumors"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Sichuan Baili Pharmaceutical Co., Ltd.",
+       "class": "INDUSTRY"
+      },
+      "collaborators": [
+       {
+        "name": "Baili-Bio (Chengdu) Pharmaceutical Co., Ltd."
+       }
+      ]
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Melanoma",
+       "Solid Tumors"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1",
+       "PHASE2"
+      ],
+      "enrollmentInfo": {
+       "count": 30
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "BL-M08D1"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "China"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07857616",
+      "briefTitle": "SI-B036-ST-101 in Advanced/Metastatic Solid Tumors"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2028-10"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "SystImmune Inc.",
+       "class": "INDUSTRY"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Locally Advanced /Metastatic Solid Tumors",
+       "Locally Advanced / Metastatic Solid Tumors",
+       "Metastatic Solid Cancers",
+       "Non Small Cell Lung Cancer",
+       "Lung Cancer",
+       "Melanoma",
+       "Ovarian",
+       "NSCLC"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 424
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "SI-B036"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       },
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Carcinoma, Non-Small-Cell Lung"
+       },
+       {
+        "term": "Lung Neoplasms"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "protocolSection": {
+     "identificationModule": {
+      "nctId": "NCT07389525",
+      "briefTitle": "Immune Checkpoint Inhibitor (ICI)-Drug-Drug Interaction (DDI) Study"
+     },
+     "statusModule": {
+      "overallStatus": "NOT_YET_RECRUITING",
+      "startDateStruct": {
+       "date": "2026-09"
+      },
+      "primaryCompletionDateStruct": {
+       "date": "2027-12"
+      }
+     },
+     "sponsorCollaboratorsModule": {
+      "leadSponsor": {
+       "name": "Indiana University",
+       "class": "OTHER"
+      }
+     },
+     "conditionsModule": {
+      "conditions": [
+       "Gastrointestinal Neoplasms",
+       "Genitourinary Cancer",
+       "Thoracic Cancer",
+       "Sarcoma",
+       "Melanoma"
+      ]
+     },
+     "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+       "EARLY_PHASE1"
+      ],
+      "enrollmentInfo": {
+       "count": 80
+      }
+     },
+     "armsInterventionsModule": {
+      "interventions": [
+       {
+        "type": "DRUG",
+        "name": "ICI Therapy"
+       }
+      ]
+     },
+     "eligibilityModule": {
+      "sex": "ALL",
+      "stdAges": [
+       "ADULT",
+       "OLDER_ADULT"
+      ]
+     },
+     "contactsLocationsModule": {
+      "locations": [
+       {
+        "country": "United States"
+       }
+      ]
+     }
+    },
+    "derivedSection": {
+     "conditionBrowseModule": {
+      "meshes": [
+       {
+        "term": "Gastrointestinal Neoplasms"
+       },
+       {
+        "term": "Urogenital Neoplasms"
+       },
+       {
+        "term": "Sarcoma"
+       },
+       {
+        "term": "Melanoma"
+       }
+      ]
+     }
+    }
+   }
+  ],
+  "nextPageToken": "ZVNj7o2Elu8o3lpwRtv5prbumpOQJJxuYvmt3vYalD6SuP08FCfCEfnQ_tdI3Q"
+ }
+}
