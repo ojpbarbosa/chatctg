@@ -39,8 +39,10 @@ export class HttpCtgovClient implements CtgovClient {
     const requests: CtgovRequestLog[] = [];
     const studies: Study[] = [];
     let total = 0; let token: string | undefined; let truncated = false;
+    // A cap below the page size is met by the first page, so that page asks for no more than the cap; later pages keep the configured size.
+    const firstPageSize = Math.max(1, Math.min(this.pageSize, opts.maxStudies));
     for (let pageNo = 0; ; pageNo++) {
-      const url = buildStudiesUrl({ ...q, pageSize: this.pageSize, sort: "StartDate:desc", ...(pageNo === 0 ? { countTotal: true } : {}), ...(token ? { pageToken: token } : {}) }, this.baseUrl);
+      const url = buildStudiesUrl({ ...q, pageSize: pageNo === 0 ? firstPageSize : this.pageSize, sort: "StartDate:desc", ...(pageNo === 0 ? { countTotal: true } : {}), ...(token ? { pageToken: token } : {}) }, this.baseUrl);
       const got = await this.page(url, opts.signal);
       if (!got.ok) return { ok: false, reason: got.reason, ...(got.detail ? { detail: got.detail } : {}), requests, ms: this.now() - started };
       if (pageNo === 0) total = got.page.totalCount ?? got.page.studies.length;
@@ -104,15 +106,21 @@ export class HttpCtgovClient implements CtgovClient {
   }
 }
 
-/** A client that answers from pages handed to it, for engine and API tests. */
+/** A client that answers from pages handed to it, for engine and API tests. Like the real one, it stops when the signal is aborted. */
 export class FakeCtgovClient implements CtgovClient {
   readonly calls: FetchQuery[] = [];
+  /** The `maxStudies` of each call, in call order. */
+  readonly maxStudies: number[] = [];
   constructor(private readonly studies: Study[], private readonly total = studies.length) {}
   async fetchStudies(q: FetchQuery, opts: FetchOptions): Promise<CtgovResult> {
-    this.calls.push(q);
+    this.calls.push(q); this.maxStudies.push(opts.maxStudies);
+    const aborted = (): CtgovResult => ({ ok: false, reason: "ctgov_timeout", detail: "aborted by caller", requests: [], ms: 0 });
+    if (opts.signal?.aborted) return aborted();
     const take = this.studies.slice(0, opts.maxStudies);
     opts.onPage?.(take.length, this.total);
-    return { ok: true, studies: take, totalCount: this.total, fetched: take.length, truncated: take.length < this.total, requests: [{ url: buildStudiesUrl({ ...q, pageSize: 1000, countTotal: true, sort: "StartDate:desc" }), total_count: this.total, fetched: take.length }], ms: 1 };
+    if (opts.signal?.aborted) return aborted();
+    const url = buildStudiesUrl({ ...q, pageSize: Math.min(1000, opts.maxStudies), countTotal: true, sort: "StartDate:desc" });
+    return { ok: true, studies: take, totalCount: this.total, fetched: take.length, truncated: take.length < this.total, requests: [{ url, total_count: this.total, fetched: take.length }], ms: 1 };
   }
   async version() { return { apiVersion: "2.0.5", dataTimestamp: "2026-10-08T09:00:05" }; }
 }

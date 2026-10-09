@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LruCache } from "./cache";
-import { HttpCtgovClient } from "./client";
+import { FakeCtgovClient, HttpCtgovClient } from "./client";
 
 const study = (i: number) => ({ protocolSection: { identificationModule: { nctId: `NCT${String(i).padStart(8, "0")}` } } });
 const page = (ids: number[], total: number, next?: string) => JSON.stringify({ totalCount: total, studies: ids.map(study), ...(next ? { nextPageToken: next } : {}) });
@@ -60,10 +60,40 @@ describe("HttpCtgovClient.fetchStudies", () => {
     expect(await client.fetchStudies({}, { maxStudies: 10 })).toMatchObject({ ok: true });
     expect(calls).toBe(2);
   });
+  it("asks the first page for no more than the cap, and later pages for the configured size", async () => {
+    const urls: string[] = [];
+    const fifty = Array.from({ length: 50 }, (_, i) => i + 1);
+    const small = new HttpCtgovClient({ fetch: async (u) => { urls.push(String(u)); return json(page(fifty, 5000, "t2")); } });
+    expect(await small.fetchStudies({}, { maxStudies: 50 })).toMatchObject({ ok: true, fetched: 50, truncated: true, totalCount: 5000 });
+    expect(urls).toHaveLength(1);
+    expect(new URL(urls[0]!).searchParams.get("pageSize")).toBe("50");
+    const sizes: string[] = [];
+    const paged = new HttpCtgovClient({ pageSize: 2, fetch: async (u) => {
+      const params = new URL(String(u)).searchParams; sizes.push(params.get("pageSize")!);
+      return params.get("pageToken") ? json(page([3, 4], 4)) : json(page([1, 2], 4, "t2"));
+    } });
+    await paged.fetchStudies({}, { maxStudies: 3 });
+    expect(sizes).toEqual(["2", "2"]);
+  });
   it("reports progress per page", async () => {
     const seen: [number, number][] = [];
     const client = new HttpCtgovClient({ fetch: async (u) => (new URL(String(u)).searchParams.get("pageToken") ? json(page([2], 2)) : json(page([1], 2, "t"))) });
     await client.fetchStudies({}, { maxStudies: 10, onPage: (f, t) => { seen.push([f, t]); } });
     expect(seen).toEqual([[1, 2], [2, 2]]);
+  });
+});
+
+describe("FakeCtgovClient", () => {
+  it("answers from its studies and records the cap of each call", async () => {
+    const fake = new FakeCtgovClient([], 0);
+    expect(await fake.fetchStudies({ cond: '"a"' }, { maxStudies: 25 })).toMatchObject({ ok: true, fetched: 0 });
+    expect(fake.calls).toEqual([{ cond: '"a"' }]); expect(fake.maxStudies).toEqual([25]);
+  });
+  it("stops with ctgov_timeout once the signal is aborted, before or after a page", async () => {
+    const fake = new FakeCtgovClient([], 0);
+    const before = new AbortController(); before.abort();
+    expect(await fake.fetchStudies({}, { maxStudies: 10, signal: before.signal })).toMatchObject({ ok: false, reason: "ctgov_timeout" });
+    const during = new AbortController();
+    expect(await fake.fetchStudies({}, { maxStudies: 10, signal: during.signal, onPage: () => during.abort() })).toMatchObject({ ok: false, reason: "ctgov_timeout" });
   });
 });
