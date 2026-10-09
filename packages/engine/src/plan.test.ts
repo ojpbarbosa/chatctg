@@ -38,8 +38,10 @@ describe("plan: scope and intent", () => {
 
 describe("plan: dimensions", () => {
   it("time trends always run over start_year with the granularity", async () => {
-    const p = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "phase" }, granularity: { choice: "quarter" } }), entities: none, request: req(), models }));
+    const p = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "phase" }, granularity: { choice: "quarter" }, chart: { choice: "line" } }), entities: none, request: req(), models }));
     expect(p.dimension).toBe("start_year"); expect(p.secondary).toBe("phase"); expect(p.granularity).toBe("quarter"); expect(p.chart).toBe("line");
+    const b = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
+    expect(b.chart).toBe("bar");
   });
   it("a distribution over start_year becomes a time trend", async () => {
     const p = okPlan(plan({ answers: await answers({ dimension: { choice: "start_year" } }), entities: none, request: req(), models }));
@@ -90,7 +92,8 @@ describe("plan: arms and filters", () => {
   it("limits default by intent and follow the extracted number", async () => {
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" } }), entities: none, request: req(), models })).limit).toBe(10);
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" } }), entities: { ...none, limit: 5 }, request: req(), models })).limit).toBe(5);
-    expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" } }), entities: none, request: req(), models })).limit).toBeNull();
+    expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "map" } }), entities: none, request: req(), models })).limit).toBeNull();
+    expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" } }), entities: none, request: req(), models })).limit).toBe(15);
   });
 });
 

@@ -135,15 +135,15 @@ export function plan(input: PlanInput): PlanResult {
   const explicit = request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
   const allowed = allowedCharts(intent, dimension, secondary, explicit);
   let applied = chosen; let reason: string | null = null;
-  if (intent === "time_trend" && chosen === "bar" && !explicit) {
-    applied = "line"; // bar is Jev's neutral answer; an unrequested bar does not override the trend default
-  } else if (!allowed.includes(chosen)) {
+  if (!allowed.includes(chosen)) {
     applied = defaultChart(intent, dimension, secondary);
     reason = `${chosen} cannot render a ${intent.replace("_", " ")}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}; using ${applied}`;
   } else if (chosen === "scatter" && !explicit) {
     applied = defaultChart(intent, dimension, secondary);
     reason = "scatter plots one point per trial and is only used when asked for; using " + applied;
   }
+
+  if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;
 
   const p = (d: Dimension | null, ans: { probabilities: Record<string, number> }) => (d ? { value: d, p: ans.probabilities[d] ?? 1 } : null);
   const interpretation: Interpretation = {
