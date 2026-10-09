@@ -27,7 +27,7 @@ describe("openAiExtractor", () => {
     const extract = openAiExtractor({ OPENAI_API_KEY: "k" }, async (_u, init) => { body = JSON.parse(init!.body as string); return ok(JSON.stringify({ drugs: ["pembrolizumab"], conditions: [], sponsors: [], countries: [], start_year: 2015, end_year: null, limit: null })); });
     const r = await extract("How have pembrolizumab trials changed since 2015?", "2026-10-09");
     expect(r).toMatchObject({ ok: true, entities: { drugs: ["pembrolizumab"], start_year: 2015 } });
-    expect(body.model).toBe("gpt-5.4-nano"); expect(body.store).toBe(false);
+    expect(body.model).toBe("gpt-5.4-nano"); expect(body.store).toBe(false); expect(body.max_output_tokens).toBe(1200);
     expect((body.text as { format: { type: string; strict: boolean; name: string } }).format).toMatchObject({ type: "json_schema", strict: true, name: "entities" });
     expect(JSON.stringify(body.input)).toContain("2026-10-09");
   });

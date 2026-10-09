@@ -1,6 +1,9 @@
 import { EXTRACTOR_MODEL, responsesCall, type OpenAiEnv, type OpenAiFailure } from "./openai";
 import type { Entities } from "./plan";
 
+/** gpt-5 models spend reasoning tokens from the same budget as the answer, so the cap leaves room for both. */
+export const EXTRACTOR_MAX_OUTPUT_TOKENS = 1200;
+
 export type Extraction = { ok: true; entities: Entities; ms: number } | { ok: false; reason: OpenAiFailure; detail?: string; ms: number };
 export type Extractor = (query: string, today: string, signal?: AbortSignal) => Promise<Extraction>;
 
@@ -42,7 +45,7 @@ export function parseEntities(text: string): Entities | null {
 export function openAiExtractor(env: OpenAiEnv, http: typeof fetch = fetch): Extractor {
   const model = env.EXTRACTOR_MODEL ?? EXTRACTOR_MODEL;
   return async (query, today, signal) => {
-    const r = await responsesCall({ env, http, model, system: EXTRACTION_INSTRUCTIONS, user: JSON.stringify({ question: query, today }), schema: { name: "entities", schema: ENTITIES_SCHEMA }, maxOutputTokens: 400, timeoutMs: 8_000, ...(signal ? { signal } : {}) });
+    const r = await responsesCall({ env, http, model, system: EXTRACTION_INSTRUCTIONS, user: JSON.stringify({ question: query, today }), schema: { name: "entities", schema: ENTITIES_SCHEMA }, maxOutputTokens: EXTRACTOR_MAX_OUTPUT_TOKENS, timeoutMs: 8_000, ...(signal ? { signal } : {}) });
     if (!r.ok) return r;
     const entities = parseEntities(r.text);
     if (!entities) return { ok: false, reason: isJson(r.text) ? "openai_invalid_shape" : "openai_invalid_json", detail: r.text.slice(0, 200), ms: r.ms };

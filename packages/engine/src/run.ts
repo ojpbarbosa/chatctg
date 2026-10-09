@@ -6,8 +6,9 @@ import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";
 import { tableRows } from "./aggregate/rows";
 import { fakeExtractor, type Extractor } from "./extract";
-import { armFilters, plan, type Entities, type Plan } from "./plan";
-import { buildVisualization, METRIC_UNIT, planSummary, type Aggregate } from "./spec";
+import { DIMENSION_LABEL_PLURAL } from "./dimensions";
+import { armFilters, DEFAULT_LIMITS, plan, type Entities, type Plan } from "./plan";
+import { buildVisualization, METRIC_UNIT, notShown, planSummary, type Aggregate } from "./spec";
 import { fakeTitler, type Titler } from "./title";
 import { SAMPLE } from "./test-studies";
 
@@ -20,6 +21,7 @@ export type RunResult = { ok: true; status: 200; body: QueryResponse } | { ok: f
 export const OVERALL_TIMEOUT_MS = 40_000;
 const TITLE_CAP_MS = 4_000;
 const COUNT_FETCH = 50;
+const fmt = (n: number) => n.toLocaleString("en-US");
 
 const error = (status: 422 | 500 | 502 | 504, code: ErrorBody["error"]["code"], message: string, details?: unknown): RunResult => ({ ok: false, status, body: { error: { code, message, ...(details !== undefined ? { details } : {}) } } });
 const upstream = (which: "jev" | "openai" | "ctgov", reason: string, detail?: string): RunResult =>
@@ -68,7 +70,11 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   // 3. Fetch every arm, with the title written meanwhile.
   const titleP = cappedTitle(deps, planSummary(p), signal).then((t) => { if (t.title) emit({ event: "title", data: { title: t.title } }); return t; });
   const fetchStart = now();
-  const maxStudies = p.chart === "single_value" ? Math.min(COUNT_FETCH, request.max_studies) : request.max_studies;
+  // A count reads a page for its citations and a table reads only its rows (the registry returns the most recently started first);
+  // every other chart aggregates up to max_studies.
+  const maxStudies = p.chart === "single_value" ? Math.min(COUNT_FETCH, request.max_studies)
+    : p.chart === "table" ? Math.min(p.limit ?? DEFAULT_LIMITS.table, request.max_studies)
+    : request.max_studies;
   const fetched = await Promise.all(p.arms.map((arm) => deps.ctgov.fetchStudies(arm.query, { maxStudies, signal, onPage: (f, t) => emit({ event: "progress", data: { arm: arm.label, fetched: f, total: t } }) })));
   const fetch_ms = now() - fetchStart;
   if (signal.aborted) return error(504, "timeout", "The request timed out while fetching from ClinicalTrials.gov");
@@ -86,24 +92,33 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const title = await titleP;
   const total_count = results.reduce((n, r) => n + r.totalCount, 0);
   const fetched_count = results.reduce((n, r) => n + r.fetched, 0);
-  // A count is the registry's exact total; the small fetch only gathers citations.
-  const isCount = p.chart === "single_value";
-  const truncated = !isCount && results.some((r) => r.truncated);
-  const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_datum: request.citations_per_datum };
+  // A count is the registry's exact total, and a table is exactly the most recently started rows: neither is a sample.
+  const isCount = p.chart === "single_value"; const isTable = p.chart === "table";
+  const truncated = !isCount && !isTable && results.some((r) => r.truncated);
+  const arm_totals = results.map((r, i) => ({ label: p.arms[i]!.label, total: r.totalCount }));
+  const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_datum: request.citations_per_datum, arm_totals };
   const visualization = buildVisualization(p, agg, ctx, title.title);
   const notes = [...p.notes];
   const warnings: string[] = [];
   let studies_without_value = 0, omitted_categories = 0;
   if (agg.kind === "buckets") {
     studies_without_value = agg.result.withoutValue; omitted_categories = agg.result.omitted;
-    if (agg.result.multiValued && p.dimension) notes.push(`A trial with several ${p.dimension === "phase" ? "phases" : p.dimension.replace("_", " ") + " values"} is counted once per value (once per phase for a Phase 1/2 trial).`);
+    if (agg.result.multiValued && p.dimension) notes.push(p.dimension === "phase" ? "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial)." : `A trial with several ${DIMENSION_LABEL_PLURAL[p.dimension]} is counted once per value.`);
     if (p.dimension === "drug" || p.dimension === "condition") notes.push("Drugs and conditions are identified by their MeSH terms when the registry mapped any, else by the names as registered.");
     if (p.chart === "map" && visualization.type === "map") { const unmapped = visualization.data.filter((r) => r.iso3 === null).length; if (unmapped) warnings.push(`${unmapped} countries could not be mapped to an ISO code and are listed without a location.`); }
   }
   if (agg.kind === "points") { studies_without_value = agg.withoutValue; if (agg.dropped) warnings.push(`${agg.dropped} trials beyond the 500 most recent are not plotted.`); }
-  if (agg.kind === "graph") notes.push("Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur.");
-  if (isCount) notes.push(`The count is the registry's total; the ${fetched_count.toLocaleString("en-US")} most recently started trials were read for citations.`);
-  if (truncated) warnings.push(`Only the ${fetched_count.toLocaleString("en-US")} most recently started of ${total_count.toLocaleString("en-US")} trials were read; counts are over that sample, the total is exact.`);
+  const missing = notShown(p, agg);
+  if (missing) notes.push(missing.note);
+  if (agg.kind === "graph") {
+    notes.push("Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur.");
+    const kept = agg.edges.length, all = kept + agg.prunedEdges;
+    if (agg.prunedEdges > 0) warnings.push(kept === 1 ? `Only the strongest link of ${fmt(all)} is shown.` : `Only the ${fmt(kept)} strongest links of ${fmt(all)} are shown.`);
+  }
+  if (p.arms.length > 1) notes.push("A trial can match more than one arm, so coverage.total_count, the sum of the arms' totals, can count it more than once.");
+  if (isCount) notes.push(`The count is the registry's total; the ${fmt(fetched_count)} most recently started trials were read for citations.`);
+  if (isTable && agg.kind === "rows" && agg.studies.length < total_count) notes.push(`The table lists the ${fmt(agg.studies.length)} most recently started of ${fmt(total_count)} trials.`);
+  if (truncated) warnings.push(`Only the ${fmt(fetched_count)} most recently started of ${fmt(total_count)} trials were read; counts are over that sample, the total is exact.`);
   if (p.interpretation.chart.reason) notes.push(p.interpretation.chart.reason);
   if (p.interpretation.intent.alternatives.length) notes.push("The intent was uncertain; alternatives are listed in meta.interpretation.intent.alternatives.");
 

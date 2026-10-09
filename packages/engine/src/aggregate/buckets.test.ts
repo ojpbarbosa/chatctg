@@ -12,6 +12,7 @@ describe("bucketize", () => {
     expect(byKey(r, "PHASE2")?.value).toBe(4);   // NCT02, NCT03, NCT06, NCT10
     expect(byKey(r, "PHASE3")?.value).toBe(4);
     expect(r.multiValued).toBe(true); expect(r.withoutValue).toBe(1);   // NCT04 has no phase
+    expect(r.missing).toEqual({ enrollment: 0, dimension: 1, secondary: 0 });
   });
   it("gap-fills years and trims the ends", () => {
     const r = bucketize(SAMPLE.filter((s) => s.start_year !== 2020 && s.start_year !== 2021), { dimension: "start_year", metric: "trial_count", granularity: "year" });
@@ -32,10 +33,12 @@ describe("bucketize", () => {
     expect(r.seriesValues).toEqual(["INDUSTRY", "NIH", "OTHER"]);
     expect(byKey(r, "PHASE3", "NIH")?.value).toBe(0);
     expect(byKey(r, "PHASE2", "NIH")?.value).toBe(1);
+    const t = bucketize(SAMPLE, { dimension: "sponsor_class", secondary: "phase", metric: "trial_count" });
+    expect(t.missing).toEqual({ enrollment: 0, dimension: 0, secondary: 1 });   // NCT04 has a class but no phase
   });
   it("sums and medians enrollment, skipping studies without it", () => {
     const sum = bucketize(SAMPLE, { dimension: "sponsor_class", metric: "enrollment_total" });
-    expect(byKey(sum, "NIH")).toBeUndefined(); expect(sum.withoutValue).toBe(1);
+    expect(byKey(sum, "NIH")).toBeUndefined(); expect(sum.withoutValue).toBe(1); expect(sum.missing).toEqual({ enrollment: 1, dimension: 0, secondary: 0 });
     expect(byKey(sum, "OTHER")?.value).toBe(8);
     expect(metricValue(SAMPLE.filter((s) => s.enrollment !== null), "enrollment_median")).toBe(80);
   });

@@ -1,4 +1,4 @@
-import type { Citation, DataRow, EdgeKind, Metric, Visualization } from "@cheiron/contracts";
+import type { Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@cheiron/contracts";
 import { iso3, type Study } from "@cheiron/ctgov";
 import type { Bucketized } from "./aggregate/buckets";
 import { KIND_FIELD, type GraphEdge, type GraphNode } from "./aggregate/graph";
@@ -13,13 +13,25 @@ export type Aggregate =
   | { kind: "graph"; nodes: GraphNode[]; edges: GraphEdge[]; kinds: { kind: string; label: string }[]; prunedEdges: number }
   | { kind: "rows"; studies: Study[] }
   | { kind: "value"; total: number; studies: Study[] };
-export interface SpecContext { total_count: number; fetched: number; truncated: boolean; data_timestamp: string; citations_per_datum: number }
+export interface SpecContext {
+  total_count: number; fetched: number; truncated: boolean; data_timestamp: string; citations_per_datum: number;
+  /** The registry's total per arm; a comparison states each, since the arms can share trials. */
+  arm_totals: { label: string; total: number }[];
+}
 
 export const METRIC_LABEL: Record<Metric, string> = { trial_count: "Trials", enrollment_total: "Participants enrolled", enrollment_median: "Median enrollment" };
 export const METRIC_UNIT: Record<Metric, "trials" | "participants"> = { trial_count: "trials", enrollment_total: "participants", enrollment_median: "participants" };
 export const EDGE_LABEL: Record<EdgeKind, string> = { sponsor_drug: "Sponsor–drug", drug_drug: "Drug–drug", condition_drug: "Condition–drug", sponsor_condition: "Sponsor–condition", sponsor_collaborator: "Sponsor–collaborator" };
 const METRIC_PHRASE: Record<Metric, string> = { trial_count: "the number of trials", enrollment_total: "the total enrollment", enrollment_median: "the median enrollment" };
 const fmt = (n: number) => n.toLocaleString("en-US");
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const trials = (n: number) => `${fmt(n)} ${n === 1 ? "trial" : "trials"}`;
+/** What a study lacks when it has no value for a dimension: "1 trial without a phase". */
+const WITHOUT: Record<Dimension, string> = {
+  phase: "a phase", status: "a status", sponsor_class: "a sponsor class", sponsor: "a lead sponsor", intervention_type: "an intervention",
+  drug: "a drug", condition: "a condition", country: "a location country", start_year: "a start date", enrollment: "an enrollment count",
+  study_type: "a study type", sex: "a sex", age_group: "an age group", none: "a value",
+};
 const singular = (plural: string) => plural.replace(/ies$/, "y").replace(/uses$/, "us").replace(/s$/, "");
 /** The one place a row is assembled: cells plus the two fields every row carries (the contract's index signature cannot express the mix). */
 const row = (cells: Record<string, string | number | null>, study_count: number, citations: Citation[]): DataRow => ({ ...cells, study_count, citations }) as DataRow;
@@ -65,13 +77,34 @@ export function planSummary(p: Plan): string {
   return `A ${chart} chart of ${parts.join(", ")}.`;
 }
 
+/** The trials left out for lack of a value, as a note ("1 trial without a phase is not shown.") and a subtitle part; null when none were. */
+export function notShown(p: Plan, agg: Aggregate): { note: string; subtitle: string } | null {
+  const parts: { n: number; what: string }[] = [];
+  if (agg.kind === "buckets") {
+    const m = agg.result.missing;
+    if (m.enrollment) parts.push({ n: m.enrollment, what: "an enrollment count" });
+    if (m.dimension) parts.push({ n: m.dimension, what: WITHOUT[p.dimension ?? "phase"] });
+    if (m.secondary && p.secondary) parts.push({ n: m.secondary, what: WITHOUT[p.secondary] });
+  } else if (agg.kind === "points" && agg.withoutValue) {
+    parts.push({ n: agg.withoutValue, what: "a start date or an enrollment count" });
+  }
+  if (!parts.length) return null;
+  const phrase = parts.map((x) => `${trials(x.n)} without ${x.what}`).join(" and ");
+  const one = parts.length === 1 && parts[0]!.n === 1;
+  return { note: `${phrase} ${one ? "is" : "are"} not shown.`, subtitle: `${phrase} not shown` };
+}
+
 export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
-  const parts = [`${fmt(ctx.total_count)} trials on ClinicalTrials.gov`];
+  const perArm = ctx.arm_totals.length > 1 ? ctx.arm_totals.map((a) => `${cap(a.label)} ${fmt(a.total)}`).join(" · ") : null;
+  const parts = [`${perArm ?? fmt(ctx.total_count)} trials on ClinicalTrials.gov`];
   if (ctx.truncated) parts.push(`based on the ${fmt(ctx.fetched)} most recently started`);
   if (p.recruiting_only) parts.push("recruiting only");
   if (agg.kind === "buckets" && agg.result.multiValued && p.dimension) parts.push(`counted once per ${singular(DIMENSION_LABEL_PLURAL[p.dimension])}`);
   if (agg.kind === "buckets" && agg.result.omitted > 0 && p.dimension) parts.push(`${fmt(agg.result.omitted)} more ${DIMENSION_LABEL_PLURAL[p.dimension]} not shown`);
+  const missing = notShown(p, agg);
+  if (missing) parts.push(missing.subtitle);
   if (agg.kind === "points" && agg.dropped > 0) parts.push(`${fmt(agg.points.length)} most recent trials shown`);
+  if (agg.kind === "rows" && agg.studies.length < ctx.total_count) parts.push(`${fmt(agg.studies.length)} most recently started shown`);
   if (agg.kind === "graph" && agg.prunedEdges > 0) parts.push(`${fmt(agg.edges.length)} strongest links shown`);
   parts.push(`data as of ${ctx.data_timestamp.slice(0, 10)}`);
   return parts.join(" · ");
@@ -87,6 +120,13 @@ function comparisonAxisLabel(p: Plan): string {
   return "Arm";
 }
 const seriesValueLabel = (p: Plan, v: string) => (p.secondary ? bucketLabel(p.secondary, v) : v);
+
+/** Category keys by their value summed over series, highest first; ties keep the given order. */
+function byValue(r: Bucketized): string[] {
+  const total = new Map<string, number>();
+  for (const b of r.buckets) total.set(b.key, (total.get(b.key) ?? 0) + b.value);
+  return [...r.order].sort((a, b) => (total.get(b) ?? 0) - (total.get(a) ?? 0));
+}
 
 export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, title: string | null): Visualization {
   const head = { title: title?.trim() || templateTitle(p), subtitle: subtitle(p, ctx, agg) };
@@ -110,9 +150,14 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
     const xField = dim === "start_year" ? "period" : dim;
     const ordinal = dim === "start_year" || fixedOrder(dim) !== null;
     const ranked = p.intent === "ranking" || (!ordinal && p.intent !== "comparison");
-    const x = { field: xField, type: ordinal ? ("ordinal" as const) : ("nominal" as const), label: DIMENSION_LABEL[dim], order: r.order.map((key) => bucketLabel(dim, key)) };
+    // An open dimension arrives ranked by value; a ranking over a closed or temporal one arrives in its fixed order, so it is re-sorted
+    // here (stable, so ties keep that order) to match `sort: "value_desc"`.
+    const order = ranked && ordinal ? byValue(r) : r.order;
+    const position = new Map(order.map((key, i) => [key, i]));
+    const buckets = [...r.buckets].sort((a, b) => position.get(a.key)! - position.get(b.key)!);
+    const x = { field: xField, type: ordinal ? ("ordinal" as const) : ("nominal" as const), label: DIMENSION_LABEL[dim], order: order.map((key) => bucketLabel(dim, key)) };
     const encoding = { x, y: yAxis(m), orientation: ranked ? ("horizontal" as const) : ("vertical" as const), sort: ranked ? ("value_desc" as const) : ("x_order" as const) };
-    const data = r.buckets.map((b) => rowOf(b, { [xField]: b.label, [`${xField}_key`]: b.key, ...(dim === "country" ? { iso3: iso3(b.key) } : {}) }));
+    const data = buckets.map((b) => rowOf(b, { [xField]: b.label, [`${xField}_key`]: b.key, ...(dim === "country" ? { iso3: iso3(b.key) } : {}) }));
     if (p.chart === "grouped_bar" && series) return { type: "grouped_bar", ...head, encoding: { ...encoding, series }, data };
     if (p.chart === "stacked_bar" && series) return { type: "stacked_bar", ...head, encoding: { ...encoding, series }, data };
     return { type: "bar", ...head, encoding, data };

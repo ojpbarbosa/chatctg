@@ -3,7 +3,9 @@ import type { Study } from "@cheiron/ctgov";
 import { bucketLabel, fixedOrder, isMultiValued, valuesOf } from "../dimensions";
 
 export interface Bucket { key: string; label: string; series: string | null; value: number; studies: Study[] }
-export interface Bucketized { buckets: Bucket[]; order: string[]; seriesValues: string[]; omitted: number; withoutValue: number; multiValued: boolean }
+/** Studies left out of every bucket, by the first value they lack: an enrollment (when the metric needs one), the dimension, the secondary dimension. */
+export interface Missing { enrollment: number; dimension: number; secondary: number }
+export interface Bucketized { buckets: Bucket[]; order: string[]; seriesValues: string[]; omitted: number; withoutValue: number; missing: Missing; multiValued: boolean }
 export interface BucketizeOptions { dimension: Dimension; secondary?: Dimension | null; metric: Metric; granularity?: Granularity | null; limit?: number | null }
 
 const MAX_SERIES = 8;
@@ -54,14 +56,14 @@ const needsEnrollment = (m: Metric) => m !== "trial_count";
 
 export function bucketize(studies: Study[], o: BucketizeOptions): Bucketized {
   const groups = new Map<string, Map<string | null, Study[]>>();
-  let withoutValue = 0; let anyMulti = false;
+  const missing: Missing = { enrollment: 0, dimension: 0, secondary: 0 }; let anyMulti = false;
   for (const s of studies) {
-    if (needsEnrollment(o.metric) && s.enrollment === null) { withoutValue++; continue; }
+    if (needsEnrollment(o.metric) && s.enrollment === null) { missing.enrollment++; continue; }
     const keys = valuesOf(s, o.dimension, o.granularity ?? "year");
-    if (!keys.length) { withoutValue++; continue; }
+    if (!keys.length) { missing.dimension++; continue; }
     if (keys.length > 1) anyMulti = true;
     const seriesKeys: (string | null)[] = o.secondary ? valuesOf(s, o.secondary) : [null];
-    if (o.secondary && !seriesKeys.length) { withoutValue++; continue; }
+    if (o.secondary && !seriesKeys.length) { missing.secondary++; continue; }
     for (const k of keys) {
       const row = groups.get(k) ?? new Map<string | null, Study[]>();
       for (const sk of seriesKeys) row.set(sk, [...(row.get(sk) ?? []), s]);
@@ -85,7 +87,7 @@ export function bucketize(studies: Study[], o: BucketizeOptions): Bucketized {
     if (!o.secondary) { const ss = row?.get(null) ?? []; buckets.push({ key: k, label, series: null, value: metricValue(ss, o.metric), studies: ss }); continue; }
     for (const sv of seriesValues) { const ss = row?.get(sv) ?? []; buckets.push({ key: k, label, series: sv, value: metricValue(ss, o.metric), studies: ss }); }
   }
-  return { buckets, order, seriesValues, omitted: omitted + seriesOmitted, withoutValue, multiValued: isMultiValued(o.dimension) && anyMulti };
+  return { buckets, order, seriesValues, omitted: omitted + seriesOmitted, withoutValue: missing.enrollment + missing.dimension + missing.secondary, missing, multiValued: isMultiValued(o.dimension) && anyMulti };
 }
 
 /** Comparison arms: each arm's buckets become one series, keys unioned and reordered. */
@@ -100,5 +102,7 @@ export function mergeArms(parts: { label: string; result: Bucketized }[], o: Buc
   const seriesValues = parts.map((p) => p.label);
   const buckets: Bucket[] = [];
   for (const k of order) for (const sv of seriesValues) buckets.push(cell.get(`${k}\u0000${sv}`) ?? { key: k, label: bucketLabel(o.dimension, k), series: sv, value: 0, studies: [] });
-  return { buckets, order, seriesValues, omitted, withoutValue: parts.reduce((n, p) => n + p.result.withoutValue, 0), multiValued: parts.some((p) => p.result.multiValued) };
+  const sum = (k: keyof Missing) => parts.reduce((n, p) => n + p.result.missing[k], 0);
+  const missing: Missing = { enrollment: sum("enrollment"), dimension: sum("dimension"), secondary: sum("secondary") };
+  return { buckets, order, seriesValues, omitted, withoutValue: missing.enrollment + missing.dimension + missing.secondary, missing, multiValued: parts.some((p) => p.result.multiValued) };
 }

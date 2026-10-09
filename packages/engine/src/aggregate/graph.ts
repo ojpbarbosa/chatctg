@@ -16,7 +16,6 @@ export const KIND_FIELD: Record<string, string> = {
   condition: "derivedSection.conditionBrowseModule.meshes[].term",
   collaborator: "protocolSection.sponsorCollaboratorsModule.collaborators[].name",
 };
-const PRUNE_ABOVE = 200;
 
 function valuesFor(kind: string, s: Study): string[] {
   switch (kind) {
@@ -56,16 +55,15 @@ export function buildGraph(studies: Study[], edgeKind: EdgeKind, limit: number):
       edgeMap.set(key, e);
     }
   }
-  let edges = [...edgeMap.values()];
-  const before = edges.length;
-  if (edges.length > PRUNE_ABOVE) edges = edges.filter((e) => e.weight > 1);
-  edges.sort((x, y) => y.weight - x.weight || x.source.localeCompare(y.source) || x.target.localeCompare(y.target));
-  edges = edges.slice(0, limit);
+  // Keep the `limit` heaviest edges. Sorting by weight puts the weight-1 edges last, so they are the first dropped, and a graph made
+  // only of weight-1 edges still shows `limit` of them instead of none.
+  const all = [...edgeMap.values()].sort((x, y) => y.weight - x.weight || x.source.localeCompare(y.source) || x.target.localeCompare(y.target));
+  const edges = all.slice(0, limit);
   const used = new Set(edges.flatMap((e) => [e.source, e.target]));
   const nodes: GraphNode[] = [...used].sort().map((id) => {
     const n = nodeStudies.get(id)!.size; const l = labels.get(id)!;
     return { id, label: l.label, kind: l.kind, size: n, study_count: n };
   });
   const kinds = kindA === kindB ? [{ kind: kindA, label: KIND_LABEL[kindA]! }] : [{ kind: kindA, label: KIND_LABEL[kindA]! }, { kind: kindB, label: KIND_LABEL[kindB]! }];
-  return { nodes, edges, kinds, prunedEdges: before - edges.length };
+  return { nodes, edges, kinds, prunedEdges: all.length - edges.length };
 }

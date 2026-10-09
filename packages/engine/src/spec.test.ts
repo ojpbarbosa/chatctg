@@ -3,11 +3,11 @@ import { Visualization } from "@cheiron/contracts";
 import { bucketize, mergeArms } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";
-import { buildVisualization, planSummary, subtitle, templateTitle, type Aggregate } from "./spec";
+import { buildVisualization, notShown, planSummary, subtitle, templateTitle, type Aggregate } from "./spec";
 import type { Plan } from "./plan";
 import { SAMPLE } from "./test-studies";
 
-const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_datum: 2 };
+const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_datum: 2, arm_totals: [{ label: "Pembrolizumab", total: 12 }] };
 const base = (over: Partial<Plan>): Plan => ({
   intent: "distribution", chart: "bar", dimension: "phase", secondary: null, metric: "trial_count", granularity: null, edge_kind: null,
   arms: [{ label: "Pembrolizumab", query: { intr: '"pembrolizumab"' } }], limit: null, recruiting_only: false, notes: [],
@@ -34,8 +34,24 @@ describe("titles", () => {
   });
   it("subtitle states counts, truncation, counting rule and the data date", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) };
-    expect(subtitle(base({}), ctx, agg)).toBe("12 trials on ClinicalTrials.gov · counted once per phase · data as of 2026-10-08");
-    expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov · based on the 3,000 most recently started · recruiting only · counted once per phase · data as of 2026-10-08");
+    expect(subtitle(base({}), ctx, agg)).toBe("12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
+    expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov · based on the 3,000 most recently started · recruiting only · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
+  });
+  it("a comparison states each arm's total, since arms can share trials", () => {
+    const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE.filter((s) => s.phases.length), { dimension: "phase", metric: "trial_count" }) };
+    const p = base({ intent: "comparison", chart: "grouped_bar", arms: [{ label: "pembrolizumab", query: {} }, { label: "nivolumab", query: {} }] });
+    expect(subtitle(p, { ...ctx, total_count: 4707, arm_totals: [{ label: "pembrolizumab", total: 2973 }, { label: "nivolumab", total: 1734 }] }, agg))
+      .toBe("Pembrolizumab 2,973 · Nivolumab 1,734 trials on ClinicalTrials.gov · counted once per phase · data as of 2026-10-08");
+  });
+  it("says which trials are left out for lack of a value", () => {
+    const phase = bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" });
+    expect(notShown(base({}), { kind: "buckets", result: phase })).toEqual({ note: "1 trial without a phase is not shown.", subtitle: "1 trial without a phase not shown" });
+    const median = bucketize(SAMPLE, { dimension: "phase", metric: "enrollment_median" });
+    expect(notShown(base({ metric: "enrollment_median" }), { kind: "buckets", result: median })?.note).toBe("1 trial without an enrollment count and 1 trial without a phase are not shown.");
+    const years = bucketize(SAMPLE, { dimension: "start_year", secondary: "phase", metric: "trial_count", granularity: "year" });
+    expect(notShown(base({ intent: "time_trend", dimension: "start_year", secondary: "phase" }), { kind: "buckets", result: years })?.note).toBe("1 trial without a start date is not shown.");
+    expect(notShown(base({ chart: "scatter" }), { kind: "points", ...scatterPoints(SAMPLE, null) })?.note).toBe("2 trials without a start date or an enrollment count are not shown.");
+    expect(notShown(base({}), { kind: "buckets", result: bucketize(SAMPLE.filter((s) => s.phases.length), { dimension: "phase", metric: "trial_count" }) })).toBeNull();
   });
 });
 
@@ -53,6 +69,13 @@ describe("buildVisualization", () => {
     const v = valid(buildVisualization(base({ intent: "ranking", dimension: "sponsor", limit: 2 }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor", metric: "trial_count", limit: 2 }) }, ctx, null));
     if (v.type !== "bar") throw new Error(v.type);
     expect(v.encoding.orientation).toBe("horizontal"); expect(v.encoding.sort).toBe("value_desc"); expect(v.data.map((r) => r.sponsor)).toEqual(["Acme", "Merck"]);
+  });
+  it("a ranking over a closed dimension is sorted by value, ties in the dimension's order", () => {
+    const v = valid(buildVisualization(base({ intent: "ranking", dimension: "phase" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) }, ctx, null));
+    if (v.type !== "bar") throw new Error(v.type);
+    expect(v.encoding.sort).toBe("value_desc");
+    expect(v.data.map((r) => [r.phase, r.trial_count])).toEqual([["Phase 2", 4], ["Phase 3", 4], ["Phase 1", 2], ["Early Phase 1", 1], ["Not applicable", 1]]);
+    expect(v.encoding.x.order).toEqual(["Phase 2", "Phase 3", "Phase 1", "Early Phase 1", "Not applicable"]);
   });
   it("line over periods with a secondary series", () => {
     const r = bucketize(SAMPLE, { dimension: "start_year", secondary: "phase", metric: "trial_count", granularity: "year" });
@@ -105,6 +128,7 @@ describe("buildVisualization", () => {
     if (t.type !== "table") throw new Error(t.type);
     expect(t.encoding.columns.map((c) => c.field)).toEqual(["nct_id", "title", "status", "phases", "start_date", "sponsor", "conditions", "enrollment"]);
     expect(t.data[0]).toMatchObject({ nct_id: "NCT00000001", phases: "Phase 3", study_count: 1 });
+    expect(t.subtitle).toBe("12 trials on ClinicalTrials.gov · 3 most recently started shown · data as of 2026-10-08");
     const s = valid(buildVisualization(base({ intent: "count", chart: "single_value", dimension: null }), { kind: "value", total: 2973, studies: SAMPLE }, ctx, null));
     if (s.type !== "single_value") throw new Error(s.type);
     expect(s.data[0]).toMatchObject({ value: 2973, label: "trials", study_count: 2973 }); expect(s.data[0]!.citations).toHaveLength(2);

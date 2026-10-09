@@ -16,6 +16,8 @@ describe("runQuery", () => {
     expect(body.meta.arms).toEqual([{ label: "Pembrolizumab", filters: { "query.intr": '"pembrolizumab"' } }]);
     expect(body.meta.coverage).toMatchObject({ total_count: 12, fetched_count: 12, truncated: false, studies_without_value: 1 });
     expect(body.meta.notes.join(" ")).toMatch(/once per phase/);
+    expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
+    expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
     expect(body.meta.source.requests[0]?.url).toContain("query.intr");
     expect(body.meta.timing.total_ms).toBeGreaterThanOrEqual(0);
     expect(events.map((e) => e.event)).toEqual(["interpretation", "progress", "title"]);
@@ -46,12 +48,20 @@ describe("runQuery", () => {
     const phase3 = body.visualization.data.filter((r) => r.phase_key === "PHASE3");
     expect(phase3.map((r) => [r.series, r.trial_count])).toEqual([["Industry", 4], ["NIH", 0], ["Other (academic, hospital)", 0]]);
   });
-  it("comparison: one fetch per arm, grouped bar with two series", async () => {
+  it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));
     expect(deps.ctgov.calls).toEqual([{ intr: '"pembrolizumab"' }, { intr: '"nivolumab"' }]);
     if (body.visualization?.type !== "grouped_bar") throw new Error(body.visualization?.type);
     expect(body.visualization.encoding.series.values).toEqual(["pembrolizumab", "nivolumab"]);
+    expect(body.visualization.subtitle).toMatch(/^Pembrolizumab 12 · Nivolumab 12 trials on ClinicalTrials\.gov · /);
+    expect(body.meta.coverage.total_count).toBe(24);
+    expect(body.meta.notes.join(" ")).toMatch(/can match more than one arm/);
+  });
+  it("states the multi-valued rule per dimension, with the Phase 1/2 example only for phases", async () => {
+    const body = okBody(await runQuery(req("Trials by country"), fakeDeps({ dimension: { choice: "country" } }, {})));
+    expect(body.meta.notes).toContain("A trial with several countries is counted once per value.");
+    expect(body.meta.notes.join(" ")).not.toMatch(/Phase 1\/2/);
   });
   it("network and count", async () => {
     const n = okBody(await runQuery(req("network of sponsors and drugs"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, {})));
@@ -60,6 +70,26 @@ describe("runQuery", () => {
     const c = okBody(await runQuery(req("How many trials?"), deps));
     if (c.visualization?.type !== "single_value") throw new Error(c.visualization?.type);
     expect(c.visualization.data[0]?.value).toBe(2973);
+  });
+  it("a network warns when only the strongest links are kept", async () => {
+    const body = okBody(await runQuery(req("network of sponsors and drugs"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, { limit: 2 })));
+    if (body.visualization?.type !== "network_graph") throw new Error(body.visualization?.type);
+    expect(body.visualization.data.edges).toHaveLength(2);
+    expect(body.meta.warnings.join(" ")).toMatch(/^Only the 2 strongest links of \d+ are shown\.$/);
+  });
+  it("a table fetches only its rows, and is not a sample", async () => {
+    const deps = fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "table" } }, {}, SAMPLE, 3000);
+    const body = okBody(await runQuery(req("list the trials"), deps));
+    expect(deps.ctgov.maxStudies).toEqual([25]);
+    expect(body.meta.coverage).toMatchObject({ total_count: 3000, fetched_count: 12, truncated: false });
+    expect(body.meta.warnings).toEqual([]);
+    expect(body.meta.notes).toContain("The table lists the 12 most recently started of 3,000 trials.");
+    const five = fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "table" } }, { limit: 5 });
+    await runQuery(req("list the five latest trials"), five);
+    expect(five.ctgov.maxStudies).toEqual([5]);
+    const count = fakeDeps({ intent: { choice: "count" }, chart: { choice: "single_value" } }, {});
+    await runQuery(req("how many trials"), count);
+    expect(count.ctgov.maxStudies).toEqual([50]);
   });
   it("lookup, scatter when asked, map", async () => {
     expect(okBody(await runQuery(req("list the trials"), fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "table" } }, {}))).visualization?.type).toBe("table");
@@ -104,6 +134,11 @@ describe("runQuery", () => {
   it("an aborted signal → 504", async () => {
     const ac = new AbortController(); ac.abort();
     expect(await runQuery(req("q"), fakeDeps({}, {}), undefined, ac.signal)).toMatchObject({ status: 504 });
+  });
+  it("a signal aborted during the fetch → 504, not a 502 from the registry", async () => {
+    const ac = new AbortController();
+    const r = await runQuery(req("q"), fakeDeps({}, {}), (e) => { if (e.event === "progress") ac.abort(); }, ac.signal);
+    expect(r).toMatchObject({ ok: false, status: 504, body: { error: { code: "timeout", message: expect.stringMatching(/fetching/) } } });
   });
   it("a count is exact, not a sample", async () => {
     const body = okBody(await runQuery(req("How many trials?"), fakeDeps({ intent: { choice: "count" }, chart: { choice: "single_value" } }, {}, SAMPLE, 2973)));
