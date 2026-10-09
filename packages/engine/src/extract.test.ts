@@ -10,6 +10,10 @@ describe("parseEntities", () => {
     expect(parseEntities(JSON.stringify({ drugs: [" Pembrolizumab ", ""], conditions: [], sponsors: [], countries: ["Germany"], start_year: 2015, end_year: null, limit: 10 })))
       .toEqual({ drugs: ["Pembrolizumab"], conditions: [], sponsors: [], countries: ["Germany"], start_year: 2015, end_year: null, limit: 10 });
   });
+  it("drops a trailing trial or study word from every name, then dedupes case-insensitively", () => {
+    expect(parseEntities(JSON.stringify({ drugs: ["Pembrolizumab Trials"], conditions: ["Melanoma trials", "melanoma", "Lung cancer STUDIES", "asthma study "], sponsors: ["Merck trial"], countries: ["Germany"], start_year: null, end_year: null, limit: null })))
+      .toEqual({ drugs: ["Pembrolizumab"], conditions: ["Melanoma", "Lung cancer", "asthma"], sponsors: ["Merck"], countries: ["Germany"], start_year: null, end_year: null, limit: null });
+  });
   it("rejects bad shapes and out-of-range numbers", () => {
     expect(parseEntities("not json")).toBeNull();
     expect(parseEntities(JSON.stringify({ drugs: "x" }))).toBeNull();

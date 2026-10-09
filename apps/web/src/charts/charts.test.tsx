@@ -10,7 +10,7 @@ import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { CATEGORICAL, colorFor, sequential } from "./palette";
 import { NetworkView } from "./Network";
-import { ScatterView } from "./Scatter";
+import { compact, ScatterView } from "./Scatter";
 import { SingleValueView } from "./SingleValue";
 import { TableView } from "./Table";
 import { WorldMapView } from "./WorldMap";
@@ -137,6 +137,14 @@ describe("chart components render to SVG", () => {
     expect(count(html, /recharts-scatter-symbol/g)).toBe(5);
     expect(count(html, /class="recharts-layer recharts-scatter"/g)).toBe(2);
   });
+  it("scatter: enrollment on a log axis with compact decade ticks, and no point for an enrollment of 0", () => {
+    const wide: ScatterViz = { ...scatter, data: [...scatter.data, row({ nct_id: "NCT00000006", title: "Trial 6", start_date: "2016-03-01", enrollment: 0, phase: "Phase 2" }), row({ nct_id: "NCT00000007", title: "Trial 7", start_date: "2017-03-01", enrollment: 5_000_000, phase: "Phase 3" })] as ScatterViz["data"] };
+    const html = renderToStaticMarkup(<ScatterView viz={wide} onPick={noop} {...size} />);
+    expect(count(html, /recharts-scatter-symbol/g)).toBe(6);
+    const yTicks = [...html.matchAll(/recharts-yAxis[\s\S]*?<\/g><\/g>/g)].join("");
+    for (const label of ["10", "100", "1k", "100k", "1M"]) expect(yTicks).toContain(`>${label}</tspan>`);
+    expect(compact(1500)).toBe("1.5k"); expect(compact(2_500_000)).toBe("2.5M"); expect(compact(40)).toBe("40");
+  });
 });
 
 const network = parse<NetworkViz>({
@@ -178,6 +186,14 @@ describe("network, map, table and single value", () => {
     expect(el.querySelectorAll("circle")).toHaveLength(3);
     expect(el.querySelectorAll("line")).toHaveLength(2);
     expect(el.textContent).toContain("Sponsor");
+    // Only nodes above the median radius carry a visible label; every node stays inside the 920 × 560 frame.
+    expect([...el.querySelectorAll("svg text")].map((t) => t.textContent)).toEqual(["Pfizer"]);
+    for (const g of el.querySelectorAll("svg g[transform]")) {
+      const [x, y] = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute("transform")!)!.slice(1).map(Number) as [number, number];
+      const r = Number(g.querySelector("circle")!.getAttribute("r"));
+      expect(x).toBeGreaterThanOrEqual(r + 4); expect(x).toBeLessThanOrEqual(920 - r - 4);
+      expect(y).toBeGreaterThanOrEqual(r + 4); expect(y).toBeLessThanOrEqual(560 - r - 4);
+    }
     act(() => { el.querySelector("line")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
     expect(picked).toEqual([{ c: network.data.edges[0]!.citations, l: "Pfizer — Aspirin (3)" }]);
     picked.length = 0;

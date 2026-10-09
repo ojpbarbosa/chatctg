@@ -99,6 +99,17 @@ describe("plan: arms and filters", () => {
     const n = okPlan(plan({ answers: await answers({}), entities: none, request: req(), models }));
     expect(n.phase).toBeNull(); expect(n.interpretation.phase_filter).toBeNull(); expect(n.arms[0]!.query.advanced).toBeUndefined();
   });
+  it("a phase is filtered on only when Jev's probability for it reaches 0.5", async () => {
+    // A choice's top probability is confidence × (1 − 1/n) + 1/n, with n = 7 phase options.
+    const at = (p: number) => ({ choice: "PHASE3", confidence: (p - 1 / 7) / (1 - 1 / 7) });
+    const low = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: at(0.42) }), entities: none, request: req(), models }));
+    expect(low.phase).toBeNull(); expect(low.interpretation.phase_filter).toBeNull(); expect(low.arms[0]!.query.advanced).toBeUndefined();
+    expect(low.notes).toContain("A phase was mentioned but not clearly enough to filter on (p=0.42).");
+    const clear = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: at(0.5) }), entities: none, request: req(), models }));
+    expect(clear.phase).toBe("PHASE3"); expect(clear.arms[0]!.query.advanced).toBe("AREA[Phase]PHASE3"); expect(clear.notes.join(" ")).not.toMatch(/not clearly/);
+    const given = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: at(0.42) }), entities: none, request: req({ trial_phase: "PHASE2" }), models }));
+    expect(given.phase).toBe("PHASE2"); expect(given.notes.join(" ")).not.toMatch(/not clearly/);
+  });
   it("the request's trial_phase overrides the phase Jev found", async () => {
     const p = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: { choice: "PHASE3" } }), entities: none, request: req({ trial_phase: "PHASE2" }), models }));
     expect(p.arms[0]!.query.advanced).toBe("AREA[Phase]PHASE2"); expect(p.interpretation.phase_filter).toBe("PHASE2");
@@ -118,7 +129,7 @@ describe("plan: arms and filters", () => {
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" } }), entities: none, request: req(), models })).limit).toBe(10);
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" } }), entities: { ...none, limit: 5 }, request: req(), models })).limit).toBe(5);
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "map" } }), entities: none, request: req(), models })).limit).toBeNull();
-    expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" } }), entities: none, request: req(), models })).limit).toBe(15);
+    expect(okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models })).limit).toBe(15);
   });
 });
 
@@ -138,15 +149,25 @@ describe("chart matrix", () => {
     expect(allowedCharts("time_trend", "start_year", null, false).sort()).toEqual(["bar", "line"]);
     expect(allowedCharts("time_trend", "start_year", null, true)).toContain("scatter");
     expect(allowedCharts("ranking", "country", null, false).sort()).toEqual(["bar", "map"]);
-    expect(allowedCharts("geographic", "country", null, false).sort()).toEqual(["bar", "map"]);
+    expect(allowedCharts("geographic", "country", null, false)).toEqual(["map"]);
+    expect(allowedCharts("geographic", "country", null, true).sort()).toEqual(["bar", "map"]);
     expect(allowedCharts("network", null, null, true)).toEqual(["network_graph"]);
   });
 
   it("applies Jev's chart when compatible and falls back with a reason otherwise", async () => {
-    const ok = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
-    expect(ok.chart).toBe("bar"); expect(ok.interpretation.chart).toEqual({ chosen: "bar", applied: "bar", explicit: false, reason: null });
+    const ok = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models }));
+    expect(ok.chart).toBe("bar"); expect(ok.interpretation.chart).toEqual({ chosen: "bar", applied: "bar", explicit: true, reason: null });
+    const trendBar = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "bar" } }), entities: none, request: req(), models }));
+    expect(trendBar.interpretation.chart).toEqual({ chosen: "bar", applied: "bar", explicit: false, reason: null });
     const bad = okPlan(plan({ answers: await answers({ chart: { choice: "line" } }), entities: none, request: req(), models }));
     expect(bad.chart).toBe("bar"); expect(bad.interpretation.chart.chosen).toBe("line"); expect(bad.interpretation.chart.reason).toMatch(/line/);
+  });
+  it("a geographic question is a map unless a bar is asked for", async () => {
+    const unasked = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "bar" }, chart_named: { noul: 0.3 } }), entities: none, request: req(), models }));
+    expect(unasked.chart).toBe("map"); expect(unasked.limit).toBeNull();
+    expect(unasked.interpretation.chart).toEqual({ chosen: "bar", applied: "map", explicit: false, reason: "bar is only used for a geographic question when asked for; using map" });
+    const requested = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, chart: { choice: "map" } }), entities: none, request: req({ chart: "bar" }), models }));
+    expect(requested.chart).toBe("bar"); expect(requested.limit).toBe(15);
   });
   it("scatter needs an explicit ask, and says so when it was not", async () => {
     const unasked = okPlan(plan({ answers: await answers({ chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models }));

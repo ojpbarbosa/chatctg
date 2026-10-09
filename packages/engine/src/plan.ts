@@ -18,7 +18,7 @@ export interface Plan {
 export type PlanResult = { ok: true; plan: Plan } | { ok: false; reason: "not_answerable"; message: string; interpretation: Interpretation };
 export interface PlanInput { answers: InterpretationAnswers; entities: Entities; request: QueryRequest; models: { judge: string; extractor: string; titler: string } }
 
-export const THRESHOLDS = { in_scope: 0.5, intent_alternatives: 0.4, chart_named: 0.6, recruiting_only: 0.7, combination: 0.6 } as const;
+export const THRESHOLDS = { in_scope: 0.5, intent_alternatives: 0.4, chart_named: 0.6, recruiting_only: 0.7, combination: 0.6, phase_filter: 0.5 } as const;
 export const DEFAULT_LIMITS = { ranking: 10, country_bar: 15, table: 25, network: 40, open_distribution: 10 } as const;
 const OPEN_DIMENSIONS: Dimension[] = ["sponsor", "drug", "condition", "country"];
 
@@ -40,7 +40,8 @@ export function defaultChart(intent: Intent, dimension: Dimension | null, second
 }
 
 /**
- * The matrix from the spec: what the data shape of an intent can render. `scatter` is in the set only when the chart was asked for explicitly.
+ * The matrix from the spec: what the data shape of an intent can render. `scatter`, and `bar` for a geographic question, are in the set
+ * only when the chart was asked for explicitly.
  * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
  */
 export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
@@ -59,7 +60,7 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
     case "ranking":
       set.add("bar"); if (dimension === "country") set.add("map"); break;
     case "geographic":
-      set.add("map"); set.add("bar"); break;
+      if (explicit) set.add("bar"); break;
     case "lookup":
       if (explicit) set.add("scatter"); break;
     default: break;
@@ -132,17 +133,18 @@ export function plan(input: PlanInput): PlanResult {
     else if ((intent === "distribution" || intent === "comparison") && dimension && OPEN_DIMENSIONS.includes(dimension)) limit = DEFAULT_LIMITS.open_distribution;
   }
 
-  // 5. Chart: Jev's choice, validated against the shape. The shape is checked as if the chart were explicit, so a scatter the
-  // shape could draw but nobody asked for gets its own reason.
+  // 5. Chart: Jev's choice, validated against the shape. The shape is checked as if the chart were explicit, so a chart the shape
+  // could draw but that is only used when asked for (a scatter, a geographic bar) gets its own reason.
   const chosen: ChartType = request.chart ?? a.chart.choice;
   const explicit = request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
   let applied = chosen; let reason: string | null = null;
   if (!allowedCharts(intent, dimension, secondary, true).includes(chosen)) {
     applied = defaultChart(intent, dimension, secondary);
     reason = `${chosen} cannot render a ${intent.replace("_", " ")}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}; using ${applied}`;
-  } else if (chosen === "scatter" && !explicit) {
+  } else if (!explicit && !allowedCharts(intent, dimension, secondary, false).includes(chosen)) {
     applied = defaultChart(intent, dimension, secondary);
-    reason = "scatter plots one point per trial and is only used when asked for; using " + applied;
+    reason = chosen === "scatter" ? "scatter plots one point per trial and is only used when asked for; using " + applied
+      : `${chosen} is only used for a ${intent.replace("_", " ")} question when asked for; using ${applied}`;
   }
   // A bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes.
   if (secondary && applied === "bar") {
@@ -155,12 +157,15 @@ export function plan(input: PlanInput): PlanResult {
 
   if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;
 
-  // 6. Phase filter and queries. The request's trial_phase wins. A phase Jev found named applies unless the chart splits by phase,
-  // which this checks on the final dimensions: a split by phase filtered to one phase would be a single bar.
+  // 6. Phase filter and queries. The request's trial_phase wins. A phase Jev found named applies when its probability reaches the
+  // threshold, unless the chart splits by phase, which this checks on the final dimensions: a split by phase filtered to one phase
+  // would be a single bar.
   const named: Phase | null = a.phase_filter.choice === "none" ? null : a.phase_filter.choice;
   let phase: Phase | null = request.trial_phase ?? null;
   if (phase === null && named !== null) {
-    if (dimension === "phase" || secondary === "phase") notes.push(`${cap(PHASE_PHRASE[named])} was named, but phases are what the chart splits by, so no phase filter was applied.`);
+    const pNamed = a.phase_filter.probabilities[named] ?? 0;
+    if (pNamed < THRESHOLDS.phase_filter) notes.push(`A phase was mentioned but not clearly enough to filter on (p=${pNamed.toFixed(2)}).`);
+    else if (dimension === "phase" || secondary === "phase") notes.push(`${cap(PHASE_PHRASE[named])} was named, but phases are what the chart splits by, so no phase filter was applied.`);
     else phase = named;
   }
   const common = (over: Partial<Entities>): FetchQuery => {
