@@ -1,0 +1,2138 @@
+{
+  "request": {
+    "query": "Which countries have the most recruiting trials for lupus?",
+    "chart": "map"
+  },
+  "status": 200,
+  "response": {
+    "visualization": {
+      "type": "map",
+      "title": "Number of Recruiting Trials for Lupus by Country",
+      "subtitle": "324 trials on ClinicalTrials.gov · recruiting only · counted once per country · data as of 2026-10-09",
+      "encoding": {
+        "geo": {
+          "field": "country",
+          "code_field": "iso3",
+          "level": "country"
+        },
+        "value": {
+          "field": "trial_count",
+          "label": "Trials",
+          "unit": "trials"
+        }
+      },
+      "data": [
+        {
+          "study_count": 137,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "China"
+            },
+            {
+              "nct_id": "NCT07751848",
+              "title": "A Study of Outcomes in Chinese Patients Treated With Anifrolumab Who Have Active Mod-severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "China"
+            },
+            {
+              "nct_id": "NCT07749651",
+              "title": "A Study on the Safety, Tolerability, Pharmacokinetics, and Pharmacodynamics of a Single Dose of SHR-7012 in Healthy Adults",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "China"
+            },
+            {
+              "nct_id": "NCT07719140",
+              "title": "Childhood-onset Lupus Nephritis Initial Glucocorticoid-dose Harmonization Trial (LIGHT Trial)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "China"
+            },
+            {
+              "nct_id": "NCT07564596",
+              "title": "A Phase 1b/2a Study of Budoprutug in Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "China"
+            }
+          ],
+          "country": "China",
+          "iso3": "CHN",
+          "trial_count": 137
+        },
+        {
+          "study_count": 103,
+          "citations": [
+            {
+              "nct_id": "NCT06948110",
+              "title": "Deciphering the Genetic Architecture of Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United States"
+            },
+            {
+              "nct_id": "NCT07262983",
+              "title": "Evaluating the Safety and Tolerability of Baricitinib in Patients With Job Syndrome With Lupus-Like Disease and/or Atopic Dermatitis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United States"
+            },
+            {
+              "nct_id": "NCT07800871",
+              "title": "FT839 in Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United States"
+            },
+            {
+              "nct_id": "NCT07823478",
+              "title": "HEALTH Home Urinalysis Testing",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United States"
+            },
+            {
+              "nct_id": "NCT07107659",
+              "title": "Safety and Efficacy of ONT01 in Lupus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United States"
+            }
+          ],
+          "country": "United States",
+          "iso3": "USA",
+          "trial_count": 103
+        },
+        {
+          "study_count": 46,
+          "citations": [
+            {
+              "nct_id": "NCT07629583",
+              "title": "To Evaluate the Effects of Cevostamab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "France"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "France"
+            },
+            {
+              "nct_id": "NCT07515638",
+              "title": "Immun4Cure Cohort of Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "France"
+            },
+            {
+              "nct_id": "NCT07260942",
+              "title": "Ferroptosis Role in the Pathophysiology of Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "France"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "France"
+            }
+          ],
+          "country": "France",
+          "iso3": "FRA",
+          "trial_count": 46
+        },
+        {
+          "study_count": 31,
+          "citations": [
+            {
+              "nct_id": "NCT07629583",
+              "title": "To Evaluate the Effects of Cevostamab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Spain"
+            },
+            {
+              "nct_id": "NCT07799116",
+              "title": "Study to Evaluate the Safety and Preliminary Efficacy of CD19 CAR-T Cell Therapy (TranspoCART19) in Patients With Refractory Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Spain"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Spain"
+            },
+            {
+              "nct_id": "NCT07611747",
+              "title": "Carotid Ultrasound-Based Strategy for Primary Prevention of Cardiovascular Events in Inflammatory Rheumatic Disease (PREVENER)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Spain"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Spain"
+            }
+          ],
+          "country": "Spain",
+          "iso3": "ESP",
+          "trial_count": 31
+        },
+        {
+          "study_count": 24,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Germany"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Germany"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Germany"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Germany"
+            },
+            {
+              "nct_id": "NCT07424261",
+              "title": "NIS to Examine Disease Activity in SLE Patients Treated With Subcutaneous Anifrolumab in Routine Care",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Germany"
+            }
+          ],
+          "country": "Germany",
+          "iso3": "DEU",
+          "trial_count": 24
+        },
+        {
+          "study_count": 21,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Australia"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Australia"
+            },
+            {
+              "nct_id": "NCT07455578",
+              "title": "Study of S-4321 in Participants With an Autoimmune or Immune-mediated Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Australia"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Australia"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Australia"
+            }
+          ],
+          "country": "Australia",
+          "iso3": "AUS",
+          "trial_count": 21
+        },
+        {
+          "study_count": 21,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Canada"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Canada"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Canada"
+            },
+            {
+              "nct_id": "NCT07302113",
+              "title": "Complete Cognitive Intervention for cSLE",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Canada"
+            },
+            {
+              "nct_id": "NCT07085104",
+              "title": "A Study to Investigate the Safety and Preliminary Efficacy of ALLO-329, an Allogeneic CAR T-cell Therapy, in Adults With Autoimmune Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Canada"
+            }
+          ],
+          "country": "Canada",
+          "iso3": "CAN",
+          "trial_count": 21
+        },
+        {
+          "study_count": 20,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Kingdom"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Kingdom"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Kingdom"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Kingdom"
+            },
+            {
+              "nct_id": "NCT07053800",
+              "title": "Obe-cel in Severe, Refractory Systemic Lupus Erythematosus (SLE) With Active Lupus Nephritis (LN)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Kingdom"
+            }
+          ],
+          "country": "United Kingdom",
+          "iso3": "GBR",
+          "trial_count": 20
+        },
+        {
+          "study_count": 19,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Brazil"
+            },
+            {
+              "nct_id": "NCT06419205",
+              "title": "A Phase 2 Study to Evaluate the Safety, PD, PK, and Clinical Activity of ADX-097 in Participants With IgAN, LN or C3G",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Brazil"
+            },
+            {
+              "nct_id": "NCT07598396",
+              "title": "A Study to Evaluate Mosunetuzumab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Brazil"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Brazil"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Brazil"
+            }
+          ],
+          "country": "Brazil",
+          "iso3": "BRA",
+          "trial_count": 19
+        },
+        {
+          "study_count": 18,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Italy"
+            },
+            {
+              "nct_id": "NCT07598396",
+              "title": "A Study to Evaluate Mosunetuzumab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Italy"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Italy"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Italy"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Italy"
+            }
+          ],
+          "country": "Italy",
+          "iso3": "ITA",
+          "trial_count": 18
+        },
+        {
+          "study_count": 18,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Japan"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Japan"
+            },
+            {
+              "nct_id": "NCT07607964",
+              "title": "A Study to Assess Adverse Events, How the Drug Moves Through the Body and Effectiveness of Intravenous Infusions and Subcutaneous Injections of ABBV-519 in Adult Participants With Systemic Lupus Erythematosus (SLE) or Rheumatoid Arthritis (RA)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Japan"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Japan"
+            },
+            {
+              "nct_id": "NCT07515014",
+              "title": "A Study of E6742 in Participants With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Japan"
+            }
+          ],
+          "country": "Japan",
+          "iso3": "JPN",
+          "trial_count": 18
+        },
+        {
+          "study_count": 15,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Taiwan"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Taiwan"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Taiwan"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Taiwan"
+            },
+            {
+              "nct_id": "NCT07515014",
+              "title": "A Study of E6742 in Participants With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Taiwan"
+            }
+          ],
+          "country": "Taiwan",
+          "iso3": "TWN",
+          "trial_count": 15
+        },
+        {
+          "study_count": 14,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Poland"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Poland"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Poland"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Poland"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Poland"
+            }
+          ],
+          "country": "Poland",
+          "iso3": "POL",
+          "trial_count": 14
+        },
+        {
+          "study_count": 13,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Romania"
+            },
+            {
+              "nct_id": "NCT07575347",
+              "title": "Periodontal Disease in Rare Renal Disorders (PERIO-RA-RE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Romania"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Romania"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Romania"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Romania"
+            }
+          ],
+          "country": "Romania",
+          "iso3": "ROU",
+          "trial_count": 13
+        },
+        {
+          "study_count": 13,
+          "citations": [
+            {
+              "nct_id": "NCT07855302",
+              "title": "CD19 CAR-T Therapy for Refractory Childhood-Onset Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Korea"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Korea"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Korea"
+            },
+            {
+              "nct_id": "NCT07515014",
+              "title": "A Study of E6742 in Participants With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Korea"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Korea"
+            }
+          ],
+          "country": "South Korea",
+          "iso3": "KOR",
+          "trial_count": 13
+        },
+        {
+          "study_count": 12,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Argentina"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Argentina"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Argentina"
+            },
+            {
+              "nct_id": "NCT07371468",
+              "title": "A Study of GSK5926371 in Participants With B-cell Driven Autoimmune Rheumatic Diseases (ARD)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Argentina"
+            },
+            {
+              "nct_id": "NCT07175285",
+              "title": "A Study in Participants With Active Systemic Lupus Erythematosus With Inadequate Response to Glucocorticoids and ≥2 Immunosuppressants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Argentina"
+            }
+          ],
+          "country": "Argentina",
+          "iso3": "ARG",
+          "trial_count": 12
+        },
+        {
+          "study_count": 11,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Israel"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Israel"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Israel"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Israel"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Israel"
+            }
+          ],
+          "country": "Israel",
+          "iso3": "ISR",
+          "trial_count": 11
+        },
+        {
+          "study_count": 11,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Mexico"
+            },
+            {
+              "nct_id": "NCT07598396",
+              "title": "A Study to Evaluate Mosunetuzumab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Mexico"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Mexico"
+            },
+            {
+              "nct_id": "NCT07430306",
+              "title": "A Study to Evaluate the Treatment Outcomes of Subcutaneous Anifrolumab in Immunosuppressant-naïve and Biologic-naïve Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Mexico"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Mexico"
+            }
+          ],
+          "country": "Mexico",
+          "iso3": "MEX",
+          "trial_count": 11
+        },
+        {
+          "study_count": 10,
+          "citations": [
+            {
+              "nct_id": "NCT07833020",
+              "title": "Gyrotonic Exercise in Lupus Adolescents Who Survived From Intensive Care",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Egypt"
+            },
+            {
+              "nct_id": "NCT07043153",
+              "title": "AGR+PNI as Predictors of Systemic Lupus Erythematosus Disease Activity",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Egypt"
+            },
+            {
+              "nct_id": "NCT07397728",
+              "title": "\" TREX1 Gene Mutations and Their Role in Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Egypt"
+            },
+            {
+              "nct_id": "NCT06713187",
+              "title": "Interleukin23 in Systemic Lupus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Egypt"
+            },
+            {
+              "nct_id": "NCT07017868",
+              "title": "Correlation Between Serum Uric Acid, Serum Homocysteine Level and Interleukin- 17 in Lupus Nephritis Patients",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Egypt"
+            }
+          ],
+          "country": "Egypt",
+          "iso3": "EGY",
+          "trial_count": 10
+        },
+        {
+          "study_count": 9,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bulgaria"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bulgaria"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bulgaria"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bulgaria"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bulgaria"
+            }
+          ],
+          "country": "Bulgaria",
+          "iso3": "BGR",
+          "trial_count": 9
+        },
+        {
+          "study_count": 9,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Africa"
+            },
+            {
+              "nct_id": "NCT07598396",
+              "title": "A Study to Evaluate Mosunetuzumab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Africa"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Africa"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Africa"
+            },
+            {
+              "nct_id": "NCT07260877",
+              "title": "A Multicenter, Randomized, Double-Blind, Placebo-Controlled, Phase 2a Study With an Open-Label Extension Evaluating the Efficacy and Safety of VENT-03 in Adult Participants With Active Cutaneous Lupus Erythematosus With or Without Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "South Africa"
+            }
+          ],
+          "country": "South Africa",
+          "iso3": "ZAF",
+          "trial_count": 9
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Belgium"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Belgium"
+            },
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Belgium"
+            },
+            {
+              "nct_id": "NCT07201558",
+              "title": "Study Evaluating Safety, Tolerability, PK/PD of Surovatamig in Adult RA or SLE Participants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Belgium"
+            },
+            {
+              "nct_id": "NCT06570798",
+              "title": "A Phase 2 Master Protocol Assessing Inebilizumab and Blinatumomab in Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Belgium"
+            }
+          ],
+          "country": "Belgium",
+          "iso3": "BEL",
+          "trial_count": 8
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Colombia"
+            },
+            {
+              "nct_id": "NCT07598396",
+              "title": "A Study to Evaluate Mosunetuzumab in Participants With Systemic Lupus Erythematosus With or Without Active Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Colombia"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Colombia"
+            },
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Colombia"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Colombia"
+            }
+          ],
+          "country": "Colombia",
+          "iso3": "COL",
+          "trial_count": 8
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Netherlands"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Netherlands"
+            },
+            {
+              "nct_id": "NCT07760480",
+              "title": "Assessing Residual Inflammation and Macrophage Presence in Lupus Nephritis After 3 Months of Intensified Treatment With Prednisolone, Mycofenolate Mofetil and Voclosporin as Compared to Mycofenolate Mofetil and Prednisolone",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Netherlands"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Netherlands"
+            },
+            {
+              "nct_id": "NCT06977724",
+              "title": "A Study to Assess Adverse Events, How the Drug Moves Through the Body and Effectiveness of Intravenous Infusions of ABBV-319 in Adult Participants With Systemic Lupus Erythematosus (SLE), Sjogren's Disease (SjD) and Rheumatoid Arthritis (RA)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Netherlands"
+            }
+          ],
+          "country": "Netherlands",
+          "iso3": "NLD",
+          "trial_count": 8
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Portugal"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Portugal"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Portugal"
+            },
+            {
+              "nct_id": "NCT06570798",
+              "title": "A Phase 2 Master Protocol Assessing Inebilizumab and Blinatumomab in Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Portugal"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Portugal"
+            }
+          ],
+          "country": "Portugal",
+          "iso3": "PRT",
+          "trial_count": 8
+        },
+        {
+          "study_count": 7,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Greece"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Greece"
+            },
+            {
+              "nct_id": "NCT07053800",
+              "title": "Obe-cel in Severe, Refractory Systemic Lupus Erythematosus (SLE) With Active Lupus Nephritis (LN)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Greece"
+            },
+            {
+              "nct_id": "NCT05018858",
+              "title": "Safety of Cultured Allogeneic Adult Umbilical Cord Derived Mesenchymal Stem Cell Intravenous Infusion for Lupus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Greece"
+            },
+            {
+              "nct_id": "NCT07011043",
+              "title": "A Phase 1b Study of Budoprutug in Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Greece"
+            }
+          ],
+          "country": "Greece",
+          "iso3": "GRC",
+          "trial_count": 7
+        },
+        {
+          "study_count": 7,
+          "citations": [
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hungary"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hungary"
+            },
+            {
+              "nct_id": "NCT07260877",
+              "title": "A Multicenter, Randomized, Double-Blind, Placebo-Controlled, Phase 2a Study With an Open-Label Extension Evaluating the Efficacy and Safety of VENT-03 in Adult Participants With Active Cutaneous Lupus Erythematosus With or Without Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hungary"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hungary"
+            },
+            {
+              "nct_id": "NCT07086989",
+              "title": "Cardiovascular Risk in Children With Chronic Conditions Study",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hungary"
+            }
+          ],
+          "country": "Hungary",
+          "iso3": "HUN",
+          "trial_count": 7
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Czechia"
+            },
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Czechia"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Czechia"
+            },
+            {
+              "nct_id": "NCT07115745",
+              "title": "A Study of Healthy Donor CD19-targeted Allogeneic CAR T Cells in Participants With Severe, Refractory Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Czechia"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Czechia"
+            }
+          ],
+          "country": "Czechia",
+          "iso3": "CZE",
+          "trial_count": 6
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hong Kong"
+            },
+            {
+              "nct_id": "NCT06916806",
+              "title": "A Study to Investigate Safety, Tolerability, Pharmacokinetics, and Pharmacodynamics of AZD5492 in Adult Participants With Systemic Lupus Erythematosus or Idiopathic Inflammatory Myopathies or Rheumatoid Arthritis.",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hong Kong"
+            },
+            {
+              "nct_id": "NCT06155604",
+              "title": "SGLT2 Inhibitor in Lupus Nephritis Patients With Chronic Kidney Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hong Kong"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hong Kong"
+            },
+            {
+              "nct_id": "NCT02954939",
+              "title": "The Effect of Mycophenolate Mofetil and Cyclophosphamide on the Lymphocyte Subsets in Patients With Proliferative Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Hong Kong"
+            }
+          ],
+          "country": "Hong Kong",
+          "iso3": "HKG",
+          "trial_count": 6
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT06795893",
+              "title": "The Anifrolumab PRIM Program",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sweden"
+            },
+            {
+              "nct_id": "NCT07175285",
+              "title": "A Study in Participants With Active Systemic Lupus Erythematosus With Inadequate Response to Glucocorticoids and ≥2 Immunosuppressants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sweden"
+            },
+            {
+              "nct_id": "NCT06308978",
+              "title": "A Phase 1 Study of FT819 in B-cell Mediated Autoimmune Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sweden"
+            },
+            {
+              "nct_id": "NCT06166199",
+              "title": "Effects of High-intensity Interval Training in Patients With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sweden"
+            },
+            {
+              "nct_id": "NCT04449991",
+              "title": "Per-protocol Repeat Kidney Biopsy in Incident Cases of Lupus Nephritis",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sweden"
+            }
+          ],
+          "country": "Sweden",
+          "iso3": "SWE",
+          "trial_count": 6
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Thailand"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Thailand"
+            },
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Thailand"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Thailand"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Thailand"
+            }
+          ],
+          "country": "Thailand",
+          "iso3": "THA",
+          "trial_count": 6
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Georgia"
+            },
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Georgia"
+            },
+            {
+              "nct_id": "NCT07260877",
+              "title": "A Multicenter, Randomized, Double-Blind, Placebo-Controlled, Phase 2a Study With an Open-Label Extension Evaluating the Efficacy and Safety of VENT-03 in Adult Participants With Active Cutaneous Lupus Erythematosus With or Without Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Georgia"
+            },
+            {
+              "nct_id": "NCT07011043",
+              "title": "A Phase 1b Study of Budoprutug in Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Georgia"
+            },
+            {
+              "nct_id": "NCT06613360",
+              "title": "A Study of CLN-978, a Subcutaneously Administered CD19-directed T Cell Engager, in Subjects With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Georgia"
+            }
+          ],
+          "country": "Georgia",
+          "iso3": "GEO",
+          "trial_count": 5
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Malaysia"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Malaysia"
+            },
+            {
+              "nct_id": "NCT06710717",
+              "title": "Autologous CD19 Car T-Cell Therapy For Severe Refractory Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Malaysia"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Malaysia"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Malaysia"
+            }
+          ],
+          "country": "Malaysia",
+          "iso3": "MYS",
+          "trial_count": 5
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT06948110",
+              "title": "Deciphering the Genetic Architecture of Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Peru"
+            },
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Peru"
+            },
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Peru"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Peru"
+            },
+            {
+              "nct_id": "NCT05039619",
+              "title": "A Study to Evaluate the Efficacy, Safety, and Pharmacokinetics of Obinutuzumab in Adolescents With Active Class III or IV Lupus Nephritis and the Safety and PK of Obinutuzumab in Pediatric Participants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Peru"
+            }
+          ],
+          "country": "Peru",
+          "iso3": "PER",
+          "trial_count": 5
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT07175285",
+              "title": "A Study in Participants With Active Systemic Lupus Erythematosus With Inadequate Response to Glucocorticoids and ≥2 Immunosuppressants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Puerto Rico"
+            },
+            {
+              "nct_id": "NCT07011043",
+              "title": "A Phase 1b Study of Budoprutug in Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Puerto Rico"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Puerto Rico"
+            },
+            {
+              "nct_id": "NCT06557265",
+              "title": "A Phase 1/2 Study of NKX019 in Subjects With Autoimmune Disease (Ntrust-1)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Puerto Rico"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Puerto Rico"
+            }
+          ],
+          "country": "Puerto Rico",
+          "iso3": "PRI",
+          "trial_count": 5
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Serbia"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Serbia"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Serbia"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Serbia"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Serbia"
+            }
+          ],
+          "country": "Serbia",
+          "iso3": "SRB",
+          "trial_count": 5
+        },
+        {
+          "study_count": 5,
+          "citations": [
+            {
+              "nct_id": "NCT07355218",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease (ELOWEN-2)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Switzerland"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Switzerland"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Switzerland"
+            },
+            {
+              "nct_id": "NCT05127980",
+              "title": "Occurrence of Antibodies Cross-reacting With Autoantigens in Primary EBV Infection",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Switzerland"
+            },
+            {
+              "nct_id": "NCT05017142",
+              "title": "Swiss Pediatric Inflammatory Brain Disease Registry (Swiss-Ped-IBrainD)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Switzerland"
+            }
+          ],
+          "country": "Switzerland",
+          "iso3": "CHE",
+          "trial_count": 5
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Chile"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Chile"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Chile"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Chile"
+            }
+          ],
+          "country": "Chile",
+          "iso3": "CHL",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Denmark"
+            },
+            {
+              "nct_id": "NCT07000110",
+              "title": "Anifrolumab Malignancy and Serious Infections Study",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Denmark"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Denmark"
+            },
+            {
+              "nct_id": "NCT06642402",
+              "title": "Monitoring Lupus Nephritis Through Urinary Extracellular Vesicles",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Denmark"
+            }
+          ],
+          "country": "Denmark",
+          "iso3": "DNK",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "India"
+            },
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "India"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "India"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "India"
+            }
+          ],
+          "country": "India",
+          "iso3": "IND",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07630714",
+              "title": "A Study to Investigate Pharmacokinetics, Pharmacodynamics, and Safety of Subcutaneous Anifrolumab in Pediatric Participants 5 to < 18 Years of Age With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Philippines"
+            },
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Philippines"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Philippines"
+            },
+            {
+              "nct_id": "NCT03138941",
+              "title": "Validation of the Lupus Low Disease Activity State (LLDAS) in the Asia Pacific Region",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Philippines"
+            }
+          ],
+          "country": "Philippines",
+          "iso3": "PHL",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Slovakia"
+            },
+            {
+              "nct_id": "NCT07332481",
+              "title": "A Study of Enpatoran in Participants With Cutaneous Manifestations of Lupus With or Without Systemic Disease",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Slovakia"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Slovakia"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Slovakia"
+            }
+          ],
+          "country": "Slovakia",
+          "iso3": "SVK",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Turkey (Türkiye)"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Turkey (Türkiye)"
+            },
+            {
+              "nct_id": "NCT05835310",
+              "title": "An Efficacy and Safety Study of Intravenous Anifrolumab to Treat Systemic Lupus Erythematosus in Pediatric Participants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Turkey (Türkiye)"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Turkey (Türkiye)"
+            }
+          ],
+          "country": "Turkey (Türkiye)",
+          "iso3": "TUR",
+          "trial_count": 4
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Vietnam"
+            },
+            {
+              "nct_id": "NCT07432334",
+              "title": "CD19 CAR T-Cell Therapy for Refractory Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Vietnam"
+            },
+            {
+              "nct_id": "NCT07053800",
+              "title": "Obe-cel in Severe, Refractory Systemic Lupus Erythematosus (SLE) With Active Lupus Nephritis (LN)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Vietnam"
+            },
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Vietnam"
+            }
+          ],
+          "country": "Vietnam",
+          "iso3": "VNM",
+          "trial_count": 4
+        },
+        {
+          "study_count": 3,
+          "citations": [
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Guatemala"
+            },
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Guatemala"
+            },
+            {
+              "nct_id": "NCT06133972",
+              "title": "Phase 3 Extension Study to Evaluate Long-term Safety of Ianalumab in Participants With Systemic Lupus Erythematosus (SIRIUS-SLE Extension).",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Guatemala"
+            }
+          ],
+          "country": "Guatemala",
+          "iso3": "GTM",
+          "trial_count": 3
+        },
+        {
+          "study_count": 3,
+          "citations": [
+            {
+              "nct_id": "NCT06711887",
+              "title": "Phase III Extension Study of Efficacy and Safety of Ianalumab With or Without Study Treatment Withdrawal in Participants With Lupus Nephritis (SIRIUS-LN Extension)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Singapore"
+            },
+            {
+              "nct_id": "NCT05268289",
+              "title": "Study of Efficacy and Safety of LNP023 in Participants With Active Lupus Nephritis Class III-IV, +/- V",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Singapore"
+            },
+            {
+              "nct_id": "NCT03138941",
+              "title": "Validation of the Lupus Low Disease Activity State (LLDAS) in the Asia Pacific Region",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Singapore"
+            }
+          ],
+          "country": "Singapore",
+          "iso3": "SGP",
+          "trial_count": 3
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07363590",
+              "title": "A Clinical Study of MK-1045 in People With Lupus or Rheumatoid Arthritis (MK-1045-004)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Moldova"
+            },
+            {
+              "nct_id": "NCT06613360",
+              "title": "A Study of CLN-978, a Subcutaneously Administered CD19-directed T Cell Engager, in Subjects With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Moldova"
+            }
+          ],
+          "country": "Moldova",
+          "iso3": "MDA",
+          "trial_count": 2
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07666711",
+              "title": "Biomarker Development for Autoimmune Disorders Involving the Kidneys",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Norway"
+            },
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Norway"
+            }
+          ],
+          "country": "Norway",
+          "iso3": "NOR",
+          "trial_count": 2
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07136389",
+              "title": "Safety, Pharmacokinetics, Immunogenicity BCD-256-1 and Divozilimab in Subjects With Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Russia"
+            },
+            {
+              "nct_id": "NCT05039619",
+              "title": "A Study to Evaluate the Efficacy, Safety, and Pharmacokinetics of Obinutuzumab in Adolescents With Active Class III or IV Lupus Nephritis and the Safety and PK of Obinutuzumab in Pediatric Participants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Russia"
+            }
+          ],
+          "country": "Russia",
+          "iso3": "RUS",
+          "trial_count": 2
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Saudi Arabia"
+            },
+            {
+              "nct_id": "NCT04604990",
+              "title": "National Systemic Lupus Erythematosus Prospective Cohort, Saudi Arabia",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Saudi Arabia"
+            }
+          ],
+          "country": "Saudi Arabia",
+          "iso3": "SAU",
+          "trial_count": 2
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07201558",
+              "title": "Study Evaluating Safety, Tolerability, PK/PD of Surovatamig in Adult RA or SLE Participants",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Ukraine"
+            },
+            {
+              "nct_id": "NCT07011043",
+              "title": "A Phase 1b Study of Budoprutug in Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Ukraine"
+            }
+          ],
+          "country": "Ukraine",
+          "iso3": "UKR",
+          "trial_count": 2
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT06570798",
+              "title": "A Phase 2 Master Protocol Assessing Inebilizumab and Blinatumomab in Autoimmune Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Arab Emirates"
+            },
+            {
+              "nct_id": "NCT06617325",
+              "title": "A Study to Evaluate the Efficacy and Safety of Dapirolizumab Pegol in Study Participants With Moderately to Severely Active Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "United Arab Emirates"
+            }
+          ],
+          "country": "United Arab Emirates",
+          "iso3": "ARE",
+          "trial_count": 2
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT07148115",
+              "title": "Pregnancies Before the Diagnosis of Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Algeria"
+            }
+          ],
+          "country": "Algeria",
+          "iso3": "DZA",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT05018858",
+              "title": "Safety of Cultured Allogeneic Adult Umbilical Cord Derived Mesenchymal Stem Cell Intravenous Infusion for Lupus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Antigua and Barbuda"
+            }
+          ],
+          "country": "Antigua and Barbuda",
+          "iso3": "ATG",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT07691970",
+              "title": "Rollover Study for Participants Who Have Completed a Previous Clinical Study With Anifrolumab (Saphnelo) and Clinically Benefited From Continued Treatment",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Austria"
+            }
+          ],
+          "country": "Austria",
+          "iso3": "AUT",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06647069",
+              "title": "A Study to Evaluate the Safety and Activity of SAR448501/DR-0201 in Patients With Autoimmune Rheumatic Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Bosnia and Herzegovina"
+            }
+          ],
+          "country": "Bosnia and Herzegovina",
+          "iso3": "BIH",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Costa Rica"
+            }
+          ],
+          "country": "Costa Rica",
+          "iso3": "CRI",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT07409181",
+              "title": "A Study to Test Whether Different Doses of BI 3000202 Help People With Systemic Lupus Erythematosus (SLE)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Croatia"
+            }
+          ],
+          "country": "Croatia",
+          "iso3": "HRV",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT07438496",
+              "title": "A Study of Nipocalimab in Adults With Moderate to Severe Systemic Lupus Erythematosus",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Finland"
+            }
+          ],
+          "country": "Finland",
+          "iso3": "FIN",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT03138941",
+              "title": "Validation of the Lupus Low Disease Activity State (LLDAS) in the Asia Pacific Region",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Indonesia"
+            }
+          ],
+          "country": "Indonesia",
+          "iso3": "IDN",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Kazakhstan"
+            }
+          ],
+          "country": "Kazakhstan",
+          "iso3": "KAZ",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Kuwait"
+            }
+          ],
+          "country": "Kuwait",
+          "iso3": "KWT",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06647069",
+              "title": "A Study to Evaluate the Safety and Activity of SAR448501/DR-0201 in Patients With Autoimmune Rheumatic Diseases",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "New Zealand"
+            }
+          ],
+          "country": "New Zealand",
+          "iso3": "NZL",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Oman"
+            }
+          ],
+          "country": "Oman",
+          "iso3": "OMN",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT07371468",
+              "title": "A Study of GSK5926371 in Participants With B-cell Driven Autoimmune Rheumatic Diseases (ARD)",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Panama"
+            }
+          ],
+          "country": "Panama",
+          "iso3": "PAN",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06314282",
+              "title": "INTERSTELLAR - International Study Evaluating Lupus Outcomes After Anifrolumab Real World Use",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Qatar"
+            }
+          ],
+          "country": "Qatar",
+          "iso3": "QAT",
+          "trial_count": 1
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT03138941",
+              "title": "Validation of the Lupus Low Disease Activity State (LLDAS) in the Asia Pacific Region",
+              "field": "protocolSection.contactsLocationsModule.locations[].country",
+              "excerpt": "Sri Lanka"
+            }
+          ],
+          "country": "Sri Lanka",
+          "iso3": "LKA",
+          "trial_count": 1
+        }
+      ]
+    },
+    "meta": {
+      "query": "Which countries have the most recruiting trials for lupus?",
+      "interpretation": {
+        "intent": {
+          "value": "geographic",
+          "p": 0.88,
+          "confidence": 0.87,
+          "alternatives": []
+        },
+        "dimension": {
+          "value": "country",
+          "p": 0.44
+        },
+        "secondary_dimension": null,
+        "chart": {
+          "chosen": "map",
+          "applied": "map",
+          "explicit": true,
+          "reason": null
+        },
+        "metric": "trial_count",
+        "granularity": null,
+        "edge_kind": null,
+        "entities": {
+          "drugs": [],
+          "conditions": [
+            "lupus"
+          ],
+          "sponsors": [],
+          "countries": []
+        },
+        "time_window": {
+          "start_year": null,
+          "end_year": null
+        },
+        "limit": null,
+        "recruiting_only": true,
+        "combination": null,
+        "provided_fields": [
+          "chart"
+        ],
+        "question_set": {
+          "id": "query-interpretation",
+          "version": 1
+        },
+        "models": {
+          "judge": "jev-1.13.0",
+          "extractor": "gpt-5.4-nano",
+          "titler": "gpt-5.4-nano"
+        }
+      },
+      "arms": [
+        {
+          "label": "Lupus",
+          "filters": {
+            "query.cond": "\"lupus\"",
+            "filter.overallStatus": "RECRUITING"
+          }
+        }
+      ],
+      "source": {
+        "name": "clinicaltrials.gov",
+        "api_version": "2.0.5",
+        "data_timestamp": "2026-10-09T09:00:05",
+        "requests": [
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22lupus%22&filter.overallStatus=RECRUITING&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&countTotal=true&sort=StartDate%3Adesc",
+            "total_count": 324,
+            "fetched": 324
+          }
+        ]
+      },
+      "coverage": {
+        "total_count": 324,
+        "fetched_count": 324,
+        "truncated": false,
+        "sorted_by": "StartDate:desc",
+        "studies_without_value": 0,
+        "omitted_categories": 0
+      },
+      "units": {
+        "y": "trials"
+      },
+      "granularity": null,
+      "timing": {
+        "jev_ms": 280,
+        "extract_ms": 800,
+        "fetch_ms": 222,
+        "title_ms": 1053,
+        "aggregate_ms": 1,
+        "total_ms": 1858
+      },
+      "notes": [
+        "A trial with several countries is counted once per value."
+      ],
+      "warnings": [],
+      "version": "cheiron/0.1.0"
+    }
+  }
+}

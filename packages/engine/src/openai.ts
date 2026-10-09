@@ -1,7 +1,7 @@
 export const EXTRACTOR_MODEL = "gpt-5.4-nano";
 export const TITLER_MODEL = "gpt-5.4-nano";
 /** Lowest effort the gpt-5 family accepts; omitted for other families. */
-const REASONING_EFFORT = "minimal";
+const REASONING_EFFORT = "none";
 
 export type OpenAiFailure = "missing_api_key" | "openai_timeout" | "openai_network" | "openai_http" | "openai_incomplete" | "openai_invalid_json" | "openai_invalid_shape";
 export interface OpenAiEnv { OPENAI_API_KEY?: string; OPENAI_BASE_URL?: string; EXTRACTOR_MODEL?: string; TITLER_MODEL?: string }
