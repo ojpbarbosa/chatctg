@@ -47,6 +47,11 @@ describe("openAiTitler", () => {
   it("returns a trimmed title without quotes or a final period", async () => {
     expect(await openAiTitler({ OPENAI_API_KEY: "k" }, async () => ok('"Pembrolizumab trials per year since 2015."'))("summary")).toMatchObject({ title: "Pembrolizumab trials per year since 2015" });
   });
+  it("leaves room for reasoning tokens in its output cap", async () => {
+    let body: Record<string, unknown> = {};
+    await openAiTitler({ OPENAI_API_KEY: "k" }, async (_u, init) => { body = JSON.parse(init!.body as string); return ok("Pembrolizumab trials by phase"); })("summary");
+    expect(body.max_output_tokens).toBe(300);
+  });
   it("returns null on any failure", async () => {
     expect((await openAiTitler({}, async () => ok("x"))("s")).title).toBeNull();
     expect((await openAiTitler({ OPENAI_API_KEY: "k" }, async () => new Response("", { status: 500 }))("s")).title).toBeNull();
