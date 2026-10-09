@@ -6,7 +6,7 @@ The approach is a judged pipeline. Every closed decision about the question (its
 
 The design is in [docs/superpowers/specs/2026-10-09-cheiron-design.md](docs/superpowers/specs/2026-10-09-cheiron-design.md). Where the spec and the shipped code differ, this README describes the code.
 
-Status on 2026-10-09: built and tested offline, and the Jev evaluation ran against the live API. The OpenAI key available during the build was invalid, so three things are pending: the example runs, the extractor benchmark, and a live end-to-end query. Each is marked where it appears below.
+Status on 2026-10-09: built and tested offline, and the Jev evaluation ran against the live API. The OpenAI key available during the build was invalid, so four things are pending: the example runs, the extractor benchmark, a live end-to-end query and a visual check of the charts against live data. Each is marked where it appears below.
 
 ## Run it
 
@@ -31,7 +31,7 @@ Without keys the API still starts and logs a warning per missing key. `/query` t
 ```bash
 npm run dev                  # API on http://localhost:3001 (tsx watch) and web on http://localhost:5173 (Vite, proxies the API)
 npm run build && npm start   # builds the web app into apps/api/public; one process on 3001 serves both
-npm run check                # typecheck, lint and the vitest suite (179 tests in 23 files, all offline)
+npm run check                # typecheck, lint and the vitest suite (182 tests in 23 files, all offline)
 npm run eval:jev             # runs eval/queries.json through the live Jev and rewrites eval/report.md
 npm run eval:extract         # benchmarks the extractor models (pending, see Validation)
 npm run examples             # five live runs into examples/ (pending, see Example runs)
@@ -118,7 +118,7 @@ Row conventions:
 
 | `encoding` field | Value |
 |---|---|
-| `x` | `{ field, type: "nominal" \| "ordinal", label, order }`. `field` is the dimension (`phase`, `sponsor`, ...), or `period` for start dates. `ordinal` for closed sets and time, `nominal` for open sets. `order` lists the labels in display order. |
+| `x` | `{ field, type: "nominal" \| "ordinal", label, order? }`. `field` is the dimension (`phase`, `sponsor`, ...), or `period` for start dates. `ordinal` for closed sets and time, `nominal` for open sets. `order` is optional and lists the labels in display order. |
 | `y` | `{ field, type: "quantitative", label, unit: "trials" \| "participants" }` |
 | `orientation` | `horizontal` for rankings and for open dimensions (sponsor, drug, condition, country) outside a comparison; else `vertical` |
 | `sort` | `value_desc` when horizontal; else `x_order` |
@@ -149,11 +149,11 @@ Row: `{ period, series?, [y.field], study_count, citations }`. Periods are gap-f
 |---|---|
 | `x` | `{ field: "start_date", type: "temporal", label }` |
 | `y` | `{ field: "enrollment", type: "quantitative", label, unit: "participants" }` |
-| `color` | `{ field: "phase", label: "Phase", values }`: the phases present, in phase order |
+| `color` | optional. `{ field: "phase", label: "Phase", values }`: the phases present, in phase order |
 | `series` | present when there are several arms |
 | `point_id` | `"nct_id"` |
 
-Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, study_count: 1, citations }`. At most 500 points are kept, the most recently started.
+Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, study_count: 1, citations }`; `phase` holds the trial's first phase. At most 500 points are kept, the most recently started.
 
 #### `network_graph`
 
@@ -278,6 +278,8 @@ Every error has the shape `{ "error": { "code", "message", "details"? } }`.
 | 504 | `timeout` | the 40 s overall budget ran out | none |
 | 500 | `internal` | anything else, including a response that fails its own contract | `issues` or `detail` |
 
+`internal` also carries 404, 413 (body over 64 KB) and 415, which come from Fastify's own handlers.
+
 The `reason` is the client's typed failure:
 
 - Jev: `disabled` (no key), `state_too_large`, `timeout`, `network`, `rate_limited`, `overloaded`, `unauthorized`, `invalid_request`, `server_error`, `bad_response`.
@@ -341,7 +343,7 @@ Jev receives a small state, `{ question, provided }`, where `provided` holds the
 | `in_scope` | noul | Can a registry of trials (conditions, interventions, phases, status, sponsors, sites, dates, enrollment, study type, eligibility) answer it? | always, unless the request sets `intent` |
 | `intent` | choice | `time_trend`, `distribution`, `comparison`, `ranking`, `geographic`, `network`, `count`, `lookup`, `other` | unless the request sets `intent` |
 | `dimension` | choice | `phase`, `status`, `sponsor_class`, `sponsor`, `intervention_type`, `drug`, `condition`, `country`, `start_year`, `enrollment`, `study_type`, `sex`, `age_group`, `none` | all intents but `network`, `count`, `lookup` |
-| `secondary_dimension` | choice | the same list | as `dimension`, unless it equals the primary or is `start_year` outside a time trend |
+| `secondary_dimension` | choice | the same list | as `dimension`, unless it equals the primary or is `start_year` outside a time trend. Used only for `time_trend` and `distribution`; dropped with a note for `comparison`, `ranking` and `geographic` |
 | `chart` | choice | `bar`, `grouped_bar`, `stacked_bar`, `line`, `histogram`, `scatter`, `network_graph`, `map`, `table`, `single_value` | unless the request sets `chart` |
 | `chart_named` | noul | Does the user name a visual form (chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie)? | always |
 | `granularity` | choice | `year`, `quarter`, `month` | when the dimension is `start_year` |
@@ -360,7 +362,7 @@ A choice's confidence is `(p_max − 1/n) / (1 − 1/n)`, from the confidence pa
 | `in_scope < 0.5` | 422 `not_answerable`, with the interpretation (skipped when the request sets `intent`) |
 | intent `other` | 422 `not_answerable` |
 | intent confidence `< 0.4` | the top three intents with probabilities go to `meta.interpretation.intent.alternatives`; the UI shows them as "did you mean" chips |
-| `chart_named ≥ 0.6` | the chart is explicit: it is applied whenever the matrix allows it, and `scatter` becomes allowed |
+| `chart_named ≥ 0.6` | the chart is explicit: an explicit chart only unlocks `scatter` and sets `chart.explicit` in `meta`. Any allowed chart is applied whether or not it is explicit |
 | `recruiting_only ≥ 0.7` | `filter.overallStatus=RECRUITING`; a `status` in the request takes precedence |
 | `combination ≥ 0.6` | the drugs are joined with `AND` in `query.intr`; otherwise `OR` |
 
@@ -371,6 +373,7 @@ Before the chart is chosen, the planner makes the answers consistent with each o
 - A distribution over `start_year` becomes a time trend (note).
 - A time trend always runs over `start_year`. A different dimension that Jev named becomes the secondary dimension, if there is none.
 - A geographic question always runs over `country`.
+- A secondary dimension is used only for a time trend or a distribution. For a comparison, ranking or geographic question it is dropped (note), and the note is added only when one was dropped. This is checked after the comparison fallback, so a one-entity comparison shown as a distribution keeps its secondary dimension.
 - A network, count or lookup has no dimension, and its metric is `trial_count`.
 - A distribution, ranking or comparison with no dimension falls back to `phase` (note).
 - A comparison needs two or more arms. The arms come from the first entity list with two or more members, in the order drugs, conditions, sponsors, countries; the other lists apply to every arm as common filters. With fewer than two, it becomes a distribution (note).
@@ -493,7 +496,7 @@ Pending. The five runs below are produced by `npm run examples` (`examples/run.t
 | `time-trend-pembrolizumab` | "How has the number of trials for this drug changed per year since 2015?" with `drug_name: "Pembrolizumab"` | `line` |
 | `distribution-melanoma-phases` | "How are melanoma trials distributed across phases?" | `bar` |
 | `comparison-pembrolizumab-nivolumab` | "Compare phases for trials involving pembrolizumab vs nivolumab" | `grouped_bar` |
-| `geographic-lupus-recruiting` | "Which countries have the most recruiting trials for lupus?" | `map` |
+| `geographic-lupus-recruiting` | "Which countries have the most recruiting trials for lupus?" | `map` (or `bar`) |
 | `network-sponsors-drugs-melanoma` | "Show a network of sponsors and drugs for melanoma trials" with `citations_per_datum: 3` | `network_graph` |
 
 - **Time trend.** The question says "this drug", and the drug comes from a structured field. This checks that request fields replace extraction and that the time window becomes an Essie date range.
@@ -566,14 +569,14 @@ Pending. `npm run eval:extract` sends the questions with labelled entities to `g
 
 ### Tests
 
-`npm run check` runs the typecheck, eslint and 179 vitest tests in 23 files. Every test runs offline. In the engine and API tests, Jev is a scripted fake that returns well-formed distributions, and ClinicalTrials.gov is a fake client over twelve hand-built studies that exercise every counting rule (several phases, no start date, no enrollment, several countries, combinations, a drug with no MeSH terms). The clients' own tests inject `fetch` in place of the network.
+`npm run check` runs the typecheck, eslint and 182 vitest tests in 23 files. Every test runs offline. In the engine and API tests, Jev is a scripted fake that returns well-formed distributions, and ClinicalTrials.gov is a fake client over twelve hand-built studies that exercise every counting rule (several phases, no start date, no enrollment, several countries, combinations, a drug with no MeSH terms). The clients' own tests inject `fetch` in place of the network.
 
 | Package | Tests | What they pin |
 |---|---|---|
 | `contracts` | 13 | defaults, rejection of unknown fields, the year order, the caps, each chart's spec shape, the JSON Schema export, the error shape |
 | `judgment` | 20 | answer validation (a missing option, a distribution that does not sum to 1, a wrong type, a noul outside [0, 1], a choice that exists only on the prototype chain), retries on 429 with `retry-after`, no retry on 401, never throwing; the question set uses exactly the contract's enums, every option has a `what`, every choice has a way out, the state holds only the provided fields |
 | `ctgov` | 21 | the URL builder (quoting, `AND`/`OR`, Essie ranges, the 19 fields), paging and truncation, the cache, no retry on 400, one retry on 503, progress per page, normalization of a registry-shaped record, the country mapping |
-| `engine` | 96 | the planner (thresholds, normalization, arms, limits, the compatibility matrix on representative cells, explicit scatter), identity sets and citation fields per dimension, bucketing (multi-valued counting, gap filling, quarters, top N, secondary series, sums and medians, enrollment bins), merged arms, graphs (weights, pairs, pruning, collaborators), points and rows, the spec for every chart type, extraction parsing, and `runQuery` end to end with fakes (every intent, overrides, 422, 502 per upstream, 504, a thrown error becoming a 500, the title fallback, an exact count) |
+| `engine` | 99 | the planner (thresholds, normalization, arms, limits, the compatibility matrix on representative cells, explicit scatter), identity sets and citation fields per dimension, bucketing (multi-valued counting, gap filling, quarters, top N, secondary series, sums and medians, enrollment bins), merged arms, graphs (weights, pairs, pruning, collaborators), points and rows, the spec for every chart type, extraction parsing, and `runQuery` end to end with fakes (every intent, overrides, 422, 502 per upstream, 504, a thrown error becoming a 500, the title fallback, an exact count) |
 | `apps/api` | 7 | the routes, 400 with issues, 422, and the SSE event order on success and on failure |
 | `apps/web` | 22 | each chart renders from a spec in jsdom, a table row click picks its citations, the palette, the stream parser (including events split across chunks, and a stream that closes without a result), the history cap |
 

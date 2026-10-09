@@ -34,6 +34,7 @@ describe("runQuery", () => {
     if (body.visualization?.type !== "grouped_bar") throw new Error(body.visualization?.type);
     expect(body.visualization.encoding.series.values).toEqual(["pembrolizumab", "nivolumab"]);
     expect(body.visualization.data.some((d) => Number(d.study_count) > 0)).toBe(true);
+    expect(body.meta.interpretation.secondary_dimension).toBeNull();
   });
   it("comparison: one fetch per arm, grouped bar with two series", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });

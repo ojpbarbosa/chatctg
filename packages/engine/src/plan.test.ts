@@ -142,8 +142,13 @@ describe("plan: secondary grouping", () => {
     const g = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, secondary_dimension: { choice: "sponsor_class" } }), entities: none, request: req(), models }));
     expect(g.secondary).toBeNull();
     const d = okPlan(plan({ answers: await answers({ intent: { choice: "distribution" }, secondary_dimension: { choice: "sponsor_class" } }), entities: none, request: req(), models }));
-    expect(d.secondary).toBe("sponsor_class");
+    expect(d.secondary).toBe("sponsor_class"); expect(d.notes.join(" ")).not.toMatch(/second grouping/);
+    expect(g.notes.join(" ")).toMatch(/for a map/); expect(r.notes.join(" ")).toMatch(/for a ranking/); expect(c.notes.join(" ")).toMatch(/for a comparison/);
     const d2 = okPlan(plan({ answers: await answers({ intent: { choice: "distribution" }, dimension: { choice: "status" }, secondary_dimension: { choice: "phase" } }), entities: none, request: req(), models }));
-    expect(d2.secondary).toBe("phase");
+    expect(d2.secondary).toBe("phase"); expect(d2.notes.join(" ")).not.toMatch(/second grouping/);
+  });
+  it("a one-entity comparison becomes a distribution and keeps its secondary grouping", async () => {
+    const p = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" } }), entities: { ...none, drugs: ["pembrolizumab"] }, request: req(), models }));
+    expect(p.intent).toBe("distribution"); expect(p.secondary).toBe("sponsor_class"); expect(p.notes.join(" ")).not.toMatch(/second grouping/);
   });
 });
