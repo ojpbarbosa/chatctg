@@ -34,6 +34,12 @@ describe("openAiExtractor", () => {
   it("maps invalid JSON and HTTP errors", async () => {
     expect(await openAiExtractor({ OPENAI_API_KEY: "k" }, async () => ok("{nope"))("q", "2026-10-09")).toMatchObject({ ok: false, reason: "openai_invalid_json" });
     expect(await openAiExtractor({ OPENAI_API_KEY: "k" }, async () => new Response("no", { status: 401 }))("q", "2026-10-09")).toMatchObject({ ok: false, reason: "openai_http", detail: expect.stringContaining("401") });
+    expect(await openAiExtractor({ OPENAI_API_KEY: "k" }, async () => new Response("bad model gpt-x", { status: 404 }))("q", "2026-10-09")).toMatchObject({ detail: "404 bad model gpt-x" });
+  });
+  it("keeps only the status of an auth failure, never its body", async () => {
+    const leaky = (status: number) => async () => new Response(JSON.stringify({ error: { message: "Incorrect API key provided: sk-proj-abc123" } }), { status });
+    expect(await openAiExtractor({ OPENAI_API_KEY: "k" }, leaky(401))("q", "2026-10-09")).toEqual({ ok: false, reason: "openai_http", detail: "401", ms: expect.any(Number) });
+    expect(await openAiExtractor({ OPENAI_API_KEY: "k" }, leaky(403))("q", "2026-10-09")).toMatchObject({ detail: "403" });
   });
 });
 

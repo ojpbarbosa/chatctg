@@ -9,7 +9,10 @@ export function buildApp(deps: Deps, opts: { staticDir?: string; logger?: boolea
   const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 64 * 1024 });
   const schemas = jsonSchemas();
 
-  app.get("/health", async () => ({ ok: true, version: VERSION, ...(await deps.ctgov.version()) }));
+  app.get("/health", async () => {
+    const registry = await deps.ctgov.version();
+    return { ok: true, version: VERSION, api_version: registry.apiVersion, data_timestamp: registry.dataTimestamp };
+  });
   app.get("/schema", async () => schemas);
 
   app.post("/query", async (req, reply) => {

@@ -48,11 +48,15 @@ describe("HttpJudgmentClient", () => {
     const r = await client.ask({ state: "s", questions });
     expect(r.ok).toBe(true); expect(calls).toBe(2); expect(sleeps[0]).toBeGreaterThanOrEqual(1000);
   });
-  it("does not retry a 401", async () => {
+  it("does not retry a 401, and keeps only the status of an auth failure", async () => {
     let calls = 0;
-    const client = new HttpJudgmentClient({ apiKey: "k", sleep: async () => {}, fetch: async () => { calls++; return response({}, 401); } });
+    const client = new HttpJudgmentClient({ apiKey: "k", sleep: async () => {}, fetch: async () => { calls++; return response({ error: "invalid key ts_live_abc123 for account acme" }, 401); } });
     const r = await client.ask({ state: "s", questions });
-    expect(r).toMatchObject({ ok: false, reason: "unauthorized" }); expect(calls).toBe(1);
+    expect(r).toMatchObject({ ok: false, reason: "unauthorized", detail: "401" }); expect(calls).toBe(1);
+    const forbidden = new HttpJudgmentClient({ apiKey: "k", fetch: async () => response({ error: "key ts_live_abc123 lacks access" }, 403) });
+    expect(await forbidden.ask({ state: "s", questions })).toMatchObject({ ok: false, reason: "unauthorized", detail: "403" });
+    const bad = new HttpJudgmentClient({ apiKey: "k", fetch: async () => response({ error: "questions.kind: unknown type" }, 400) });
+    expect(await bad.ask({ state: "s", questions })).toMatchObject({ ok: false, reason: "invalid_request", detail: expect.stringContaining("unknown type") });
   });
   it("gives up after the retries with the last reason", async () => {
     const client = new HttpJudgmentClient({ apiKey: "k", maxRetries: 1, sleep: async () => {}, fetch: async () => response({}, 503) });

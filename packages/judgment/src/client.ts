@@ -78,7 +78,10 @@ export class HttpJudgmentClient implements JudgmentClient {
     if (res.ok) {
       try { return { kind: "response", json: await res.json() }; } catch (e) { return { kind: "failure", reason: "bad_response", detail: String(e), retryable: false }; }
     }
-    const detail = await res.text().then((t) => t.slice(0, 300)).catch(() => "");
+    // An auth failure's body can echo the key or the account, and the detail reaches the caller, so only the status is kept.
+    const auth = res.status === 401 || res.status === 403;
+    if (auth) await res.body?.cancel().catch(() => undefined);
+    const detail = auth ? String(res.status) : await res.text().then((t) => t.slice(0, 300)).catch(() => "");
     const fatal = FATAL[res.status];
     if (fatal) return { kind: "failure", reason: fatal, detail, retryable: false };
     const retryAfter = Number(res.headers.get("retry-after"));

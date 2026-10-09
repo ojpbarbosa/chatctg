@@ -37,7 +37,10 @@ export async function responsesCall(opts: {
       if (opts.signal?.aborted) break; continue;
     }
     if (!res.ok) {
-      last = { reason: "openai_http", detail: `${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}` };
+      // An auth failure's body can echo part of the key, and the detail reaches the caller, so only the status is kept.
+      const auth = res.status === 401 || res.status === 403;
+      if (auth) await res.body?.cancel().catch(() => undefined);
+      last = { reason: "openai_http", detail: auth ? String(res.status) : `${res.status} ${(await res.text().catch(() => "")).slice(0, 200)}` };
       if (res.status === 429 || res.status >= 500) continue;
       break;
     }

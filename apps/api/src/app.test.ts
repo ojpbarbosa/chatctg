@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest";
+import type { FastifyReply } from "fastify";
 import { fakeDeps } from "@cheiron/engine";
 import { buildApp } from "./app";
+import { startSse } from "./sse";
 
 const app = () => buildApp(fakeDeps({ intent: { choice: "distribution" }, dimension: { choice: "phase" } }, { drugs: ["pembrolizumab"] }));
 
 describe("API", () => {
   it("GET /health", async () => {
     const r = await app().inject({ method: "GET", url: "/health" });
-    expect(r.statusCode).toBe(200); expect(r.json()).toMatchObject({ ok: true, version: "cheiron/0.1.0" });
+    expect(r.statusCode).toBe(200); expect(r.json()).toEqual({ ok: true, version: "cheiron/0.1.0", api_version: "2.0.5", data_timestamp: "2026-10-08T09:00:05" });
   });
   it("GET /schema", async () => {
     const r = await app().inject({ method: "GET", url: "/schema" });
@@ -37,5 +39,19 @@ describe("API", () => {
     const deps = fakeDeps({}, {}); deps.judge.failWith("server_error");
     const r = await buildApp(deps).inject({ method: "POST", url: "/query/stream", payload: { query: "q" } });
     expect(r.body).toMatch(/^event: error/m); expect(r.body).toContain('"upstream":"jev"');
+  });
+});
+
+describe("startSse", () => {
+  const stub = (raw: Record<string, unknown>, calls: string[]) => ({ hijack: () => { calls.push("hijack"); }, raw: { writeHead: () => { calls.push("writeHead"); }, ...raw } }) as unknown as FastifyReply;
+  it("flushes the headers right after writing them", () => {
+    const calls: string[] = [];
+    startSse(stub({ flushHeaders: () => { calls.push("flushHeaders"); } }, calls));
+    expect(calls).toEqual(["hijack", "writeHead", "flushHeaders"]);
+  });
+  it("works on a response without flushHeaders", () => {
+    const calls: string[] = [];
+    expect(() => startSse(stub({}, calls))).not.toThrow();
+    expect(calls).toEqual(["hijack", "writeHead"]);
   });
 });
