@@ -6,3 +6,6 @@ export * from "./aggregate/points";
 export * from "./aggregate/graph";
 export * from "./aggregate/rows";
 export * from "./spec";
+export * from "./extract";
+export * from "./title";
+export * from "./openai";
