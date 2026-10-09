@@ -41,4 +41,13 @@ describe("streamQuery", () => {
     await streamQuery({ query: "q" }, { onResult: vi.fn(), onError: onError2 });
     expect(onError2).toHaveBeenCalledWith("boom", { a: 1 });
   });
+
+  it("reports an error when the stream closes without a result or error", async () => {
+    const text = sse("interpretation", { interpretation: {}, chart: "bar", arms: [] });
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(streamOf(text, 1000), { status: 200 })));
+    const onResult = vi.fn(); const onError = vi.fn();
+    await streamQuery({ query: "q" }, { onResult, onError });
+    expect(onError).toHaveBeenCalledWith("Connection closed before an answer arrived");
+    expect(onResult).not.toHaveBeenCalled();
+  });
 });

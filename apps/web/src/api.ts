@@ -20,10 +20,10 @@ export async function streamQuery(body: QueryRequestInput, h: Handlers, signal?:
     const j = (await res.json().catch(() => null)) as { error?: { message?: string; details?: unknown } } | null;
     h.onError(j?.error?.message ?? `HTTP ${res.status}`, j?.error?.details); return;
   }
-  const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = "";
+  const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = ""; let terminal = false;
   for (;;) {
     const { value, done } = await reader.read();
-    if (done) break;
+    if (done) { if (!terminal) h.onError("Connection closed before an answer arrived"); break; }
     buf += dec.decode(value, { stream: true });
     let i: number;
     while ((i = buf.indexOf("\n\n")) >= 0) {
@@ -34,8 +34,8 @@ export async function streamQuery(body: QueryRequestInput, h: Handlers, signal?:
       if (ev === "interpretation") h.onInterpretation?.(j);
       else if (ev === "progress") h.onProgress?.(j);
       else if (ev === "title") h.onTitle?.((j as { title: string }).title);
-      else if (ev === "result") h.onResult(j);
-      else if (ev === "error") { const e = j as { error: { message: string; details?: unknown } }; h.onError(e.error.message, e.error.details); }
+      else if (ev === "result") { terminal = true; h.onResult(j); }
+      else if (ev === "error") { terminal = true; const e = j as { error: { message: string; details?: unknown } }; h.onError(e.error.message, e.error.details); }
     }
   }
 }

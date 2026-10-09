@@ -19,7 +19,7 @@ export function App() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(false);
-  const [live, setLive] = useState<LiveState | null>(null);
+  const [live, setLive] = useState<{ id: string; state: LiveState } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const removed = useRef(new Set<string>());
   useEffect(() => saveHistory(items), [items]);
@@ -32,17 +32,17 @@ export function App() {
     const id = newId();
     const item: HistoryItem = { id, query: q, created_at: new Date().toISOString(), response: null, error: null };
     const settle = (patch: Partial<HistoryItem>) => { if (!removed.current.has(id)) setItems((xs) => pushHistory(xs, { ...item, ...patch })); };
-    setItems((xs) => pushHistory(xs, item)); setActiveId(id); setQuery(q); setBusy(true); setLive({});
+    setItems((xs) => pushHistory(xs, item)); setActiveId(id); setQuery(q); setBusy(true); setLive({ id, state: {} });
     try {
       await streamQuery({ query: q, ...extra }, {
-        onInterpretation: (e) => { if (current()) setLive((l) => ({ ...l, interpretation: e })); },
-        onProgress: (e) => { if (current()) setLive((l) => ({ ...l, progress: { fetched: e.fetched, total: e.total } })); },
-        onTitle: (title) => { if (current()) setLive((l) => ({ ...l, title })); },
+        onInterpretation: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, interpretation: e } } : l)); },
+        onProgress: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, progress: { fetched: e.fetched, total: e.total } } } : l)); },
+        onTitle: (title) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, title } } : l)); },
         onResult: (response) => settle({ response }),
         onError: (message, details) => {
           settle({ error: message });
           const d = details as { interpretation?: Interpretation } | undefined;
-          if (d?.interpretation && current()) setLive((l) => ({ ...l, interpretation: { interpretation: d.interpretation as Interpretation, chart: "", arms: [] } }));
+          if (d?.interpretation && current()) setLive((l) => (l ? { ...l, state: { ...l.state, interpretation: { interpretation: d.interpretation as Interpretation, chart: "", arms: [] } } } : l));
         },
       }, ac.signal);
     } catch (e) {
@@ -54,7 +54,7 @@ export function App() {
 
   return (
     <div className="shell">
-      <Sidebar items={items} activeId={activeId} onSelect={(id) => { setActiveId(id); setQuery(items.find((i) => i.id === id)?.query ?? ""); }} onNew={() => { setActiveId(null); setQuery(""); }} onRemove={(id) => { removed.current.add(id); setItems((xs) => xs.filter((x) => x.id !== id)); if (id === activeId) setActiveId(null); }} />
+      <Sidebar items={items} activeId={activeId} onSelect={(id) => { setLive(null); setActiveId(id); setQuery(items.find((i) => i.id === id)?.query ?? ""); }} onNew={() => { setLive(null); setActiveId(null); setQuery(""); }} onRemove={(id) => { removed.current.add(id); setItems((xs) => xs.filter((x) => x.id !== id)); if (id === activeId) setActiveId(null); }} />
       <main className="main">
         {active === null ? (
           <section className="landing">
@@ -67,7 +67,7 @@ export function App() {
           <>
             <div className="docked"><QueryBox value={query} onChange={setQuery} onSubmit={() => submit(query)} busy={busy} docked /></div>
             <section className="result">
-              <ResultCard item={active} live={active.id === activeId ? live : null} onDidYouMean={(intent) => submit(active.query, { intent: intent as QueryRequestInput["intent"] })} />
+              <ResultCard key={active.id} item={active} live={live && live.id === active.id ? live.state : null} onDidYouMean={(intent) => submit(active.query, { intent: intent as QueryRequestInput["intent"] })} />
             </section>
           </>
         )}
