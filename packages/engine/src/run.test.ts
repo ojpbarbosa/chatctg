@@ -79,4 +79,19 @@ describe("runQuery", () => {
     const ac = new AbortController(); ac.abort();
     expect(await runQuery(req("q"), fakeDeps({}, {}), undefined, ac.signal)).toMatchObject({ status: 504 });
   });
+  it("a count is exact, not a sample", async () => {
+    const body = okBody(await runQuery(req("How many trials?"), fakeDeps({ intent: { choice: "count" }, chart: { choice: "single_value" } }, {}, SAMPLE, 2973)));
+    expect(body.meta.coverage.truncated).toBe(false);
+    expect(body.meta.warnings.join(" ")).not.toMatch(/sample/);
+    expect(body.visualization?.subtitle ?? "").not.toMatch(/based on/);
+    expect(body.meta.notes.join(" ")).toMatch(/registry's total/);
+  });
+  it("an unexpected throw becomes a 500, not a rejection", async () => {
+    const deps = fakeDeps({}, {}); deps.ctgov.version = async () => { throw new Error("boom"); };
+    expect(await runQuery(req("q"), deps)).toMatchObject({ ok: false, status: 500, body: { error: { code: "internal" } } });
+  });
+  it("a rejecting titler still yields the template title", async () => {
+    const deps = fakeDeps({}, {}); deps.title = async () => { throw new Error("nope"); };
+    expect(okBody(await runQuery(req("q"), deps)).visualization?.title).toBe("All trials by phase");
+  });
 });

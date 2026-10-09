@@ -28,8 +28,10 @@ const upstream = (which: "jev" | "openai" | "ctgov", reason: string, detail?: st
 /** The title never holds the response: after the cap it is the template title. */
 async function cappedTitle(deps: Deps, summary: string, signal: AbortSignal): Promise<{ title: string | null; ms: number }> {
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const cap = new Promise<{ title: null; ms: number }>((resolve) => { timer = setTimeout(() => resolve({ title: null, ms: TITLE_CAP_MS }), TITLE_CAP_MS); });
-  try { return await Promise.race([deps.title(summary, signal), cap]); } finally { clearTimeout(timer); }
+  const t0 = Date.now();
+  const cap = new Promise<{ title: null; ms: number }>((resolve) => { timer = setTimeout(() => resolve({ title: null, ms: TITLE_CAP_MS }), TITLE_CAP_MS); timer.unref?.(); });
+  const titled = (async () => { try { return await deps.title(summary, signal); } catch { return { title: null, ms: Date.now() - t0 }; } })();
+  try { return await Promise.race([titled, cap]); } finally { clearTimeout(timer); }
 }
 
 export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: QueryEvent) => void, outer?: AbortSignal): Promise<RunResult> {
@@ -38,8 +40,10 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const timeout = AbortSignal.timeout(OVERALL_TIMEOUT_MS);
   const signal = outer ? AbortSignal.any([outer, timeout]) : timeout;
   if (signal.aborted) return error(504, "timeout", "The request was aborted before it started");
-  const emit = (e: QueryEvent) => { try { onEvent?.(e); } catch { /* a listener must not break the pipeline */ } };
+  let done = false;
+  const emit = (e: QueryEvent) => { if (done) return; try { onEvent?.(e); } catch { /* a listener must not break the pipeline */ } };
 
+  try {
   // 1. Interpret: Jev and the extractor, in parallel.
   const provided: ProvidedFields = {
     ...(request.drug_name !== undefined ? { drugs: asList(request.drug_name) } : {}), ...(request.condition !== undefined ? { conditions: asList(request.condition) } : {}),
@@ -82,7 +86,9 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const title = await titleP;
   const total_count = results.reduce((n, r) => n + r.totalCount, 0);
   const fetched_count = results.reduce((n, r) => n + r.fetched, 0);
-  const truncated = results.some((r) => r.truncated);
+  // A count is the registry's exact total; the small fetch only gathers citations.
+  const isCount = p.chart === "single_value";
+  const truncated = !isCount && results.some((r) => r.truncated);
   const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_datum: request.citations_per_datum };
   const visualization = buildVisualization(p, agg, ctx, title.title);
   const notes = [...p.notes];
@@ -96,6 +102,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   }
   if (agg.kind === "points") { studies_without_value = agg.withoutValue; if (agg.dropped) warnings.push(`${agg.dropped} trials beyond the 500 most recent are not plotted.`); }
   if (agg.kind === "graph") notes.push("Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur.");
+  if (isCount) notes.push(`The count is the registry's total; the ${fetched_count.toLocaleString("en-US")} most recently started trials were read for citations.`);
   if (truncated) warnings.push(`Only the ${fetched_count.toLocaleString("en-US")} most recently started of ${total_count.toLocaleString("en-US")} trials were read; counts are over that sample, the total is exact.`);
   if (p.interpretation.chart.reason) notes.push(p.interpretation.chart.reason);
   if (p.interpretation.intent.alternatives.length) notes.push("The intent was uncertain; alternatives are listed in meta.interpretation.intent.alternatives.");
@@ -113,6 +120,11 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const body = QueryResponse.safeParse({ visualization, meta });
   if (!body.success) return error(500, "internal", "The response did not match its own contract", { issues: body.error.issues.slice(0, 5) });
   return { ok: true, status: 200, body: body.data };
+  } catch (e) {
+    return error(500, "internal", "Unexpected failure while answering the question", { detail: String(e).slice(0, 300) });
+  } finally {
+    done = true;
+  }
 }
 
 function aggregate(p: Plan, arms: { label: string; studies: Study[]; total: number }[], all: Study[]): Aggregate {
