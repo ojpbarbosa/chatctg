@@ -161,6 +161,6 @@ function aggregate(p: Plan, arms: { label: string; studies: Study[]; total: numb
 
 /** Everything offline: a scripted judge, canned entities, sample studies, a fixed title. */
 export function fakeDeps(script: Record<string, Scripted>, entities: Partial<Entities>, studies: Study[] = SAMPLE, total = studies.length): Deps & { judge: FakeJudgmentClient; ctgov: FakeCtgovClient } {
-  const base: Record<string, Scripted> = { in_scope: { noul: 0.95 }, intent: { choice: "distribution" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "none" }, chart: { choice: "bar" }, chart_named: { noul: 0.1 }, granularity: { choice: "year" }, metric: { choice: "trial_count" }, edge_kind: { choice: "sponsor_drug" }, recruiting_only: { noul: 0.1 }, combination: { noul: 0.1 } };
+  const base: Record<string, Scripted> = { in_scope: { noul: 0.95 }, intent: { choice: "distribution" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "none" }, chart: { choice: "bar" }, chart_named: { noul: 0.1 }, granularity: { choice: "year" }, metric: { choice: "trial_count" }, edge_kind: { choice: "sponsor_drug" }, recruiting_only: { noul: 0.1 }, combination: { noul: 0.1 }, phase_filter: { choice: "none" } };
   return { judge: new FakeJudgmentClient({ ...base, ...script }), extract: fakeExtractor(entities), title: fakeTitler("Fake title"), ctgov: new FakeCtgovClient(studies, total), today: () => "2026-10-09" };
 }

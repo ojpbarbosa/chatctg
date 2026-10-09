@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS } from "./enums";
+import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS, PHASES } from "./enums";
 
 const judged = <T extends readonly [string, ...string[]]>(values: T) => z.object({ value: z.enum(values), p: z.number().min(0).max(1) });
 
@@ -16,6 +16,8 @@ export const Interpretation = z.object({
   limit: z.number().nullable(),
   recruiting_only: z.boolean(),
   combination: z.boolean().nullable(),
+  /** The phase the trials were restricted to: the request's trial_phase, else the phase Jev found named; null when none applied. */
+  phase_filter: z.enum(PHASES).nullable(),
   provided_fields: z.array(z.string()),
   question_set: z.object({ id: z.string(), version: z.number().int() }),
   models: z.object({ judge: z.string(), extractor: z.string(), titler: z.string() }),

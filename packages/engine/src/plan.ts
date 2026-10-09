@@ -1,15 +1,18 @@
-import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Interpretation, Metric, QueryRequest } from "@cheiron/contracts";
+import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Interpretation, Metric, Phase, QueryRequest } from "@cheiron/contracts";
 import { essieAdvanced, essieTerms, type FetchQuery } from "@cheiron/ctgov";
 import { asList } from "@cheiron/contracts";
 import { QUESTION_SET, topK, type InterpretationAnswers } from "@cheiron/judgment";
-import { DIMENSION_LABEL } from "./dimensions";
+import { DIMENSION_LABEL, PHASE_PHRASE } from "./dimensions";
 
 export interface Entities { drugs: string[]; conditions: string[]; sponsors: string[]; countries: string[]; start_year: number | null; end_year: number | null; limit: number | null }
 export interface Arm { label: string; query: FetchQuery }
 export interface Plan {
   intent: Intent; chart: ChartType; dimension: Dimension | null; secondary: Dimension | null;
   metric: Metric; granularity: Granularity | null; edge_kind: EdgeKind | null;
-  arms: Arm[]; limit: number | null; entities: Entities; recruiting_only: boolean; notes: string[];
+  arms: Arm[]; limit: number | null; entities: Entities; recruiting_only: boolean;
+  /** The phase every arm is restricted to, from the request or from Jev; null when none applied. */
+  phase: Phase | null;
+  notes: string[];
   interpretation: Interpretation;
 }
 export type PlanResult = { ok: true; plan: Plan } | { ok: false; reason: "not_answerable"; message: string; interpretation: Interpretation };
@@ -103,27 +106,14 @@ export function plan(input: PlanInput): PlanResult {
   const recruiting_only = request.status === "RECRUITING" || (request.status === undefined && a.recruiting_only.noul >= THRESHOLDS.recruiting_only);
   const combination: boolean | null = entities.drugs.length >= 2 && intent !== "comparison" ? a.combination.noul >= THRESHOLDS.combination : null;
 
-  // 3. Arms.
-  const common = (over: Partial<Entities>): FetchQuery => {
-    const e = { ...entities, ...over };
-    const q: FetchQuery = {};
-    if (e.drugs.length) q.intr = essieTerms(e.drugs, combination ? "AND" : "OR");
-    if (e.conditions.length) q.cond = essieTerms(e.conditions, "OR");
-    if (e.sponsors.length) q.spons = essieTerms(e.sponsors, "OR");
-    if (e.countries.length) q.locn = essieTerms(e.countries, "OR");
-    const status = request.status ?? (recruiting_only ? "RECRUITING" : undefined);
-    if (status) q.overallStatus = status;
-    const advanced = essieAdvanced({ ...(request.trial_phase ? { phase: request.trial_phase } : {}), ...(e.start_year !== null ? { startYear: e.start_year } : {}), ...(e.end_year !== null ? { endYear: e.end_year } : {}) });
-    if (advanced) q.advanced = advanced;
-    return q;
-  };
-  let arms: Arm[];
+  // 3. Arms: who each arm is about. Their registry queries are built in step 6, once the phase filter is known.
+  let armEntities: { label: string; over: Partial<Entities> }[];
   if (intent === "comparison") {
     const axis = (["drugs", "conditions", "sponsors", "countries"] as const).find((k) => entities[k].length >= 2);
-    if (!axis) { intent = "distribution"; notes.push("A comparison needs two named things; one was found, so this is shown as a distribution."); arms = [{ label: entityLabel(entities), query: common({}) }]; }
-    else arms = entities[axis].map((member) => ({ label: member, query: common({ [axis]: [member] }) }));
+    if (!axis) { intent = "distribution"; notes.push("A comparison needs two named things; one was found, so this is shown as a distribution."); armEntities = [{ label: entityLabel(entities), over: {} }]; }
+    else armEntities = entities[axis].map((member) => ({ label: member, over: { [axis]: [member] } }));
   } else {
-    arms = [{ label: entityLabel(entities), query: common({}) }];
+    armEntities = [{ label: entityLabel(entities), over: {} }];
   }
 
   // A secondary grouping only fits a time trend or a distribution; this runs after the comparison fallback.
@@ -165,6 +155,29 @@ export function plan(input: PlanInput): PlanResult {
 
   if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;
 
+  // 6. Phase filter and queries. The request's trial_phase wins. A phase Jev found named applies unless the chart splits by phase,
+  // which this checks on the final dimensions: a split by phase filtered to one phase would be a single bar.
+  const named: Phase | null = a.phase_filter.choice === "none" ? null : a.phase_filter.choice;
+  let phase: Phase | null = request.trial_phase ?? null;
+  if (phase === null && named !== null) {
+    if (dimension === "phase" || secondary === "phase") notes.push(`${cap(PHASE_PHRASE[named])} was named, but phases are what the chart splits by, so no phase filter was applied.`);
+    else phase = named;
+  }
+  const common = (over: Partial<Entities>): FetchQuery => {
+    const e = { ...entities, ...over };
+    const q: FetchQuery = {};
+    if (e.drugs.length) q.intr = essieTerms(e.drugs, combination ? "AND" : "OR");
+    if (e.conditions.length) q.cond = essieTerms(e.conditions, "OR");
+    if (e.sponsors.length) q.spons = essieTerms(e.sponsors, "OR");
+    if (e.countries.length) q.locn = essieTerms(e.countries, "OR");
+    const status = request.status ?? (recruiting_only ? "RECRUITING" : undefined);
+    if (status) q.overallStatus = status;
+    const advanced = essieAdvanced({ ...(phase ? { phase } : {}), ...(e.start_year !== null ? { startYear: e.start_year } : {}), ...(e.end_year !== null ? { endYear: e.end_year } : {}) });
+    if (advanced) q.advanced = advanced;
+    return q;
+  };
+  const arms: Arm[] = armEntities.map((x) => ({ label: x.label, query: common(x.over) }));
+
   const p = (d: Dimension | null, ans: { probabilities: Record<string, number> }) => (d ? { value: d, p: ans.probabilities[d] ?? 1 } : null);
   const interpretation: Interpretation = {
     intent: { value: intent, p: intentP, confidence: intentConfidence, alternatives: intentConfidence < THRESHOLDS.intent_alternatives ? (topK(a.intent.probabilities, 3) as { value: Intent; p: number }[]) : [] },
@@ -173,7 +186,7 @@ export function plan(input: PlanInput): PlanResult {
     metric, granularity, edge_kind,
     entities: { drugs: entities.drugs, conditions: entities.conditions, sponsors: entities.sponsors, countries: entities.countries },
     time_window: { start_year: entities.start_year, end_year: entities.end_year },
-    limit: entities.limit, recruiting_only, combination, provided_fields,
+    limit: entities.limit, recruiting_only, combination, phase_filter: phase, provided_fields,
     question_set: { id: QUESTION_SET.id, version: QUESTION_SET.version }, models,
   };
 
@@ -184,7 +197,7 @@ export function plan(input: PlanInput): PlanResult {
     return { ok: false, reason: "not_answerable", message: "No chart answers this question; try asking for a trend, a split, a comparison, a ranking, a map, a network, a count or a list.", interpretation: { ...interpretation, chart: { ...interpretation.chart, applied: null } } };
   }
 
-  return { ok: true, plan: { intent, chart: applied, dimension, secondary, metric, granularity, edge_kind, arms, limit, entities, recruiting_only, notes, interpretation } };
+  return { ok: true, plan: { intent, chart: applied, dimension, secondary, metric, granularity, edge_kind, arms, limit, entities, recruiting_only, phase, notes, interpretation } };
 }
 
 /** "Pembrolizumab", "Pembrolizumab · Melanoma", or "All trials". */

@@ -1,8 +1,8 @@
-import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Metric } from "@cheiron/contracts";
+import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Metric, Phase } from "@cheiron/contracts";
 import { choice, noul } from "./questions";
 import type { AnswersFor, JsonValue } from "./types";
 
-export const QUESTION_SET = { id: "query-interpretation", version: 1 } as const;
+export const QUESTION_SET = { id: "query-interpretation", version: 2 } as const;
 
 export interface ProvidedFields {
   drugs?: string[]; conditions?: string[]; sponsors?: string[]; countries?: string[];
@@ -97,6 +97,15 @@ export function interpretationQuestions() {
     combination: noul("When the question names more than one drug, does the user mean trials in which those drugs are used TOGETHER (a combination)?", {
       true: "'pembrolizumab plus chemotherapy', 'combined with', 'in combination with', 'together with'.",
       false: "The drugs are alternatives or are being compared: 'or', 'versus', 'vs', 'compare', 'either'. Also when only one drug is named.",
+    }),
+    phase_filter: choice<Phase | "none">("Does the user restrict the answer to trials of one phase (question)? Pick the phase named; pick none when no phase is named or when phases are what the answer is split by.", {
+      EARLY_PHASE1: { what: "Early phase 1 (formerly phase 0).", examples: ["early phase 1 trials", "phase 0"] },
+      PHASE1: { what: "Phase 1.", examples: ["phase 1 trials", "phase I"] },
+      PHASE2: { what: "Phase 2.", examples: ["phase 2 trials", "phase II"] },
+      PHASE3: { what: "Phase 3.", examples: ["phase 3 trials", "phase III"] },
+      PHASE4: { what: "Phase 4 (after approval).", examples: ["phase 4 trials", "phase IV", "post-marketing"] },
+      NA: { what: "Not applicable: trials without a phase, such as device or behavioural studies.", examples: ["trials with no phase", "phase not applicable"] },
+      none: { what: "No single phase is named, or phases are the attribute being compared or split.", examples: ["How are melanoma trials distributed across phases?", "Compare phases for pembrolizumab vs nivolumab", "How many lupus trials are recruiting?"] },
     }),
   };
 }

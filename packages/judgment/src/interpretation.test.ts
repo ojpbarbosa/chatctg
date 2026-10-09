@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS } from "@cheiron/contracts";
+import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS, PHASES } from "@cheiron/contracts";
 import { interpretationQuestions, interpretationState, QUESTION_SET } from "./interpretation";
 
 describe("interpretation questions", () => {
   const q = interpretationQuestions();
 
-  it("asks the eleven questions", () => {
-    expect(Object.keys(q).sort()).toEqual(["chart", "chart_named", "combination", "dimension", "edge_kind", "granularity", "in_scope", "intent", "metric", "recruiting_only", "secondary_dimension"].sort());
+  it("asks the twelve questions", () => {
+    expect(Object.keys(q).sort()).toEqual(["chart", "chart_named", "combination", "dimension", "edge_kind", "granularity", "in_scope", "intent", "metric", "phase_filter", "recruiting_only", "secondary_dimension"].sort());
   });
 
   it("uses exactly the contract enums as options", () => {
@@ -17,6 +17,7 @@ describe("interpretation questions", () => {
     expect(Object.keys(q.granularity.criteria)).toEqual([...GRANULARITIES]);
     expect(Object.keys(q.metric.criteria)).toEqual([...METRICS]);
     expect(Object.keys(q.edge_kind.criteria)).toEqual([...EDGE_KINDS]);
+    expect(Object.keys(q.phase_filter.criteria)).toEqual([...PHASES, "none"]);
   });
 
   it("gives every option a what, and every choice a way out", () => {
@@ -29,6 +30,7 @@ describe("interpretation questions", () => {
     }
     expect(q.intent.criteria).toHaveProperty("other");
     expect(q.dimension.criteria).toHaveProperty("none");
+    expect(q.phase_filter.criteria).toHaveProperty("none");
   });
 
   it("builds a small state with only the provided fields", () => {
@@ -37,6 +39,6 @@ describe("interpretation questions", () => {
   });
 
   it("is versioned", () => {
-    expect(QUESTION_SET).toEqual({ id: "query-interpretation", version: 1 });
+    expect(QUESTION_SET).toEqual({ id: "query-interpretation", version: 2 });
   });
 });

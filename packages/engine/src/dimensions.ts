@@ -1,4 +1,4 @@
-import type { Dimension, Granularity } from "@cheiron/contracts";
+import type { Dimension, Granularity, Phase } from "@cheiron/contracts";
 import type { Study } from "@cheiron/ctgov";
 
 export const ENROLLMENT_BINS: { label: string; min: number; max: number | null }[] = [
@@ -83,6 +83,8 @@ export function fixedOrder(d: Dimension): string[] | null {
 
 const title = (s: string): string => s.toLowerCase().replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const PHASE_LABEL: Record<string, string> = { EARLY_PHASE1: "Early Phase 1", PHASE1: "Phase 1", PHASE2: "Phase 2", PHASE3: "Phase 3", PHASE4: "Phase 4", NA: "Not applicable" };
+/** A phase inside a sentence: "phase 3 only", "Phase 3 was named". */
+export const PHASE_PHRASE: Record<Phase, string> = { EARLY_PHASE1: "early phase 1", PHASE1: "phase 1", PHASE2: "phase 2", PHASE3: "phase 3", PHASE4: "phase 4", NA: "phase not applicable" };
 const CLASS_LABEL: Record<string, string> = { INDUSTRY: "Industry", NIH: "NIH", FED: "US federal", OTHER_GOV: "Other government", NETWORK: "Network", OTHER: "Other (academic, hospital)", INDIV: "Individual", UNKNOWN: "Unknown", AMBIG: "Ambiguous" };
 
 export function bucketLabel(d: Dimension, key: string): string {

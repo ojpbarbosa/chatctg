@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { QueryRequest } from "@cheiron/contracts";
 import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@cheiron/judgment";
-import { allowedCharts, defaultChart, plan, type Entities } from "./plan";
+import { allowedCharts, armFilters, defaultChart, plan, type Entities } from "./plan";
 
 const models = { judge: "fake", extractor: "fake", titler: "fake" };
 const none: Entities = { drugs: [], conditions: [], sponsors: [], countries: [], start_year: null, end_year: null, limit: null };
 
 async function answers(script: Record<string, Scripted>): Promise<InterpretationAnswers> {
-  const base: Record<string, Scripted> = { in_scope: { noul: 0.95 }, intent: { choice: "distribution" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "none" }, chart: { choice: "bar" }, chart_named: { noul: 0.1 }, granularity: { choice: "year" }, metric: { choice: "trial_count" }, edge_kind: { choice: "sponsor_drug" }, recruiting_only: { noul: 0.1 }, combination: { noul: 0.1 } };
+  const base: Record<string, Scripted> = { in_scope: { noul: 0.95 }, intent: { choice: "distribution" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "none" }, chart: { choice: "bar" }, chart_named: { noul: 0.1 }, granularity: { choice: "year" }, metric: { choice: "trial_count" }, edge_kind: { choice: "sponsor_drug" }, recruiting_only: { noul: 0.1 }, combination: { noul: 0.1 }, phase_filter: { choice: "none" } };
   const r = await new FakeJudgmentClient({ ...base, ...script }).ask({ state: "s", questions: interpretationQuestions() });
   if (!r.ok) throw new Error("fake failed");
   return r.answers;
@@ -88,6 +88,31 @@ describe("plan: arms and filters", () => {
     const p = okPlan(plan({ answers: await answers({}), entities: none, request: req({ trial_phase: "PHASE3", status: "COMPLETED", end_year: 2020 }), models }));
     expect(p.arms[0]!.query).toEqual({ overallStatus: "COMPLETED", advanced: "AREA[Phase]PHASE3 AND AREA[StartDate]RANGE[MIN,2020-12-31]" });
     expect(p.interpretation.provided_fields).toEqual(["trial_phase", "status", "end_year"]);
+  });
+  it("a phase Jev found named becomes an AREA[Phase] filter on every arm", async () => {
+    const p = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: { choice: "PHASE3" }, recruiting_only: { noul: 0.9 } }), entities: { ...none, conditions: ["psoriasis"] }, request: req(), models }));
+    expect(p.arms[0]!.query).toEqual({ cond: '"psoriasis"', overallStatus: "RECRUITING", advanced: "AREA[Phase]PHASE3" });
+    expect(p.phase).toBe("PHASE3"); expect(p.interpretation.phase_filter).toBe("PHASE3");
+    expect(armFilters(p.arms[0]!)).toMatchObject({ "filter.advanced": "AREA[Phase]PHASE3" });
+    const c = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "sponsor_class" }, phase_filter: { choice: "PHASE2" } }), entities: { ...none, drugs: ["a", "b"], start_year: 2015 }, request: req(), models }));
+    expect(c.arms.map((x) => x.query.advanced)).toEqual(["AREA[Phase]PHASE2 AND AREA[StartDate]RANGE[2015-01-01,MAX]", "AREA[Phase]PHASE2 AND AREA[StartDate]RANGE[2015-01-01,MAX]"]);
+    const n = okPlan(plan({ answers: await answers({}), entities: none, request: req(), models }));
+    expect(n.phase).toBeNull(); expect(n.interpretation.phase_filter).toBeNull(); expect(n.arms[0]!.query.advanced).toBeUndefined();
+  });
+  it("the request's trial_phase overrides the phase Jev found", async () => {
+    const p = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: { choice: "PHASE3" } }), entities: none, request: req({ trial_phase: "PHASE2" }), models }));
+    expect(p.arms[0]!.query.advanced).toBe("AREA[Phase]PHASE2"); expect(p.interpretation.phase_filter).toBe("PHASE2");
+    expect(p.notes.join(" ")).not.toMatch(/was named/);
+  });
+  it("a split by phase is not also filtered to one phase, and says so", async () => {
+    const note = "Phase 3 was named, but phases are what the chart splits by, so no phase filter was applied.";
+    const d = okPlan(plan({ answers: await answers({ dimension: { choice: "phase" }, phase_filter: { choice: "PHASE3" } }), entities: none, request: req(), models }));
+    expect(d.arms[0]!.query).toEqual({}); expect(d.phase).toBeNull(); expect(d.interpretation.phase_filter).toBeNull(); expect(d.notes).toContain(note);
+    const t = okPlan(plan({ answers: await answers({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, secondary_dimension: { choice: "phase" }, chart: { choice: "line" }, phase_filter: { choice: "PHASE3" } }), entities: none, request: req(), models }));
+    expect(t.secondary).toBe("phase"); expect(t.arms[0]!.query.advanced).toBeUndefined(); expect(t.notes).toContain(note);
+    // The check runs on the final dimensions: a histogram drops its split by phase, so the filter applies.
+    const h = okPlan(plan({ answers: await answers({ dimension: { choice: "enrollment" }, secondary_dimension: { choice: "phase" }, chart: { choice: "histogram" }, phase_filter: { choice: "PHASE3" } }), entities: none, request: req(), models }));
+    expect(h.secondary).toBeNull(); expect(h.arms[0]!.query.advanced).toBe("AREA[Phase]PHASE3"); expect(h.notes).not.toContain(note);
   });
   it("limits default by intent and follow the extracted number", async () => {
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" } }), entities: none, request: req(), models })).limit).toBe(10);

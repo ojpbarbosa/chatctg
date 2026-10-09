@@ -1,14 +1,14 @@
 [
   { "q": "How has the number of pembrolizumab trials changed per year since 2015?", "intent": ["time_trend"], "dimension": ["start_year"], "chart": ["line"], "entities": { "drugs": ["pembrolizumab"], "start_year": 2015 } },
   { "q": "How many melanoma trials started each year?", "intent": ["time_trend"], "dimension": ["start_year"], "chart": ["line", "bar"], "entities": { "conditions": ["melanoma"] } },
-  { "q": "How are melanoma trials distributed across phases?", "intent": ["distribution"], "dimension": ["phase"], "chart": ["bar"], "entities": { "conditions": ["melanoma"] } },
+  { "q": "How are melanoma trials distributed across phases?", "intent": ["distribution"], "dimension": ["phase"], "chart": ["bar"], "phase_filter": ["none"], "entities": { "conditions": ["melanoma"] } },
   { "q": "What are the most common intervention types for diabetes trials?", "intent": ["distribution", "ranking"], "dimension": ["intervention_type"], "chart": ["bar"], "entities": { "conditions": ["diabetes"] } },
-  { "q": "Compare phases for trials involving pembrolizumab vs nivolumab", "intent": ["comparison"], "dimension": ["phase"], "chart": ["grouped_bar", "bar"], "entities": { "drugs": ["pembrolizumab", "nivolumab"] }, "flags": { "combination": false } },
+  { "q": "Compare phases for trials involving pembrolizumab vs nivolumab", "intent": ["comparison"], "dimension": ["phase"], "chart": ["grouped_bar", "bar"], "phase_filter": ["none"], "entities": { "drugs": ["pembrolizumab", "nivolumab"] }, "flags": { "combination": false } },
   { "q": "Compare sponsor classes across asthma and COPD trials", "intent": ["comparison"], "dimension": ["sponsor_class"], "chart": ["grouped_bar", "stacked_bar"], "entities": { "conditions": ["asthma", "COPD"] } },
   { "q": "Which countries have the most recruiting trials for lupus?", "intent": ["geographic", "ranking"], "dimension": ["country"], "chart": ["map", "bar"], "entities": { "conditions": ["lupus"] }, "flags": { "recruiting_only": true } },
   { "q": "Show a network of sponsors and drugs for melanoma trials", "intent": ["network"], "edge_kind": ["sponsor_drug"], "chart": ["network_graph"], "entities": { "conditions": ["melanoma"] }, "flags": { "chart_named": true } },
   { "q": "Which drugs frequently co-occur in combination studies with pembrolizumab?", "intent": ["network"], "edge_kind": ["drug_drug"], "chart": ["network_graph"], "entities": { "drugs": ["pembrolizumab"] } },
-  { "q": "How many phase 3 psoriasis trials are recruiting?", "intent": ["count"], "chart": ["single_value"], "entities": { "conditions": ["psoriasis"] }, "flags": { "recruiting_only": true } },
+  { "q": "How many phase 3 psoriasis trials are recruiting?", "intent": ["count"], "chart": ["single_value"], "phase_filter": ["PHASE3"], "entities": { "conditions": ["psoriasis"] }, "flags": { "recruiting_only": true } },
   { "q": "List recruiting trials for pediatric asthma in Canada", "intent": ["lookup"], "chart": ["table"], "entities": { "conditions": ["pediatric asthma", "asthma"], "countries": ["Canada"] }, "flags": { "recruiting_only": true } },
   { "q": "Top 10 sponsors running Alzheimer's disease trials", "intent": ["ranking"], "dimension": ["sponsor"], "chart": ["bar"], "entities": { "conditions": ["Alzheimer's disease"], "limit": 10 } },
   { "q": "Which conditions are most studied with semaglutide?", "intent": ["ranking", "distribution"], "dimension": ["condition"], "chart": ["bar"], "entities": { "drugs": ["semaglutide"] } },
@@ -21,7 +21,7 @@
   { "q": "Trials for pembrolizumab plus chemotherapy by phase", "intent": ["distribution"], "dimension": ["phase"], "chart": ["bar"], "entities": { "drugs": ["pembrolizumab", "chemotherapy"] }, "flags": { "combination": true } },
   { "q": "What's the weather in Boston?", "flags": { "in_scope": false } },
   { "q": "Compare phases of recruiting trials in Germany vs France", "intent": ["comparison"], "dimension": ["phase"], "chart": ["grouped_bar"], "entities": { "countries": ["Germany", "France"] }, "flags": { "recruiting_only": true } },
-  { "q": "Show me a table of phase 2 trials for migraine started in 2023", "intent": ["lookup"], "chart": ["table"], "entities": { "conditions": ["migraine"], "start_year": 2023, "end_year": 2023 }, "flags": { "chart_named": true } },
+  { "q": "Show me a table of phase 2 trials for migraine started in 2023", "intent": ["lookup"], "chart": ["table"], "phase_filter": ["PHASE2"], "entities": { "conditions": ["migraine"], "start_year": 2023, "end_year": 2023 }, "flags": { "chart_named": true } },
   { "q": "Which sponsors test the most drugs for rare diseases, as a network?", "intent": ["network"], "edge_kind": ["sponsor_drug"], "chart": ["network_graph"], "entities": { "conditions": ["rare diseases"] }, "flags": { "chart_named": true } },
-  { "q": "Median enrollment of phase 3 oncology trials by sponsor class", "intent": ["distribution"], "dimension": ["sponsor_class"], "metric": ["enrollment_median"], "chart": ["bar"], "entities": { "conditions": ["oncology"] } }
+  { "q": "Median enrollment of phase 3 oncology trials by sponsor class", "intent": ["distribution"], "dimension": ["sponsor_class"], "metric": ["enrollment_median"], "phase_filter": ["PHASE3"], "chart": ["bar"], "entities": { "conditions": ["oncology"] } }
 ]

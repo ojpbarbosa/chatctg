@@ -117,6 +117,14 @@ describe("runQuery", () => {
     expect(body.meta.interpretation.provided_fields).toEqual(["drug_name", "start_year"]);
     expect(deps.ctgov.calls[0]).toEqual({ intr: '"given"', advanced: "AREA[StartDate]RANGE[2015-01-01,MAX]" });
   });
+  it("a phase named in the question filters the fetch and shows in meta", async () => {
+    const deps = fakeDeps({ intent: { choice: "count" }, chart: { choice: "single_value" }, recruiting_only: { noul: 0.95 }, phase_filter: { choice: "PHASE3" } }, { conditions: ["psoriasis"] }, SAMPLE, 41);
+    const body = okBody(await runQuery(req("How many phase 3 psoriasis trials are recruiting?"), deps));
+    expect(deps.ctgov.calls[0]).toEqual({ cond: '"psoriasis"', overallStatus: "RECRUITING", advanced: "AREA[Phase]PHASE3" });
+    expect(body.meta.interpretation.phase_filter).toBe("PHASE3");
+    expect(body.meta.arms[0]?.filters).toEqual({ "query.cond": '"psoriasis"', "filter.overallStatus": "RECRUITING", "filter.advanced": "AREA[Phase]PHASE3" });
+    expect(body.visualization?.subtitle).toMatch(/ · recruiting only · phase 3 only · /);
+  });
   it("not answerable → 422 with the interpretation", async () => {
     const r = await runQuery(req("what is the weather"), fakeDeps({ in_scope: { noul: 0.1 } }, {}));
     expect(r).toMatchObject({ ok: false, status: 422, body: { error: { code: "not_answerable" } } });

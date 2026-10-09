@@ -10,7 +10,7 @@ import { SAMPLE } from "./test-studies";
 const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_datum: 2, arm_totals: [{ label: "Pembrolizumab", total: 12 }] };
 const base = (over: Partial<Plan>): Plan => ({
   intent: "distribution", chart: "bar", dimension: "phase", secondary: null, metric: "trial_count", granularity: null, edge_kind: null,
-  arms: [{ label: "Pembrolizumab", query: { intr: '"pembrolizumab"' } }], limit: null, recruiting_only: false, notes: [],
+  arms: [{ label: "Pembrolizumab", query: { intr: '"pembrolizumab"' } }], limit: null, recruiting_only: false, phase: null, notes: [],
   entities: { drugs: ["pembrolizumab"], conditions: [], sponsors: [], countries: [], start_year: null, end_year: null, limit: null },
   interpretation: null as never,
   ...over,
@@ -36,6 +36,8 @@ describe("titles", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) };
     expect(subtitle(base({}), ctx, agg)).toBe("12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
     expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov · based on the 3,000 most recently started · recruiting only · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
+    const bySponsor: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor_class", metric: "trial_count" }) };
+    expect(subtitle(base({ dimension: "sponsor_class", phase: "PHASE3" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov · phase 3 only · data as of 2026-10-08");
   });
   it("a comparison states each arm's total, since arms can share trials", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE.filter((s) => s.phases.length), { dimension: "phase", metric: "trial_count" }) };

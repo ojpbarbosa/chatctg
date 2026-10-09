@@ -4,7 +4,7 @@ import type { Bucketized } from "./aggregate/buckets";
 import { KIND_FIELD, type GraphEdge, type GraphNode } from "./aggregate/graph";
 import type { Point } from "./aggregate/points";
 import { citeBucket, citeEdge, citeSelf, mostRecent } from "./cite";
-import { bucketLabel, conditionIdentity, DIMENSION_LABEL, DIMENSION_LABEL_PLURAL, ENROLLMENT_BINS, fixedOrder } from "./dimensions";
+import { bucketLabel, conditionIdentity, DIMENSION_LABEL, DIMENSION_LABEL_PLURAL, ENROLLMENT_BINS, fixedOrder, PHASE_PHRASE } from "./dimensions";
 import { entityLabel, type Plan } from "./plan";
 
 export type Aggregate =
@@ -74,6 +74,7 @@ export function planSummary(p: Plan): string {
   else if (p.entities.start_year !== null) parts.push(`started from ${p.entities.start_year}`);
   else if (p.entities.end_year !== null) parts.push(`started up to ${p.entities.end_year}`);
   if (p.recruiting_only) parts.push("recruiting only");
+  if (p.phase) parts.push(`${PHASE_PHRASE[p.phase]} only`);
   return `A ${chart} chart of ${parts.join(", ")}.`;
 }
 
@@ -99,6 +100,7 @@ export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
   const parts = [`${perArm ?? fmt(ctx.total_count)} trials on ClinicalTrials.gov`];
   if (ctx.truncated) parts.push(`based on the ${fmt(ctx.fetched)} most recently started`);
   if (p.recruiting_only) parts.push("recruiting only");
+  if (p.phase) parts.push(`${PHASE_PHRASE[p.phase]} only`);
   if (agg.kind === "buckets" && agg.result.multiValued && p.dimension) parts.push(`counted once per ${singular(DIMENSION_LABEL_PLURAL[p.dimension])}`);
   if (agg.kind === "buckets" && agg.result.omitted > 0 && p.dimension) parts.push(`${fmt(agg.result.omitted)} more ${DIMENSION_LABEL_PLURAL[p.dimension]} not shown`);
   const missing = notShown(p, agg);
