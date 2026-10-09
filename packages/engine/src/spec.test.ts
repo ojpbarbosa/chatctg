@@ -29,8 +29,22 @@ describe("titles", () => {
   });
   it("summarises the plan for the titler", () => {
     expect(planSummary(base({ intent: "time_trend", dimension: "start_year", secondary: "phase", granularity: "year", chart: "line", entities: { drugs: ["pembrolizumab"], conditions: [], sponsors: [], countries: [], start_year: 2015, end_year: null, limit: null } })))
-      .toBe("A line chart of the number of trials per year, split by phase, for pembrolizumab, started from 2015.");
-    expect(planSummary(base({ intent: "lookup", chart: "scatter", dimension: null }))).toBe("A scatter chart of enrollment against start date, one point per trial, for pembrolizumab.");
+      .toBe("A line chart of the number of trials per year, split by phase, for pembrolizumab trials, started from 2015.");
+    expect(planSummary(base({ intent: "lookup", chart: "scatter", dimension: null }))).toBe("A scatter chart of enrollment against start date, one point per trial, for pembrolizumab trials.");
+    const psoriasis = { drugs: [], conditions: ["psoriasis"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null };
+    expect(planSummary(base({ intent: "count", chart: "single_value", dimension: null, recruiting_only: true, phase: "PHASE3", entities: psoriasis })))
+      .toBe("The total number of recruiting phase 3 psoriasis trials.");
+    expect(planSummary(base({ intent: "count", chart: "single_value", dimension: null, entities: { ...psoriasis, conditions: [], drugs: ["pembrolizumab", "nivolumab"], countries: ["Canada"], start_year: 2015 } })))
+      .toBe("The total number of pembrolizumab or nivolumab trials in Canada, started from 2015.");
+    expect(planSummary(base({ intent: "count", chart: "single_value", dimension: null, entities: { ...psoriasis, conditions: [] } }))).toBe("The total number of trials.");
+    expect(planSummary(base({ dimension: "sponsor_class", metric: "enrollment_median", phase: "PHASE3", entities: { ...psoriasis, conditions: ["oncology"] } })))
+      .toBe("A bar chart of the median enrollment by sponsor class, for phase 3 oncology trials.");
+    expect(planSummary(base({ intent: "network", chart: "network_graph", dimension: null, edge_kind: "sponsor_drug", entities: { ...psoriasis, conditions: ["melanoma"] } })))
+      .toBe("A network graph chart of which sponsors test which drugs, for melanoma trials.");
+    expect(planSummary(base({ intent: "geographic", chart: "map", dimension: "country", recruiting_only: true, entities: { ...psoriasis, conditions: ["lupus"] } })))
+      .toBe("A map chart of the number of trials by country, for recruiting lupus trials.");
+    expect(planSummary(base({ intent: "comparison", chart: "grouped_bar", recruiting_only: true, entities: { ...psoriasis, conditions: [], countries: ["Germany", "France"] }, arms: [{ label: "Germany", query: {} }, { label: "France", query: {} }] })))
+      .toBe("A grouped bar chart of the number of trials by phase, comparing Germany and France, counting only recruiting trials.");
   });
   it("subtitle states counts, truncation, counting rule and the data date", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) };

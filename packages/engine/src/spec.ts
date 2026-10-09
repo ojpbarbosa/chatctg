@@ -22,6 +22,11 @@ export interface SpecContext {
 export const METRIC_LABEL: Record<Metric, string> = { trial_count: "Trials", enrollment_total: "Participants enrolled", enrollment_median: "Median enrollment" };
 export const METRIC_UNIT: Record<Metric, "trials" | "participants"> = { trial_count: "trials", enrollment_total: "participants", enrollment_median: "participants" };
 export const EDGE_LABEL: Record<EdgeKind, string> = { sponsor_drug: "Sponsor–drug", drug_drug: "Drug–drug", condition_drug: "Condition–drug", sponsor_condition: "Sponsor–condition", sponsor_collaborator: "Sponsor–collaborator" };
+/** A relationship in words, for the titler: "which sponsors test which drugs" titles better than "sponsor–drug pairs". */
+const EDGE_PHRASE: Record<EdgeKind, string> = {
+  sponsor_drug: "which sponsors test which drugs", drug_drug: "which drugs are tested together in the same trials", condition_drug: "which drugs are tested for which conditions",
+  sponsor_condition: "which sponsors study which conditions", sponsor_collaborator: "which lead sponsors work with which collaborators",
+};
 const METRIC_PHRASE: Record<Metric, string> = { trial_count: "the number of trials", enrollment_total: "the total enrollment", enrollment_median: "the median enrollment" };
 const fmt = (n: number) => n.toLocaleString("en-US");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -55,26 +60,38 @@ export function templateTitle(p: Plan): string {
   }
 }
 
-/** One sentence the titler can work from; it names the chart, the measure, the split, the entities and the window. */
+/** The trials a plan covers, filters first: "recruiting phase 3 psoriasis trials", "pembrolizumab or nivolumab trials in Canada", or just "trials". */
+function trialsPhrase(p: Plan, withEntities: boolean): string {
+  const e = p.entities;
+  const drugs = e.drugs.join(p.arms[0]?.query.intr?.includes(" AND ") ? " plus " : " or ");
+  const names = withEntities ? [drugs, e.conditions.join(" or "), e.sponsors.join(" or ")] : [];
+  const where = withEntities && e.countries.length ? ` in ${e.countries.join(" or ")}` : "";
+  return [p.recruiting_only ? "recruiting" : "", p.phase ? PHASE_PHRASE[p.phase] : "", ...names, "trials"].filter(Boolean).join(" ") + where;
+}
+
+/**
+ * One sentence the titler can work from: the measure, the split, the trials covered and the window.
+ * A count is the total number of some trials, so it is described as those trials, not as a chart of one value.
+ */
 export function planSummary(p: Plan): string {
+  const e = p.entities;
+  const window = e.start_year !== null && e.end_year !== null ? [`started ${e.start_year} to ${e.end_year}`]
+    : e.start_year !== null ? [`started from ${e.start_year}`] : e.end_year !== null ? [`started up to ${e.end_year}`] : [];
+  if (p.intent === "count") return `${[`The total number of ${trialsPhrase(p, true)}`, ...window].join(", ")}.`;
   const chart = p.chart.replace("_", " ");
   const measure = METRIC_PHRASE[p.metric];
   const parts: string[] = [];
   if (p.chart === "scatter") parts.push("enrollment against start date, one point per trial");
   else if (p.intent === "time_trend") parts.push(`${measure} per ${p.granularity ?? "year"}`);
-  else if (p.intent === "network") parts.push(`which ${p.edge_kind ? EDGE_LABEL[p.edge_kind].toLowerCase() : "entity"} pairs co-occur`);
-  else if (p.intent === "count") parts.push(measure);
+  else if (p.intent === "network") parts.push(p.edge_kind ? EDGE_PHRASE[p.edge_kind] : "which entities appear together in trials");
   else if (p.intent === "lookup") parts.push("a list of trials");
   else parts.push(`${measure} by ${p.dimension ? DIMENSION_LABEL[p.dimension].toLowerCase() : "category"}`);
   if (p.secondary) parts.push(`split by ${DIMENSION_LABEL[p.secondary].toLowerCase()}`);
-  if (p.intent === "comparison") parts.push(`comparing ${p.arms.map((a) => a.label).join(" and ")}`);
-  const named = [...p.entities.drugs, ...p.entities.conditions, ...p.entities.sponsors, ...p.entities.countries];
-  if (named.length && p.intent !== "comparison") parts.push(`for ${named.join(", ")}`);
-  if (p.entities.start_year !== null && p.entities.end_year !== null) parts.push(`started ${p.entities.start_year} to ${p.entities.end_year}`);
-  else if (p.entities.start_year !== null) parts.push(`started from ${p.entities.start_year}`);
-  else if (p.entities.end_year !== null) parts.push(`started up to ${p.entities.end_year}`);
-  if (p.recruiting_only) parts.push("recruiting only");
-  if (p.phase) parts.push(`${PHASE_PHRASE[p.phase]} only`);
+  // A comparison's arms are its named things, so only the filters are added; elsewhere the trials are named in full.
+  const covered = trialsPhrase(p, p.intent !== "comparison");
+  if (p.intent === "comparison") parts.push(`comparing ${p.arms.map((a) => a.label).join(" and ")}`, ...(covered !== "trials" ? [`counting only ${covered}`] : []));
+  else if (covered !== "trials") parts.push(`for ${covered}`);
+  parts.push(...window);
   return `A ${chart} chart of ${parts.join(", ")}.`;
 }
 
