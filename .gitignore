@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+api_key/
+/Screenshot*.png
+.DS_Store
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+coverage/
