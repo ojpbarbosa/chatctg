@@ -28,6 +28,13 @@ describe("runQuery", () => {
     if (body.visualization?.type !== "line") return;
     expect(body.visualization.data.map((r) => r.period)).toEqual(["2018", "2019", "2020", "2021", "2022", "2023", "2024"]);
   });
+  it("a comparison ignores a secondary dimension and still fills its cells", async () => {
+    const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
+    const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab by sponsor class"), deps));
+    if (body.visualization?.type !== "grouped_bar") throw new Error(body.visualization?.type);
+    expect(body.visualization.encoding.series.values).toEqual(["pembrolizumab", "nivolumab"]);
+    expect(body.visualization.data.some((d) => Number(d.study_count) > 0)).toBe(true);
+  });
   it("comparison: one fetch per arm, grouped bar with two series", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));

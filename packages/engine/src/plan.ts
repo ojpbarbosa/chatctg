@@ -91,6 +91,10 @@ export function plan(input: PlanInput): PlanResult {
   if ((intent === "distribution" || intent === "ranking" || intent === "comparison") && !dimension) { dimension = "phase"; notes.push("No attribute was named; grouped by phase."); }
   if (secondary === "start_year" && intent !== "time_trend") secondary = null;
   if (secondary === dimension) secondary = null;
+  if (secondary && (intent === "comparison" || intent === "ranking" || intent === "geographic")) {
+    notes.push(`A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown for a ${intent}.`);
+    secondary = null;
+  }
 
   const metric: Metric = intent === "network" || intent === "lookup" || intent === "count" ? "trial_count" : a.metric.choice;
   const granularity: Granularity | null = dimension === "start_year" ? a.granularity.choice : null;

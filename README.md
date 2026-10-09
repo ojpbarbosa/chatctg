@@ -26,8 +26,6 @@ npm install
 | `EXTRACTOR_MODEL`, `TITLER_MODEL` | no | `gpt-5.4-nano` | the OpenAI model ids |
 | `TYPESAFE_BASE_URL`, `OPENAI_BASE_URL` | no | the vendors' public URLs | proxies |
 
-`.env.example` also lists `CTGOV_MAX_STUDIES`. The code does not read it; set `max_studies` per request instead.
-
 Without keys the API still starts and logs a warning per missing key. `/query` then answers 502 `upstream_failed` and names the missing key. Keys are never logged.
 
 ```bash
@@ -614,11 +612,10 @@ Pending, with the example runs. The API has been run with a valid TypeSafe key a
 - **Sequential paging.** Pages within an arm are fetched one after another, about 0.8 s per 1,000 studies. Partitioning the query by `StartDate` ranges would let the pages of one arm run in parallel.
 - **No synonym expansion.** The extractor keeps brand names as written and Cheiron does not map them to generic names, so "Keytruda" and "pembrolizumab" are separate queries. A synonym table or a MeSH lookup before the fetch would close this.
 - **MeSH fallback inconsistency.** A study with MeSH terms is identified by them; a study without them is identified by its registered names. The same drug can therefore appear as two buckets or two nodes ("pembrolizumab" from MeSH and "pembrolizumab 200mg" from a registered name). Edge citations always name the MeSH path for drugs and conditions and give the lowercased identity, even when the identity came from a registered name.
-- **A secondary dimension outside time trends and distributions.** The planner keeps a secondary dimension that Jev picks for a comparison, ranking or geographic question, though those charts cannot show it. A comparison with a secondary returns a grouped bar with no rows, and a ranking returns several rows per category in a plain bar. The fix is to drop the secondary for those intents.
 - **No server-side persistence.** The cache is in memory and the history lives in the browser's `localStorage`.
 - **English only.** The Jev instructions, the extraction prompt and the labels are English.
 - **Deployment.** The Dockerfile builds one image that serves the API and the web app. Hosting it is not done.
-- **Pending items.** The example runs, the extractor benchmark, a live end-to-end query and a visual check of the charts against live data all wait on a valid OpenAI key. `CTGOV_MAX_STUDIES` in `.env.example` is not read by the code.
+- **Pending items.** The example runs, the extractor benchmark, a live end-to-end query and a visual check of the charts against live data all wait on a valid OpenAI key.
 - **A small evaluation.** 25 questions show the question set works on the intended classes. They do not measure how Jev handles phrasing far from them. A larger labelled set, and scoring the planner's applied output as well as Jev's raw answers, are the next steps.
 
 ## AI tools

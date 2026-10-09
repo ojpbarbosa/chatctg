@@ -132,3 +132,18 @@ describe("chart matrix", () => {
     expect(okPlan(plan({ answers: await answers({}), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
   });
 });
+
+describe("plan: secondary grouping", () => {
+  it("a secondary grouping is dropped for comparisons, rankings and maps", async () => {
+    const c = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "status" }, secondary_dimension: { choice: "phase" } }), entities: { ...none, drugs: ["pembrolizumab", "nivolumab"] }, request: req(), models }));
+    expect(c.secondary).toBeNull(); expect(c.notes.join(" ")).toMatch(/second grouping/);
+    const r = okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" }, secondary_dimension: { choice: "phase" } }), entities: none, request: req(), models }));
+    expect(r.secondary).toBeNull();
+    const g = okPlan(plan({ answers: await answers({ intent: { choice: "geographic" }, secondary_dimension: { choice: "sponsor_class" } }), entities: none, request: req(), models }));
+    expect(g.secondary).toBeNull();
+    const d = okPlan(plan({ answers: await answers({ intent: { choice: "distribution" }, secondary_dimension: { choice: "sponsor_class" } }), entities: none, request: req(), models }));
+    expect(d.secondary).toBe("sponsor_class");
+    const d2 = okPlan(plan({ answers: await answers({ intent: { choice: "distribution" }, dimension: { choice: "status" }, secondary_dimension: { choice: "phase" } }), entities: none, request: req(), models }));
+    expect(d2.secondary).toBe("phase");
+  });
+});
