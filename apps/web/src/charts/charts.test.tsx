@@ -1,16 +1,29 @@
 // @vitest-environment jsdom
 import { Visualization } from "@cheiron/contracts";
-import type { BarViz, GroupedBarViz, HistogramViz, LineViz, ScatterViz, StackedBarViz } from "@cheiron/contracts";
+import type { BarViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@cheiron/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarView, widen } from "./Bar";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { CATEGORICAL, colorFor, sequential } from "./palette";
+import { NetworkView } from "./Network";
 import { ScatterView } from "./Scatter";
+import { SingleValueView } from "./SingleValue";
+import { TableView } from "./Table";
+import { WorldMapView } from "./WorldMap";
 import { renderChart } from "./index";
+
+// Two square "countries": USA (840) and Canada (124), as a topology without a transform.
+vi.mock("world-atlas/countries-110m.json", () => {
+  const sq = (x: number, y: number) => [[x, y], [x + 10, y], [x + 10, y + 10], [x, y + 10], [x, y]];
+  return { default: { type: "Topology", arcs: [sq(-100, 30), sq(-100, 50)], objects: { countries: { type: "GeometryCollection", geometries: [
+    { type: "Polygon", id: "840", properties: { name: "United States of America" }, arcs: [[0]] },
+    { type: "Polygon", id: "124", properties: { name: "Canada" }, arcs: [[1]] },
+  ] } } } };
+});
 
 const cite = (n: number) => [{ nct_id: `NCT0000000${n}`, title: `Trial ${n}`, field: "protocolSection.x", excerpt: "x" }];
 const row = (o: Record<string, string | number | null>, n = 1) => ({ ...o, study_count: n, citations: cite(n) });
@@ -126,10 +139,75 @@ describe("chart components render to SVG", () => {
   });
 });
 
+const network = parse<NetworkViz>({
+  type: "network_graph", title: "T", subtitle: "S",
+  encoding: { nodes: { id_field: "id", label_field: "label", kind_field: "kind", size_field: "size", kinds: [{ kind: "sponsor", label: "Sponsor" }, { kind: "drug", label: "Drug" }] }, edges: { source_field: "source", target_field: "target", weight_field: "weight" }, layout: "force" },
+  data: {
+    nodes: [{ id: "a", label: "Pfizer", kind: "sponsor", size: 5, study_count: 5 }, { id: "b", label: "Aspirin", kind: "drug", size: 3, study_count: 3 }, { id: "c", label: "Placebo", kind: "drug", size: 1, study_count: 1 }],
+    edges: [{ source: "a", target: "b", weight: 3, study_count: 3, citations: cite(1) }, { source: "a", target: "c", weight: 1, study_count: 1, citations: cite(2) }],
+  },
+});
+const map = parse<MapViz>({
+  type: "map", title: "T", subtitle: "S",
+  encoding: { geo: { field: "country", code_field: "iso3", level: "country" }, value: { field: "trial_count", label: "Trials", unit: "trials" } },
+  data: [row({ country: "United States", iso3: "USA", trial_count: 9 }, 9), row({ country: "Canada", iso3: "CAN", trial_count: 4 }, 4), row({ country: "Kosovo", iso3: null, trial_count: 1 })],
+});
+const table = parse<TableViz>({
+  type: "table", title: "T", subtitle: "S",
+  encoding: { columns: [{ field: "nct_id", label: "NCT", type: "string" }, { field: "title", label: "Title", type: "string" }, { field: "enrollment", label: "Enrollment", type: "number" }], sort: { field: "enrollment", direction: "desc" } },
+  data: [row({ nct_id: "NCT00000001", title: "Trial 1", enrollment: 1200 }, 1), row({ nct_id: "NCT00000002", title: "Trial 2", enrollment: 80 }, 2)],
+});
+const single = parse<SingleValueViz>({ type: "single_value", title: "T", subtitle: "S", encoding: { value: { field: "trial_count", label: "Trials", unit: "trials" } }, data: [{ value: 12345, label: "Trials", study_count: 12345, citations: cite(1) }] });
+
+/** Mounts, runs `settle` inside act, returns the live container; the caller unmounts via the returned cleanup. */
+async function mount(node: ReactNode, settle: () => Promise<void>) {
+  const el = document.createElement("div");
+  document.body.append(el);
+  const root = createRoot(el);
+  act(() => root.render(node));
+  await act(settle);
+  return { el, done: () => { act(() => root.unmount()); el.remove(); } };
+}
+
+describe("network, map, table and single value", () => {
+  afterEach(() => { vi.useRealTimers(); });
+  it("network: a circle per node and a line per edge once the simulation has ticked", async () => {
+    vi.useFakeTimers();
+    const picked: string[] = [];
+    const { el, done } = await mount(<NetworkView viz={network} onPick={(_, l) => picked.push(l)} />, async () => { await vi.advanceTimersByTimeAsync(500); });
+    expect(el.querySelectorAll("circle")).toHaveLength(3);
+    expect(el.querySelectorAll("line")).toHaveLength(2);
+    expect(el.textContent).toContain("Sponsor");
+    act(() => { el.querySelector("line")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toHaveLength(1);
+    done();
+  });
+  it("map: a path per country once the topology loads, plus the sphere, with unmapped rows listed", async () => {
+    const { el, done } = await mount(<WorldMapView viz={map} onPick={noop} />, async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(el.querySelectorAll("path")).toHaveLength(3);
+    expect(el.textContent).toContain("Not on the map: Kosovo 1");
+    expect(el.textContent).toContain("Top: United States 9");
+    done();
+  });
+  it("table: a row per trial with an NCT link", () => {
+    const html = renderToStaticMarkup(<TableView viz={table} onPick={noop} />);
+    expect(count(html, /<tr/g)).toBe(3);
+    expect(html).toContain('href="https://clinicaltrials.gov/study/NCT00000002"');
+    expect(html).toContain("1,200");
+  });
+  it("single value: the formatted number and its label", () => {
+    const html = renderToStaticMarkup(<SingleValueView viz={single} onPick={noop} />);
+    expect(html).toContain("12,345");
+    expect(html).toContain("trials");
+  });
+});
+
 describe("renderChart", () => {
-  it("falls through to JSON for types without a cartesian renderer", () => {
-    const single = parse<Visualization>({ type: "single_value", title: "T", subtitle: "S", encoding: { value: { field: "trial_count", label: "Trials", unit: "trials" } }, data: [row({ trial_count: 4 })] });
-    expect(renderToStaticMarkup(<>{renderChart(single, noop)}</>)).toContain("<pre");
+  it("routes the four non-cartesian types to their renderers", () => {
+    expect(renderToStaticMarkup(<>{renderChart(single, noop)}</>)).toContain("12,345");
+    expect(renderToStaticMarkup(<>{renderChart(table, noop)}</>)).toContain("<table");
+    expect(renderToStaticMarkup(<>{renderChart(map, noop)}</>)).not.toContain("<pre");
+    expect(renderToStaticMarkup(<>{renderChart(network, noop)}</>)).not.toContain("<pre");
   });
   it("renders a cartesian type through the responsive path without throwing", () => {
     expect(() => renderToStaticMarkup(<>{renderChart(bar, noop)}</>)).not.toThrow();
