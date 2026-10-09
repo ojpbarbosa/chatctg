@@ -44,7 +44,7 @@ export function interpretationQuestions() {
         false: "A question that needs data the registry does not hold (prices, revenue, stock, efficacy results, dosing, side effects, news), or that is not about clinical trials at all ('what is the weather', 'write a poem').",
       },
     ),
-    intent: choice<Intent>("What shape of answer is the user asking for? Judge the question (question) by its meaning, not by the words used.", {
+    intent: choice<Intent>("What shape of answer is the user asking for? Judge the question (question) by its meaning, not by the words used. If the user asks for a network or relationship graph, the intent is network.", {
       time_trend: { what: "How a number changes over time: per year, per month, since a date, 'over time', 'trend', 'growth'.", examples: ["How has the number of pembrolizumab trials changed per year since 2015?", "How many melanoma trials started each year?"] },
       distribution: { what: "How trials split across the categories of one attribute, such as phase, status, sponsor type or intervention type.", not_for: "A split over time (time_trend), a top-N list over an open set (ranking), or two or more named things side by side (comparison).", examples: ["How are melanoma trials distributed across phases?", "What are the most common intervention types for diabetes trials?"] },
       comparison: { what: "Two or more NAMED things (drugs, conditions, sponsors, countries) measured side by side on the same attribute.", not_for: "One thing split by categories (distribution).", examples: ["Compare phases for trials involving pembrolizumab vs nivolumab.", "Compare sponsor classes across asthma and COPD trials."] },
@@ -52,10 +52,10 @@ export function interpretationQuestions() {
       geographic: { what: "Where trials happen: countries, regions, a map, locations.", examples: ["Which countries have the most recruiting trials for lupus?", "Where are CAR-T trials run?"] },
       network: { what: "Relationships or co-occurrence between entities: which sponsors test which drugs, which drugs are combined, which drugs are tested for which conditions, who collaborates with whom.", examples: ["Show a network of sponsors and drugs for melanoma trials.", "Which drugs frequently co-occur in combination studies with pembrolizumab?"] },
       count: { what: "A single number: how many trials match.", not_for: "A number per category or per period.", examples: ["How many phase 3 psoriasis trials are recruiting?"] },
-      lookup: { what: "A list of specific trials or their details, rather than an aggregate.", examples: ["List recruiting trials for pediatric asthma in Canada.", "Which trials test tirzepatide in adolescents?"] },
+      lookup: { what: "A list of specific trials or their details, or a plot of individual trials (one point per trial), rather than an aggregate.", examples: ["List recruiting trials for pediatric asthma in Canada.", "Which trials test tirzepatide in adolescents?"] },
       other: { what: "None of the above, or the question cannot be answered with trial counts, lists or relationships." },
     }),
-    dimension: choice<Dimension>("Which attribute of the trials should the answer be grouped, split or ranked by? Pick 'none' when the question names no attribute. For any question about change over time pick 'start_year'.", DIMENSION_CRITERIA),
+    dimension: choice<Dimension>("Which attribute of the trials should the answer be grouped, split or ranked by? Pick 'none' when the question names no attribute. When trials are compared across named things (conditions, drugs, countries), the attribute is what is measured for each of them, not the named things themselves. For any question about change over time pick 'start_year'.", DIMENSION_CRITERIA),
     secondary_dimension: choice<Dimension>("Besides the main attribute, does the question ask to split each group further by a SECOND attribute (for example per year AND by phase, or by country AND by sponsor type)? Pick 'none' when there is only one attribute.", DIMENSION_CRITERIA),
     chart: choice<ChartType>("Which visual best answers the question? If the user names a visual form, pick that one.", {
       bar: { what: "One value per category, categories side by side.", not_for: "Change over many periods (line)." },
@@ -66,7 +66,7 @@ export function interpretationQuestions() {
       scatter: { what: "One point per trial on two numeric axes, such as enrollment against start date.", not_for: "Counts per category." },
       network_graph: { what: "Nodes and links showing which entities co-occur or relate." },
       map: { what: "Values per country drawn on a world map." },
-      table: { what: "A list of individual trials with their details." },
+      table: { what: "A list of individual trials with their details.", not_for: "Counts per category such as per phase (bar)." },
       single_value: { what: "One number, such as a total count." },
     }),
     chart_named: noul("Does the user explicitly name the kind of visual they want?", {
