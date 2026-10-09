@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HttpJudgmentClient, parseAnswers } from "./client";
+import { HttpJudgmentClient, parseAnswers, topK } from "./client";
 import { choice, noul } from "./questions";
 
 const questions = { kind: choice("Which?", { a: null, b: null, none: "neither" }), yes: noul("Is it?") };
@@ -57,5 +57,31 @@ describe("HttpJudgmentClient", () => {
   it("gives up after the retries with the last reason", async () => {
     const client = new HttpJudgmentClient({ apiKey: "k", maxRetries: 1, sleep: async () => {}, fetch: async () => response({}, 503) });
     expect(await client.ask({ state: "s", questions })).toMatchObject({ ok: false, reason: "server_error" });
+  });
+});
+
+describe("hardening", () => {
+  const never = async () => { throw new Error("fetch should not be called"); };
+  it("never throws on a circular state", async () => {
+    const state: Record<string, unknown> = {}; state.self = state;
+    const client = new HttpJudgmentClient({ apiKey: "k", fetch: never });
+    expect(await client.ask({ state: state as never, questions })).toMatchObject({ ok: false, reason: "invalid_request" });
+  });
+  it("rejects a choice that is only on the prototype chain", () => {
+    const bad = { ...good, answers: { ...good.answers, kind: { ...good.answers.kind, choice: "toString" } } };
+    expect(parseAnswers(bad, questions)).toMatchObject({ ok: false });
+  });
+  it("fails state_too_large before any fetch", async () => {
+    let calls = 0;
+    const client = new HttpJudgmentClient({ apiKey: "k", fetch: async () => { calls++; return response(good); } });
+    const r = await client.ask({ state: "x".repeat(32_000 * 3 + 1), questions });
+    expect(r).toMatchObject({ ok: false, reason: "state_too_large" }); expect(calls).toBe(0);
+  });
+  it("rejects a noul outside [0,1]", () => {
+    const bad = { ...good, answers: { ...good.answers, yes: { type: "noul", noul: 1.5 } } };
+    expect(parseAnswers(bad, questions)).toMatchObject({ ok: false });
+  });
+  it("topK returns the most probable, descending", () => {
+    expect(topK({ a: 0.1, b: 0.6, c: 0.3 }, 2)).toEqual([{ value: "b", p: 0.6 }, { value: "c", p: 0.3 }]);
   });
 });

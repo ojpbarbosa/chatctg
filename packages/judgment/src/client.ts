@@ -35,9 +35,14 @@ export class HttpJudgmentClient implements JudgmentClient {
     const started = this.now();
     let usage = NO_USAGE;
     const fail = (reason: FailureReason, detail?: string): JudgmentResult<Q> => ({ ok: false, reason, ...(detail ? { detail } : {}), usage, ms: this.now() - started });
-    if (!Object.keys(req.questions).length) return fail("invalid_request", "no questions");
-    if (estimateTokens(req.state) > MAX_STATE_TOKENS) return fail("state_too_large");
-    const body = JSON.stringify({ state: req.state, model: this.model, questions: req.questions });
+    let body: string;
+    try {
+      if (!Object.keys(req.questions).length) return fail("invalid_request", "no questions");
+      if (estimateTokens(req.state) > MAX_STATE_TOKENS) return fail("state_too_large");
+      body = JSON.stringify({ state: req.state, model: this.model, questions: req.questions });
+    } catch (e) {
+      return fail("invalid_request", String(e));
+    }
     let last: { reason: FailureReason; detail?: string } = { reason: "network" };
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       if (req.signal?.aborted) return fail("timeout", "aborted by caller");
@@ -121,7 +126,7 @@ function parseOne(a: unknown, q: Question): Answer | string {
   const options = Object.keys(q.criteria);
   const probabilities = distribution(a.probabilities, options);
   if (!probabilities) return `probabilities do not cover ${options.length} options, or do not sum to 1`;
-  if (typeof a.choice !== "string" || !(a.choice in q.criteria)) return "choice is not one of the options";
+  if (typeof a.choice !== "string" || !Object.hasOwn(probabilities, a.choice)) return "choice is not one of the options";
   return { type: "choice", choice: a.choice, probabilities, confidence };
 }
 
