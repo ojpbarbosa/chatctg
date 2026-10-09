@@ -154,7 +154,7 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
   if (agg.kind === "buckets") {
     const r = agg.result; const dim = p.dimension ?? "phase"; const m = p.metric;
     const rowOf = (b: typeof r.buckets[number], extra: Record<string, string | number | null> = {}): DataRow =>
-      row({ ...extra, ...(b.series !== null ? { series: seriesValueLabel(p, b.series) } : {}), [m]: b.value }, b.studies.length, citeBucket(b.studies, dim, b.key, k));
+      row({ ...extra, ...(b.series !== null ? { series: seriesValueLabel(p, b.series) } : {}), [m]: b.value }, b.count ?? b.studies.length, citeBucket(b.studies, dim, b.key, k));
     const series = r.seriesValues.length ? { field: "series", label: seriesLabel(p), values: r.seriesValues.map((v) => seriesValueLabel(p, v)) } : undefined;
     if (p.chart === "line") {
       return { type: "line", ...head, encoding: { x: { field: "period", type: "temporal", granularity: p.granularity ?? "year", label: "Start date" }, y: yAxis(m), ...(series ? { series } : {}) }, data: r.buckets.map((b) => rowOf(b, { period: b.key })) };

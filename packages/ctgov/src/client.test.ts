@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LruCache } from "./cache";
 import { FakeCtgovClient, HttpCtgovClient } from "./client";
+import type { Study } from "./study";
 
 const study = (i: number) => ({ protocolSection: { identificationModule: { nctId: `NCT${String(i).padStart(8, "0")}` } } });
 const page = (ids: number[], total: number, next?: string) => JSON.stringify({ totalCount: total, studies: ids.map(study), ...(next ? { nextPageToken: next } : {}) });
@@ -75,6 +76,13 @@ describe("HttpCtgovClient.fetchStudies", () => {
     await paged.fetchStudies({}, { maxStudies: 3 });
     expect(sizes).toEqual(["2", "2"]);
   });
+  it("sorts by start date descending unless asked otherwise", async () => {
+    const sorts: (string | null)[] = [];
+    const client = new HttpCtgovClient({ fetch: async (u) => { sorts.push(new URL(String(u)).searchParams.get("sort")); return json(page([1], 1)); } });
+    await client.fetchStudies({}, { maxStudies: 10 });
+    await client.fetchStudies({}, { maxStudies: 1, sort: "StartDate:asc" });
+    expect(sorts).toEqual(["StartDate:desc", "StartDate:asc"]);
+  });
   it("reports progress per page", async () => {
     const seen: [number, number][] = [];
     const client = new HttpCtgovClient({ fetch: async (u) => (new URL(String(u)).searchParams.get("pageToken") ? json(page([2], 2)) : json(page([1], 2, "t"))) });
@@ -95,5 +103,20 @@ describe("FakeCtgovClient", () => {
     expect(await fake.fetchStudies({}, { maxStudies: 10, signal: before.signal })).toMatchObject({ ok: false, reason: "ctgov_timeout" });
     const during = new AbortController();
     expect(await fake.fetchStudies({}, { maxStudies: 10, signal: during.signal, onPage: () => during.abort() })).toMatchObject({ ok: false, reason: "ctgov_timeout" });
+  });
+  it("keeps the studies a StartDate range admits, scales the total to them, and honours an explicit sort", async () => {
+    const mk = (nct_id: string, start_date: string | null): Study => ({
+      nct_id, title: nct_id, status: "COMPLETED", phases: [], start_date, start_year: start_date ? Number(start_date.slice(0, 4)) : null, primary_completion_date: null,
+      lead_sponsor: { name: "", class: "OTHER" }, collaborators: [], conditions: [], mesh_conditions: [], interventions: [], mesh_interventions: [], countries: [],
+      enrollment: null, study_type: "INTERVENTIONAL", sex: "ALL", std_ages: [],
+    });
+    const fake = new FakeCtgovClient([mk("c", "2021-02"), mk("b", "2020-12-31"), mk("a", "2020-01-01"), mk("z", null)], 400);
+    const year = await fake.fetchStudies({ advanced: "AREA[Phase]PHASE3 AND AREA[StartDate]RANGE[2020-01-01,2020-12-31]" }, { maxStudies: 1 });
+    expect(year).toMatchObject({ ok: true, totalCount: 200, fetched: 1, truncated: true });
+    const since = await fake.fetchStudies({ advanced: "AREA[StartDate]RANGE[2020-06-01,MAX]" }, { maxStudies: 10 });
+    expect(since.ok && since.studies.map((s) => s.nct_id)).toEqual(["c", "b"]);
+    const oldest = await fake.fetchStudies({}, { maxStudies: 1, sort: "StartDate:asc" });
+    expect(oldest).toMatchObject({ ok: true, totalCount: 400, studies: [{ nct_id: "a" }] });
+    expect(fake.sorts).toEqual(["StartDate:desc", "StartDate:desc", "StartDate:asc"]);
   });
 });

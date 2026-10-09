@@ -3,7 +3,13 @@ import { normalizePage, type Study } from "./study";
 import { buildStudiesUrl, CTGOV_BASE_URL, type StudiesQuery } from "./url";
 
 export type FetchQuery = Pick<StudiesQuery, "intr" | "cond" | "spons" | "locn" | "overallStatus" | "advanced">;
-export interface FetchOptions { maxStudies: number; signal?: AbortSignal; onPage?: (fetched: number, total: number) => void }
+export interface FetchOptions {
+  maxStudies: number; signal?: AbortSignal; onPage?: (fetched: number, total: number) => void;
+  /** The registry's sort; default `StartDate:desc`, so a capped fetch holds the most recently started studies. */
+  sort?: StudySort;
+}
+export type StudySort = "StartDate:desc" | "StartDate:asc";
+export const DEFAULT_SORT: StudySort = "StartDate:desc";
 export interface CtgovRequestLog { url: string; total_count: number; fetched: number }
 export type CtgovFailureReason = "ctgov_invalid_request" | "ctgov_timeout" | "ctgov_network" | "ctgov_server_error" | "ctgov_bad_response";
 export type CtgovResult =
@@ -42,7 +48,7 @@ export class HttpCtgovClient implements CtgovClient {
     // A cap below the page size is met by the first page, so that page asks for no more than the cap; later pages keep the configured size.
     const firstPageSize = Math.max(1, Math.min(this.pageSize, opts.maxStudies));
     for (let pageNo = 0; ; pageNo++) {
-      const url = buildStudiesUrl({ ...q, pageSize: pageNo === 0 ? firstPageSize : this.pageSize, sort: "StartDate:desc", ...(pageNo === 0 ? { countTotal: true } : {}), ...(token ? { pageToken: token } : {}) }, this.baseUrl);
+      const url = buildStudiesUrl({ ...q, pageSize: pageNo === 0 ? firstPageSize : this.pageSize, sort: opts.sort ?? DEFAULT_SORT, ...(pageNo === 0 ? { countTotal: true } : {}), ...(token ? { pageToken: token } : {}) }, this.baseUrl);
       const got = await this.page(url, opts.signal);
       if (!got.ok) return { ok: false, reason: got.reason, ...(got.detail ? { detail: got.detail } : {}), requests, ms: this.now() - started };
       if (pageNo === 0) total = got.page.totalCount ?? got.page.studies.length;
@@ -106,21 +112,45 @@ export class HttpCtgovClient implements CtgovClient {
   }
 }
 
-/** A client that answers from pages handed to it, for engine and API tests. Like the real one, it stops when the signal is aborted. */
+/** Every `AREA[StartDate]RANGE[lo,hi]` clause in an Essie expression, as inclusive ISO date bounds (MIN and MAX open). */
+function startDateRanges(advanced: string | undefined): { lo: string; hi: string }[] {
+  const out: { lo: string; hi: string }[] = [];
+  for (const m of (advanced ?? "").matchAll(/AREA\[StartDate\]RANGE\[([^,\]]+),([^\]]+)\]/g)) out.push({ lo: m[1] === "MIN" ? "" : m[1]!, hi: m[2] === "MAX" ? "\uffff" : m[2]! });
+  return out;
+}
+
+/**
+ * A client that answers from pages handed to it, for engine and API tests. Like the real one, it stops when the signal is aborted.
+ * The studies stand for the registry in its default order (most recently started first) and `total` for its size, which can be larger
+ * to fake a truncated fetch. A `StartDate` range in `advanced` keeps the studies that started in it, and the total shrinks in proportion
+ * to the share kept, so per-year counts add up to the total. An explicit `sort` reorders by start date, undated studies last.
+ */
 export class FakeCtgovClient implements CtgovClient {
   readonly calls: FetchQuery[] = [];
   /** The `maxStudies` of each call, in call order. */
   readonly maxStudies: number[] = [];
+  /** The `sort` of each call, in call order. */
+  readonly sorts: StudySort[] = [];
   constructor(private readonly studies: Study[], private readonly total = studies.length) {}
   async fetchStudies(q: FetchQuery, opts: FetchOptions): Promise<CtgovResult> {
-    this.calls.push(q); this.maxStudies.push(opts.maxStudies);
+    const sort = opts.sort ?? DEFAULT_SORT;
+    this.calls.push(q); this.maxStudies.push(opts.maxStudies); this.sorts.push(sort);
     const aborted = (): CtgovResult => ({ ok: false, reason: "ctgov_timeout", detail: "aborted by caller", requests: [], ms: 0 });
     if (opts.signal?.aborted) return aborted();
-    const take = this.studies.slice(0, opts.maxStudies);
-    opts.onPage?.(take.length, this.total);
+    const ranges = startDateRanges(q.advanced);
+    const within = (d: string | null) => d !== null && ranges.every((r) => d >= r.lo.slice(0, d.length) && d <= r.hi);
+    let matching = ranges.length ? this.studies.filter((s) => within(s.start_date)) : this.studies;
+    const total = ranges.length ? Math.round((this.total * matching.length) / Math.max(1, this.studies.length)) : this.total;
+    if (opts.sort) {
+      const dir = sort === "StartDate:asc" ? 1 : -1;
+      const key = (d: string | null) => (d === null ? Infinity : 0);
+      matching = [...matching].sort((a, b) => key(a.start_date) - key(b.start_date) || dir * (a.start_date ?? "").localeCompare(b.start_date ?? ""));
+    }
+    const take = matching.slice(0, opts.maxStudies);
+    opts.onPage?.(take.length, total);
     if (opts.signal?.aborted) return aborted();
-    const url = buildStudiesUrl({ ...q, pageSize: Math.min(1000, opts.maxStudies), countTotal: true, sort: "StartDate:desc" });
-    return { ok: true, studies: take, totalCount: this.total, fetched: take.length, truncated: take.length < this.total, requests: [{ url, total_count: this.total, fetched: take.length }], ms: 1 };
+    const url = buildStudiesUrl({ ...q, pageSize: Math.max(1, Math.min(1000, opts.maxStudies)), countTotal: true, sort });
+    return { ok: true, studies: take, totalCount: total, fetched: take.length, truncated: take.length < total, requests: [{ url, total_count: total, fetched: take.length }], ms: 1 };
   }
   async version() { return { apiVersion: "2.0.5", dataTimestamp: "2026-10-08T09:00:05" }; }
 }

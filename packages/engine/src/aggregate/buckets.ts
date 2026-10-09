@@ -2,7 +2,8 @@ import type { Dimension, Granularity, Metric } from "@cheiron/contracts";
 import type { Study } from "@cheiron/ctgov";
 import { bucketLabel, fixedOrder, isMultiValued, valuesOf } from "../dimensions";
 
-export interface Bucket { key: string; label: string; series: string | null; value: number; studies: Study[] }
+/** `studies` are the bucket's studies, or only its citations when `count` holds the registry's exact count for it. */
+export interface Bucket { key: string; label: string; series: string | null; value: number; studies: Study[]; count?: number }
 /** Studies left out of every bucket, by the first value they lack: an enrollment (when the metric needs one), the dimension, the secondary dimension. */
 export interface Missing { enrollment: number; dimension: number; secondary: number }
 export interface Bucketized { buckets: Bucket[]; order: string[]; seriesValues: string[]; omitted: number; withoutValue: number; missing: Missing; multiValued: boolean }

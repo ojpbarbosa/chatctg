@@ -1,8 +1,9 @@
 import { asList, QueryResponse, VERSION, type ChartType, type ErrorBody, type Interpretation, type Meta, type QueryRequest } from "@cheiron/contracts";
-import { FakeCtgovClient, type CtgovClient, type Study } from "@cheiron/ctgov";
+import { FakeCtgovClient, type CtgovClient, type CtgovFailureReason, type CtgovRequestLog, type Study } from "@cheiron/ctgov";
 import { FakeJudgmentClient, interpretationQuestions, interpretationState, type JudgmentClient, type ProvidedFields, type Scripted } from "@cheiron/judgment";
 import { bucketize, mergeArms, type Bucketized } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
+import { boundaryPeriod, MAX_YEARS, trimThrough, withinYear, yearBuckets, yearRange, type YearCount } from "./aggregate/periods";
 import { scatterPoints } from "./aggregate/points";
 import { tableRows } from "./aggregate/rows";
 import { fakeExtractor, type Extractor } from "./extract";
@@ -76,25 +77,54 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     : p.chart === "table" ? Math.min(p.limit ?? DEFAULT_LIMITS.table, request.max_studies)
     : request.max_studies;
   const fetched = await Promise.all(p.arms.map((arm) => deps.ctgov.fetchStudies(arm.query, { maxStudies, signal, onPage: (f, t) => emit({ event: "progress", data: { arm: arm.label, fetched: f, total: t } }) })));
-  const fetch_ms = now() - fetchStart;
   if (signal.aborted) return error(504, "timeout", "The request timed out while fetching from ClinicalTrials.gov");
   for (const f of fetched) if (!f.ok) return upstream("ctgov", f.reason, f.detail);
   const results = fetched.filter((f): f is Extract<typeof f, { ok: true }> => f.ok);
+  // A sample of the most recently started trials holds only the last few years of a long series, so a yearly trial count over a
+  // truncated fetch asks the registry for each year's exact count instead.
+  const anyTruncated = results.some((r) => r.truncated);
+  const overTime = p.dimension === "start_year" && p.chart !== "scatter";
+  let yearly: YearCounts | null = null;
+  if (overTime && anyTruncated && p.granularity === "year" && p.secondary === null && p.metric === "trial_count") {
+    const counted = await countPerYear(p, deps.ctgov, request.citations_per_datum, Number(today().slice(0, 4)), signal);
+    if (signal.aborted) return error(504, "timeout", "The request timed out while fetching from ClinicalTrials.gov");
+    if (!counted.ok) return upstream("ctgov", counted.reason, counted.detail);
+    yearly = counted;
+  }
+  const fetch_ms = now() - fetchStart;
 
   // 4. Aggregate.
   const aggStart = now();
   const all = results.flatMap((r) => r.studies);
-  const agg = aggregate(p, results.map((r, i) => ({ label: p.arms[i]!.label, studies: r.studies, total: r.totalCount })), all);
+  let agg: Aggregate;
+  if (yearly) {
+    const opts = { dimension: "start_year" as const, secondary: null, metric: p.metric, granularity: "year" as const, limit: null };
+    const parts = yearly.arms.map((counts, i) => ({ label: p.arms[i]!.label, result: yearBuckets(counts) }));
+    agg = { kind: "buckets", result: parts.length > 1 ? mergeArms(parts, opts) : parts[0]!.result };
+  } else {
+    agg = aggregate(p, results.map((r, i) => ({ label: p.arms[i]!.label, studies: r.studies, total: r.totalCount })), all);
+  }
+  // Any other series over time from a truncated fetch keeps the sample, cut after the period of the oldest trial read: that period
+  // and those before it are incomplete, the later ones complete.
+  let incomplete: { from: string; read: number } | null = null;
+  if (!yearly && overTime && anyTruncated && agg.kind === "buckets") {
+    const cuts = results.filter((r) => r.truncated).map((r) => ({ at: boundaryPeriod(r.studies, p.granularity ?? "year"), read: r.fetched })).filter((c): c is { at: string; read: number } => c.at !== null);
+    const cut = cuts.reduce<{ at: string; read: number } | null>((a, c) => (a === null || c.at > a.at ? c : a), null);
+    const trimmed = cut ? trimThrough(agg.result, cut.at) : null;
+    if (cut && trimmed) { agg = { kind: "buckets", result: trimmed.result }; incomplete = { from: trimmed.from, read: cut.read }; }
+  }
   const aggregate_ms = now() - aggStart;
 
   // 5. Spec and meta.
   const version = await deps.ctgov.version();
   const title = await titleP;
   const total_count = results.reduce((n, r) => n + r.totalCount, 0);
-  const fetched_count = results.reduce((n, r) => n + r.fetched, 0);
-  // A count is the registry's exact total, and a table is exactly the most recently started rows: neither is a sample.
+  // Exact yearly counts read only the citations of each year.
+  const fetched_count = yearly ? yearly.fetched : results.reduce((n, r) => n + r.fetched, 0);
+  // A count is the registry's exact total, a table is exactly the most recently started rows, and exact yearly counts are exact:
+  // none is a sample.
   const isCount = p.chart === "single_value"; const isTable = p.chart === "table";
-  const truncated = !isCount && !isTable && results.some((r) => r.truncated);
+  const truncated = !isCount && !isTable && !yearly && anyTruncated;
   const arm_totals = results.map((r, i) => ({ label: p.arms[i]!.label, total: r.totalCount }));
   const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_datum: request.citations_per_datum, arm_totals };
   const visualization = buildVisualization(p, agg, ctx, title.title);
@@ -119,6 +149,11 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   if (isCount) notes.push(`The count is the registry's total; the ${fmt(fetched_count)} most recently started trials were read for citations.`);
   if (isTable && agg.kind === "rows" && agg.studies.length < total_count) notes.push(`The table lists the ${fmt(agg.studies.length)} most recently started of ${fmt(total_count)} trials.`);
   if (truncated) warnings.push(`Only the ${fmt(fetched_count)} most recently started of ${fmt(total_count)} trials were read; counts are over that sample, the total is exact.`);
+  if (incomplete) warnings.push(`Periods before ${incomplete.from} are incomplete because only the ${fmt(incomplete.read)} most recently started trials were read; they are not shown.`);
+  if (yearly) {
+    notes.push(`Counts per year are exact (one registry count per year); citations show the ${fmt(request.citations_per_datum)} most recent trials of each year.`);
+    if (yearly.cutBefore !== null) warnings.push(`Years before ${yearly.cutBefore} are not shown.`);
+  }
   if (p.interpretation.chart.reason) notes.push(p.interpretation.chart.reason);
   if (p.interpretation.intent.alternatives.length) notes.push("The intent was uncertain; alternatives are listed in meta.interpretation.intent.alternatives.");
 
@@ -126,7 +161,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     query: request.query,
     interpretation: p.interpretation,
     arms: p.arms.map((a) => ({ label: a.label, filters: armFilters(a) })),
-    source: { name: "clinicaltrials.gov", api_version: version.apiVersion, data_timestamp: version.dataTimestamp, requests: results.flatMap((r) => r.requests) },
+    source: { name: "clinicaltrials.gov", api_version: version.apiVersion, data_timestamp: version.dataTimestamp, requests: [...results.flatMap((r) => r.requests), ...(yearly?.requests ?? [])] },
     coverage: { total_count, fetched_count, truncated, sorted_by: "StartDate:desc", studies_without_value, omitted_categories },
     units: { y: METRIC_UNIT[p.metric] }, granularity: p.granularity,
     timing: { jev_ms: judged.ms, extract_ms: extracted.ms, fetch_ms, title_ms: title.ms, aggregate_ms, total_ms: now() - started },
@@ -140,6 +175,41 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   } finally {
     done = true;
   }
+}
+
+type YearCounts =
+  | { ok: true; arms: YearCount[][]; requests: CtgovRequestLog[]; fetched: number; cutBefore: number | null }
+  | { ok: false; reason: CtgovFailureReason; detail?: string };
+
+/**
+ * Each arm's exact trial count per start year: one registry request per year and arm, in parallel, each reading the `k` most recently
+ * started trials of its year for citations. The years run from the question's start year, else the arm's oldest start date (one request
+ * sorted ascending), to its end year, else two years ahead (registered start dates can be planned ones), keeping the latest MAX_YEARS.
+ */
+async function countPerYear(p: Plan, ctgov: CtgovClient, k: number, thisYear: number, signal: AbortSignal): Promise<YearCounts> {
+  const requests: CtgovRequestLog[] = [];
+  const to = p.entities.end_year ?? thisYear + 2;
+  let from = p.entities.start_year;
+  if (from === null) {
+    const oldest = await Promise.all(p.arms.map((arm) => ctgov.fetchStudies(arm.query, { maxStudies: 1, sort: "StartDate:asc", signal })));
+    const years: number[] = [];
+    for (const r of oldest) {
+      if (!r.ok) return { ok: false, reason: r.reason, ...(r.detail ? { detail: r.detail } : {}) };
+      requests.push(...r.requests);
+      for (const s of r.studies) if (s.start_year !== null) years.push(s.start_year);
+    }
+    from = years.length ? Math.min(...years) : to - MAX_YEARS + 1;
+  }
+  const { years, cutBefore } = yearRange(from, to);
+  const calls = await Promise.all(p.arms.flatMap((arm) => years.map((y) => ctgov.fetchStudies({ ...arm.query, advanced: withinYear(arm.query.advanced, y) }, { maxStudies: k, signal }))));
+  const arms: YearCount[][] = p.arms.map(() => []);
+  let fetched = 0;
+  for (const [i, r] of calls.entries()) {
+    if (!r.ok) return { ok: false, reason: r.reason, ...(r.detail ? { detail: r.detail } : {}) };
+    requests.push(...r.requests); fetched += r.fetched;
+    arms[Math.floor(i / years.length)]!.push({ year: years[i % years.length]!, total: r.totalCount, studies: r.studies });
+  }
+  return { ok: true, arms, requests, fetched, cutBefore };
 }
 
 function aggregate(p: Plan, arms: { label: string; studies: Study[]; total: number }[], all: Study[]): Aggregate {

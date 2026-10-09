@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { QueryRequest, QueryResponse } from "@cheiron/contracts";
 import { fakeDeps, runQuery, type QueryEvent } from "./run";
-import { SAMPLE } from "./test-studies";
+import { SAMPLE, study } from "./test-studies";
 
 const req = (q: string, extra: Record<string, unknown> = {}) => QueryRequest.parse({ query: q, citations_per_datum: 2, ...extra });
 const okBody = (r: Awaited<ReturnType<typeof runQuery>>) => { if (!r.ok) throw new Error(JSON.stringify(r.body)); const v = QueryResponse.safeParse(r.body); if (!v.success) throw new Error(JSON.stringify(v.error.issues)); return v.data; };
@@ -29,6 +29,61 @@ describe("runQuery", () => {
     expect(body.visualization?.type).toBe("line");
     if (body.visualization?.type !== "line") return;
     expect(body.visualization.data.map((r) => r.period)).toEqual(["2018", "2019", "2020", "2021", "2022", "2023", "2024"]);
+  });
+  it("a yearly trend over a truncated fetch counts each year exactly, from the oldest start date", async () => {
+    // SAMPLE's eleven dated studies stand for 3,000 trials, 250 each: 2018 1, 2019 2, 2020 1, 2021 2, 2022 2, 2023 2, 2024 1.
+    const trend = { intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "line" } };
+    const deps = fakeDeps(trend, { conditions: ["melanoma"] }, SAMPLE, 3000);
+    const body = okBody(await runQuery(req("Melanoma trials per year", { citations_per_datum: 1 }), deps));
+    if (body.visualization?.type !== "line") throw new Error(body.visualization?.type);
+    expect(body.visualization.data.map((r) => [r.period, r.trial_count, r.study_count, r.citations.length])).toEqual([
+      ["2018", 250, 250, 1], ["2019", 500, 500, 1], ["2020", 250, 250, 1], ["2021", 500, 500, 1], ["2022", 500, 500, 1], ["2023", 500, 500, 1], ["2024", 250, 250, 1],
+    ]);
+    expect(body.visualization.data[1]!.citations[0]).toMatchObject({ nct_id: "NCT00000005", excerpt: "2019-05-20" });
+    const years = Array.from({ length: 11 }, (_, i) => 2018 + i);   // the oldest start year to this year + 2
+    expect(deps.ctgov.sorts).toEqual(["StartDate:desc", "StartDate:asc", ...years.map(() => "StartDate:desc")]);
+    expect(deps.ctgov.maxStudies).toEqual([3000, 1, ...years.map(() => 1)]);
+    expect(deps.ctgov.calls.slice(1)).toEqual([{ cond: '"melanoma"' }, ...years.map((y) => ({ cond: '"melanoma"', advanced: `AREA[StartDate]RANGE[${y}-01-01,${y}-12-31]` }))]);
+    expect(body.meta.coverage).toMatchObject({ total_count: 3000, fetched_count: 7, truncated: false, studies_without_value: 0 });
+    expect(body.meta.source.requests).toHaveLength(13);
+    expect(body.meta.source.requests[2]).toMatchObject({ total_count: 250, fetched: 1 });
+    expect(body.meta.notes).toContain("Counts per year are exact (one registry count per year); citations show the 1 most recent trials of each year.");
+    expect(body.meta.warnings).toEqual([]);
+    expect(body.visualization.subtitle).toBe("3,000 trials on ClinicalTrials.gov · data as of 2026-10-08");
+  });
+  it("exact yearly counts start at the question's start year, and keep at most 40 years", async () => {
+    const trend = { intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "bar" } };
+    const since = fakeDeps(trend, { start_year: 2020 }, SAMPLE, 3000);
+    const body = okBody(await runQuery(req("Trials per year since 2020"), since));
+    if (body.visualization?.type !== "bar") throw new Error(body.visualization?.type);
+    expect(body.visualization.data.map((r) => [r.period, r.trial_count])).toEqual([["2020", 250], ["2021", 500], ["2022", 500], ["2023", 500], ["2024", 250]]);
+    expect(since.ctgov.sorts).not.toContain("StartDate:asc");
+    expect(since.ctgov.calls[1]).toEqual({ advanced: "AREA[StartDate]RANGE[2020-01-01,MAX] AND AREA[StartDate]RANGE[2020-01-01,2020-12-31]" });
+    expect(since.ctgov.calls).toHaveLength(1 + 9);
+    const old = fakeDeps(trend, {}, [...SAMPLE, study({ nct_id: "NCT00000013", start_date: "1950-06-01" })], 3000);
+    const capped = okBody(await runQuery(req("Trials per year"), old));
+    expect(old.ctgov.calls).toHaveLength(2 + 40);
+    expect(old.ctgov.calls[2]!.advanced).toBe("AREA[StartDate]RANGE[1989-01-01,1989-12-31]");
+    expect(capped.meta.warnings).toEqual(["Years before 1989 are not shown."]);
+  });
+  it("other series over time from a truncated fetch drop the periods the sample may hold only in part", async () => {
+    const deps = fakeDeps({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, granularity: { choice: "quarter" }, chart: { choice: "line" } }, {}, SAMPLE, 3000);
+    const body = okBody(await runQuery(req("Trials per quarter"), deps));
+    if (body.visualization?.type !== "line") throw new Error(body.visualization?.type);
+    expect(deps.ctgov.calls).toHaveLength(1);
+    expect(body.visualization.data[0]!.period).toBe("2018-Q4");   // the oldest trial read started in 2018-Q3
+    expect(body.visualization.data.at(-1)!.period).toBe("2024-Q2");
+    expect(body.meta.coverage.truncated).toBe(true);
+    expect(body.meta.warnings).toContain("Periods before 2018-Q4 are incomplete because only the 12 most recently started trials were read; they are not shown.");
+    const split = fakeDeps({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, secondary_dimension: { choice: "phase" }, chart: { choice: "line" } }, {}, SAMPLE, 3000);
+    const bySeries = okBody(await runQuery(req("Trials per year by phase"), split));
+    if (bySeries.visualization?.type !== "line") throw new Error(bySeries.visualization?.type);
+    expect(split.ctgov.calls).toHaveLength(1);
+    expect([...new Set(bySeries.visualization.data.map((r) => r.period))]).toEqual(["2019", "2020", "2021", "2022", "2023", "2024"]);
+    expect(bySeries.meta.warnings).toContain("Periods before 2019 are incomplete because only the 12 most recently started trials were read; they are not shown.");
+    const median = fakeDeps({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, metric: { choice: "enrollment_median" }, chart: { choice: "line" } }, {}, SAMPLE, 3000);
+    expect(okBody(await runQuery(req("Median enrollment per year"), median)).meta.warnings.join(" ")).toMatch(/^Only the 12 .* Periods before 2019 are incomplete/);
+    expect(median.ctgov.calls).toHaveLength(1);
   });
   it("a comparison ignores a secondary dimension and still fills its cells", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
