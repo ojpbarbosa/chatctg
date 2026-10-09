@@ -7,7 +7,7 @@
   "response": {
     "visualization": {
       "type": "network_graph",
-      "title": "Melanoma Sponsor-Drug Co-occurrence Network by Sponsor-Drug Pairs",
+      "title": "Sponsors and the drugs they test in melanoma trials",
       "subtitle": "3,775 trials on ClinicalTrials.gov · based on the 3,000 most recently started · 40 strongest links shown · data as of 2026-10-09",
       "encoding": {
         "nodes": {
@@ -1360,10 +1360,11 @@
         "limit": null,
         "recruiting_only": false,
         "combination": null,
+        "phase_filter": null,
         "provided_fields": [],
         "question_set": {
           "id": "query-interpretation",
-          "version": 1
+          "version": 2
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -1414,12 +1415,12 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 184,
-        "extract_ms": 705,
+        "jev_ms": 223,
+        "extract_ms": 746,
         "fetch_ms": 0,
-        "title_ms": 667,
+        "title_ms": 612,
         "aggregate_ms": 24,
-        "total_ms": 1374
+        "total_ms": 1361
       },
       "notes": [
         "Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur."

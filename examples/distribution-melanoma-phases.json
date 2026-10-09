@@ -6,7 +6,7 @@
   "response": {
     "visualization": {
       "type": "bar",
-      "title": "Number of Trials by Phase for Melanoma",
+      "title": "Melanoma trials by phase",
       "subtitle": "3,775 trials on ClinicalTrials.gov · based on the 3,000 most recently started · counted once per phase · 531 trials without a phase not shown · data as of 2026-10-09",
       "encoding": {
         "x": {
@@ -300,10 +300,11 @@
         "limit": null,
         "recruiting_only": false,
         "combination": null,
+        "phase_filter": null,
         "provided_fields": [],
         "question_set": {
           "id": "query-interpretation",
-          "version": 1
+          "version": 2
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -354,12 +355,12 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 322,
-        "extract_ms": 1178,
-        "fetch_ms": 2116,
-        "title_ms": 848,
-        "aggregate_ms": 8,
-        "total_ms": 3304
+        "jev_ms": 233,
+        "extract_ms": 758,
+        "fetch_ms": 1917,
+        "title_ms": 576,
+        "aggregate_ms": 11,
+        "total_ms": 2689
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

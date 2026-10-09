@@ -7,7 +7,7 @@
   "response": {
     "visualization": {
       "type": "map",
-      "title": "Number of Recruiting Trials for Lupus by Country",
+      "title": "Lupus trials by country where recruiting",
       "subtitle": "324 trials on ClinicalTrials.gov · recruiting only · counted once per country · data as of 2026-10-09",
       "encoding": {
         "geo": {
@@ -2047,7 +2047,7 @@
         },
         "dimension": {
           "value": "country",
-          "p": 0.44
+          "p": 0.48
         },
         "secondary_dimension": null,
         "chart": {
@@ -2074,12 +2074,13 @@
         "limit": null,
         "recruiting_only": true,
         "combination": null,
+        "phase_filter": null,
         "provided_fields": [
           "chart"
         ],
         "question_set": {
           "id": "query-interpretation",
-          "version": 1
+          "version": 2
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -2121,12 +2122,12 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 280,
-        "extract_ms": 800,
-        "fetch_ms": 222,
-        "title_ms": 1053,
+        "jev_ms": 156,
+        "extract_ms": 887,
+        "fetch_ms": 321,
+        "title_ms": 591,
         "aggregate_ms": 1,
-        "total_ms": 1858
+        "total_ms": 1484
       },
       "notes": [
         "A trial with several countries is counted once per value."

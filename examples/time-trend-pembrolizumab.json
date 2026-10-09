@@ -7,7 +7,7 @@
   "response": {
     "visualization": {
       "type": "line",
-      "title": "Pembrolizumab Trials Per Year Since 2015",
+      "title": "Pembrolizumab trials per year since 2015",
       "subtitle": "2,909 trials on ClinicalTrials.gov · data as of 2026-10-09",
       "encoding": {
         "x": {
@@ -545,12 +545,13 @@
         "limit": null,
         "recruiting_only": false,
         "combination": null,
+        "phase_filter": null,
         "provided_fields": [
           "drug_name"
         ],
         "question_set": {
           "id": "query-interpretation",
-          "version": 1
+          "version": 2
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -602,12 +603,12 @@
       },
       "granularity": "year",
       "timing": {
-        "jev_ms": 311,
-        "extract_ms": 1250,
-        "fetch_ms": 3042,
-        "title_ms": 969,
-        "aggregate_ms": 5,
-        "total_ms": 4361
+        "jev_ms": 321,
+        "extract_ms": 725,
+        "fetch_ms": 2111,
+        "title_ms": 1202,
+        "aggregate_ms": 7,
+        "total_ms": 2901
       },
       "notes": [],
       "warnings": [],
