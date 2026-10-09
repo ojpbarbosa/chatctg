@@ -9,17 +9,18 @@ if (!judge.enabled) { console.error("TYPESAFE_API_KEY is not set"); process.exit
 const rows: string[] = []; const latencies: number[] = []; let hits = 0, checks = 0; const confusions: string[] = [];
 for (const c of cases) {
   const r = await judge.ask({ state: interpretationState(c.q, {}), questions: interpretationQuestions() });
-  if (!r.ok) { rows.push(`| ${c.q} | FAILED ${r.reason} | | | |`); continue; }
+  if (!r.ok) { rows.push(`| ${c.q} | FAILED ${r.reason} | | | | |`); continue; }
   const a = r.answers as InterpretationAnswers; latencies.push(r.ms);
   const cell = (key: keyof Case, got: string, p: number) => { const exp = c[key] as string[] | undefined; if (!exp) return `${got} (${p.toFixed(2)})`; checks++; const ok = exp.includes(got); if (ok) hits++; else confusions.push(`${c.q}: ${String(key)} expected ${exp.join("|")}, got ${got} (${p.toFixed(2)})`); return `${ok ? "✓" : "✗"} ${got} (${p.toFixed(2)})`; };
   const flagCell = Object.entries(c.flags ?? {}).map(([k, v]) => { const n = (a[k as keyof InterpretationAnswers] as { noul: number }).noul; checks++; const ok = v ? n >= 0.5 : n < 0.5; if (ok) hits++; else confusions.push(`${c.q}: ${k} expected ${v}, got ${n.toFixed(2)}`); return `${ok ? "✓" : "✗"} ${k}=${n.toFixed(2)}`; }).join(" ");
-  rows.push(`| ${c.q} | ${cell("intent", a.intent.choice, a.intent.probabilities[a.intent.choice] ?? 0)} | ${cell("dimension", a.dimension.choice, a.dimension.probabilities[a.dimension.choice] ?? 0)} | ${cell("chart", a.chart.choice, a.chart.probabilities[a.chart.choice] ?? 0)} | ${flagCell} | ${r.ms} |`);
+  const other = (["secondary_dimension", "metric", "edge_kind"] as const).filter((k) => c[k]).map((k) => { const x = a[k] as { choice: string; probabilities: Record<string, number> }; return cell(k, x.choice, x.probabilities[x.choice] ?? 0).replace(/ (\S+) \(/, ` ${k}=$1 (`); }).join(" ");
+  rows.push(`| ${c.q} | ${cell("intent", a.intent.choice, a.intent.probabilities[a.intent.choice] ?? 0)} | ${cell("dimension", a.dimension.choice, a.dimension.probabilities[a.dimension.choice] ?? 0)} | ${cell("chart", a.chart.choice, a.chart.probabilities[a.chart.choice] ?? 0)} | ${flagCell} | ${other} | ${r.ms} |`);
 }
 latencies.sort((x, y) => x - y);
 const pct = (p: number) => latencies[Math.min(latencies.length - 1, Math.floor(p * latencies.length))] ?? 0;
 const report = [
   `# Jev agreement on ${cases.length} labelled questions`, "", `Run: ${new Date().toISOString()} · model: ${judge.model} · agreement: ${hits}/${checks} (${Math.round((100 * hits) / Math.max(1, checks))}%) · latency p50 ${pct(0.5)} ms, p90 ${pct(0.9)} ms`, "",
-  "| Question | Intent | Dimension | Chart | Flags | ms |", "|---|---|---|---|---|---|", ...rows, "",
+  "| Question | Intent | Dimension | Chart | Flags | Other | ms |", "|---|---|---|---|---|---|---|", ...rows, "",
   "## Disagreements", "", ...(confusions.length ? confusions.map((x) => `- ${x}`) : ["None."]), "",
 ].join("\n");
 writeFileSync(new URL("./report.md", import.meta.url), report);
