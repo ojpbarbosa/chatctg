@@ -9,3 +9,5 @@ export * from "./spec";
 export * from "./extract";
 export * from "./title";
 export * from "./openai";
+export * from "./run";
+export * from "./test-studies";
