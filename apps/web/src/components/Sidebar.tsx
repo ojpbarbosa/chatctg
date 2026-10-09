@@ -10,11 +10,14 @@ export function Sidebar({ items, activeId, onSelect, onNew, onRemove }: { items:
       <nav className="history" aria-label="History">
         {items.length === 0 && <div className="history-empty">Your questions will appear here.</div>}
         {items.map((it) => (
-          <button key={it.id} className="history-item" aria-current={it.id === activeId} onClick={() => onSelect(it.id)}>
-            <span aria-hidden>{it.error ? "!" : GLYPH[it.response?.visualization?.type ?? ""] ?? "·"}</span>
-            <span className="q">{it.query}</span>
-            <span className="when">{ago(it.created_at)}<span className="x" role="button" aria-label="Remove" onClick={(e) => { e.stopPropagation(); onRemove(it.id); }}>×</span></span>
-          </button>
+          <div key={it.id} className="history-item">
+            <button className="select" aria-current={it.id === activeId} onClick={() => onSelect(it.id)}>
+              <span aria-hidden>{it.error ? "!" : GLYPH[it.response?.visualization?.type ?? ""] ?? "·"}</span>
+              <span className="q">{it.query}</span>
+              <span className="when">{ago(it.created_at)}</span>
+            </button>
+            <button className="x" aria-label="Remove" onClick={() => onRemove(it.id)}>×</button>
+          </div>
         ))}
       </nav>
     </aside>

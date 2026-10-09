@@ -10,3 +10,4 @@ dist/
 .vite/
 coverage/
 .superpowers/
+apps/api/public/

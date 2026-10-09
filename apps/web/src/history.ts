@@ -5,7 +5,7 @@ const KEY = "cheiron.history.v1";
 export const HISTORY_CAP = 30;
 
 export function loadHistory(): HistoryItem[] {
-  try { const raw = localStorage.getItem(KEY); const v = raw ? (JSON.parse(raw) as unknown) : []; return Array.isArray(v) ? (v as HistoryItem[]) : []; } catch { return []; }
+  try { const raw = localStorage.getItem(KEY); const v = raw ? (JSON.parse(raw) as unknown) : []; return Array.isArray(v) ? (v as HistoryItem[]).map((it) => (it.response || it.error ? it : { ...it, error: "Interrupted before an answer arrived" })) : []; } catch { return []; }
 }
 export function saveHistory(items: HistoryItem[]): void {
   try { localStorage.setItem(KEY, JSON.stringify(items)); } catch { /* quota or private mode: history is a convenience */ }
