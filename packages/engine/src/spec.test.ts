@@ -64,9 +64,12 @@ describe("buildVisualization", () => {
     const a = bucketize(SAMPLE.filter((s) => s.lead_sponsor.name === "Merck"), { dimension: "phase", metric: "trial_count" });
     const b = bucketize(SAMPLE.filter((s) => s.lead_sponsor.name === "Acme"), { dimension: "phase", metric: "trial_count" });
     const m = mergeArms([{ label: "Merck", result: a }, { label: "Acme", result: b }], { dimension: "phase", metric: "trial_count" });
-    const v = valid(buildVisualization(base({ intent: "comparison", chart: "grouped_bar", arms: [{ label: "Merck", query: {} }, { label: "Acme", query: {} }] }), { kind: "buckets", result: m }, ctx, null));
+    const v = valid(buildVisualization(base({ intent: "comparison", chart: "grouped_bar", arms: [{ label: "Merck", query: { spons: '"Merck"' } }, { label: "Acme", query: { spons: '"Acme"' } }] }), { kind: "buckets", result: m }, ctx, null));
     if (v.type !== "grouped_bar") throw new Error(v.type);
     expect(v.encoding.series).toEqual({ field: "series", label: "Sponsor", values: ["Merck", "Acme"] });
+    const plain = valid(buildVisualization(base({ intent: "comparison", chart: "grouped_bar", arms: [{ label: "Merck", query: {} }, { label: "Acme", query: {} }] }), { kind: "buckets", result: m }, ctx, null));
+    if (plain.type !== "grouped_bar") throw new Error(plain.type);
+    expect(plain.encoding.series.label).toBe("Arm");
   });
   it("histogram over enrollment bins", () => {
     const v = valid(buildVisualization(base({ chart: "histogram", dimension: "enrollment" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" }) }, ctx, null));

@@ -82,7 +82,7 @@ function comparisonAxisLabel(p: Plan): string {
   if (q.includes("intr")) return "Drug"; if (q.includes("cond")) return "Condition"; if (q.includes("spons")) return "Sponsor"; if (q.includes("locn")) return "Country";
   const e = p.entities;
   if (e.drugs.length >= 2) return "Drug"; if (e.conditions.length >= 2) return "Condition"; if (e.sponsors.length >= 2) return "Sponsor"; if (e.countries.length >= 2) return "Country";
-  return "Sponsor"; // no entity distinguishes the arms: the test contract names the arms' axis "Sponsor"
+  return "Arm";
 }
 const seriesValueLabel = (p: Plan, v: string) => (p.secondary ? bucketLabel(p.secondary, v) : v);
 
