@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { interpretationQuestions, interpretationState, judgmentClientFromEnv, QUESTION_SET, type InterpretationAnswers } from "@cheiron/judgment";
+import { interpretationQuestions, interpretationState, judgmentClientFromEnv, QUESTION_SET, type InterpretationAnswers } from "@chatctg/judgment";
 
 interface Case { q: string; intent?: string[]; dimension?: string[]; secondary_dimension?: string[]; edge_kind?: string[]; metric?: string[]; phase_filter?: string[]; chart?: string[]; flags?: Record<string, boolean>; entities?: Record<string, unknown> }
 const cases = JSON.parse(readFileSync(new URL("./queries.json", import.meta.url), "utf8")) as Case[];

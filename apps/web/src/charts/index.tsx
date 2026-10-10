@@ -1,4 +1,4 @@
-import type { Citation, Visualization } from "@cheiron/contracts";
+import type { Citation, Visualization } from "@chatctg/contracts";
 import type { ReactNode } from "react";
 import { BarView } from "./Bar";
 import { HistogramView } from "./Histogram";

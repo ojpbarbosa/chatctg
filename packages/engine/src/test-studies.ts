@@ -1,4 +1,4 @@
-import type { Study } from "@cheiron/ctgov";
+import type { Study } from "@chatctg/ctgov";
 
 export function study(p: Partial<Study> & { nct_id: string }): Study {
   const start_date = p.start_date === undefined ? "2020-01-15" : p.start_date;

@@ -1,5 +1,5 @@
-import type { Granularity } from "@cheiron/contracts";
-import type { Study } from "@cheiron/ctgov";
+import type { Granularity } from "@chatctg/contracts";
+import type { Study } from "@chatctg/ctgov";
 import { timeKey } from "../dimensions";
 import type { Bucket, Bucketized } from "./buckets";
 

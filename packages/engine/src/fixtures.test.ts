@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { QueryRequest, QueryResponse } from "@cheiron/contracts";
-import { normalizePage, type Study } from "@cheiron/ctgov";
+import { QueryRequest, QueryResponse } from "@chatctg/contracts";
+import { normalizePage, type Study } from "@chatctg/ctgov";
 import { drugIdentity } from "./dimensions";
 import { fakeDeps, runQuery } from "./run";
 

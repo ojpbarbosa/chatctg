@@ -1,4 +1,4 @@
-import type { Citation } from "@cheiron/contracts";
+import type { Citation } from "@chatctg/contracts";
 import { cloneElement } from "react";
 import type { ReactElement } from "react";
 import { ResponsiveContainer } from "recharts";

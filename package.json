@@ -1,5 +1,5 @@
 {
-  "name": "cheiron",
+  "name": "chatctg",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "concurrently -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "tsx watch --env-file-if-exists=.env apps/api/src/index.ts",
-    "dev:web": "npm run dev --workspace @cheiron/web",
-    "build": "npm run build --workspace @cheiron/web",
+    "dev:web": "npm run dev --workspace @chatctg/web",
+    "build": "npm run build --workspace @chatctg/web",
     "start": "tsx --env-file-if-exists=.env apps/api/src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p apps/web/tsconfig.json --noEmit",
     "lint": "eslint .",

@@ -1,4 +1,4 @@
-import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Metric, Phase } from "@cheiron/contracts";
+import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Metric, Phase } from "@chatctg/contracts";
 import { choice, noul } from "./questions";
 import type { AnswersFor, JsonValue } from "./types";
 

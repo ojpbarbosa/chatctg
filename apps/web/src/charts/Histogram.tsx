@@ -1,4 +1,4 @@
-import type { BarViz, HistogramViz } from "@cheiron/contracts";
+import type { BarViz, HistogramViz } from "@chatctg/contracts";
 import { BarView } from "./Bar";
 import type { OnPick } from "./index";
 import type { Size } from "./common";

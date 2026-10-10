@@ -1,5 +1,5 @@
 {
-  "name": "@cheiron/judgment",
+  "name": "@chatctg/judgment",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,6 +9,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@cheiron/contracts": "*"
+    "@chatctg/contracts": "*"
   }
 }

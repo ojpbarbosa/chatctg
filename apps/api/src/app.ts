@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
-import { jsonSchemas, QueryRequest, VERSION } from "@cheiron/contracts";
-import { runQuery, type Deps } from "@cheiron/engine";
+import { jsonSchemas, QueryRequest, VERSION } from "@chatctg/contracts";
+import { runQuery, type Deps } from "@chatctg/engine";
 import fastifyStatic from "@fastify/static";
 import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import { startSse, writeSse } from "./sse";

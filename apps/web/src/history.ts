@@ -1,7 +1,7 @@
-import type { QueryResponse } from "@cheiron/contracts";
+import type { QueryResponse } from "@chatctg/contracts";
 
 export interface HistoryItem { id: string; query: string; created_at: string; response: QueryResponse | null; error: string | null }
-const KEY = "cheiron.history.v1";
+const KEY = "chatctg.history.v1";
 export const HISTORY_CAP = 30;
 
 export function loadHistory(): HistoryItem[] {

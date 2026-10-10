@@ -1,10 +1,6 @@
-# Cheiron: a ClinicalTrials.gov query-to-visualization service
+# ChatCTG: a ClinicalTrials.gov query-to-visualization service
 
 Date: 2026-10-09 · Owner: João Barbosa · Status: design approved in chat; this document awaits review before the implementation plan.
-
-Cheiron (Chiron, the centaur who taught the healers) answers a natural-language question about clinical trials with a visualization specification backed by live ClinicalTrials.gov data. It is the take-home assignment for Cureon: a backend that interprets the question, retrieves the data, decides whether and which visualization fits, and returns a structured spec a frontend can render without guessing. A small web UI demonstrates it.
-
-## Why it is built this way
 
 The assignment scores system design (35%), AI design (20%), code quality (20%), query coverage (15%) and I/O design (10%), with deep citations as a bonus. Its AI criteria are explicit: avoid hallucination-prone steps, include validation and constraints, use sensible planning steps and appropriate tools. Its coverage criterion asks for many question classes handled by a single coherent approach, not one-off hacks.
 
@@ -241,7 +237,7 @@ For `map`, `iso3` comes from `i18n-iso-countries` plus a small override table fo
   units: { y: "trials" | "participants" }, granularity: string | null,
   timing: { jev_ms, extract_ms, fetch_ms, title_ms, aggregate_ms, total_ms },
   notes: string[], warnings: string[],
-  version: "cheiron/0.1.0"
+  version: "chatctg/0.1.0"
 }
 ```
 
@@ -291,7 +287,7 @@ Vite, React 19, TypeScript. White only. One saturated blue (`--brand: #1f4fff`, 
 ## Repository
 
 ```
-cheiron/
+chatctg/
   package.json                npm workspaces, scripts: dev, build, start, check, test, eval:jev, examples
   packages/contracts/         zod schemas for request, response, plan; JSON Schema export
   packages/judgment/          Jev client (adapted from the author's earlier client: fetch over

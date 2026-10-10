@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Visualization } from "@cheiron/contracts";
+import { Visualization } from "@chatctg/contracts";
 import { bucketize, mergeArms } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";

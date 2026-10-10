@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { openAiExtractor } from "@cheiron/engine";
+import { openAiExtractor } from "@chatctg/engine";
 
 interface Case { q: string; entities?: { drugs?: string[]; conditions?: string[]; sponsors?: string[]; countries?: string[]; start_year?: number; end_year?: number; limit?: number } }
 const cases = (JSON.parse(readFileSync(new URL("./queries.json", import.meta.url), "utf8")) as Case[]).filter((c) => c.entities);

@@ -1,5 +1,5 @@
-import type { Dimension, Granularity, Metric } from "@cheiron/contracts";
-import type { Study } from "@cheiron/ctgov";
+import type { Dimension, Granularity, Metric } from "@chatctg/contracts";
+import type { Study } from "@chatctg/ctgov";
 import { bucketLabel, fixedOrder, isMultiValued, valuesOf } from "../dimensions";
 
 /** `studies` are the bucket's studies, or only its citations when `count` holds the registry's exact count for it. */

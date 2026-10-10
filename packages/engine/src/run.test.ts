@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { QueryRequest, QueryResponse } from "@cheiron/contracts";
+import { QueryRequest, QueryResponse } from "@chatctg/contracts";
 import { fakeDeps, runQuery, type QueryEvent } from "./run";
 import { SAMPLE, study } from "./test-studies";
 

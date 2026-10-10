@@ -1,4 +1,4 @@
-import type { LineViz } from "@cheiron/contracts";
+import type { LineViz } from "@chatctg/contracts";
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import type { OnPick } from "./index";
 import { AXIS, colorFor, GRID } from "./palette";

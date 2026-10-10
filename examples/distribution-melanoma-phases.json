@@ -369,7 +369,7 @@
       "warnings": [
         "Only the 3,000 most recently started of 3,775 trials were read; counts are over that sample, the total is exact."
       ],
-      "version": "cheiron/0.1.0"
+      "version": "chatctg/0.1.0"
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { Citation } from "@cheiron/contracts";
+import type { Citation } from "@chatctg/contracts";
 
 export function CitationsDrawer({ label, citations, onClose }: { label: string; citations: Citation[]; onClose: () => void }) {
   return (

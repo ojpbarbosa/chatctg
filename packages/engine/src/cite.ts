@@ -1,5 +1,5 @@
-import type { Citation, Dimension } from "@cheiron/contracts";
-import type { Study } from "@cheiron/ctgov";
+import type { Citation, Dimension } from "@chatctg/contracts";
+import type { Study } from "@chatctg/ctgov";
 import { citationExcerpt, citationField, studyLabel } from "./dimensions";
 
 /** Deterministic: start date descending, undated last, NCT id as the tie-break. */

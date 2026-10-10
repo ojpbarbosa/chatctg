@@ -6,9 +6,9 @@ const ago = (iso: string) => { const m = Math.round((Date.now() - new Date(iso).
 export function Sidebar({ items, activeId, onSelect, onNew, onRemove }: { items: HistoryItem[]; activeId: string | null; onSelect: (id: string) => void; onNew: () => void; onRemove: (id: string) => void }) {
   return (
     <aside className="sidebar">
-      <div className="sidebar-head"><span className="wordmark">Cheiron<small>ClinicalTrials.gov</small></span><button className="btn btn-ghost" onClick={onNew} title="New question">+ New</button></div>
+      <div className="sidebar-head"><span className="wordmark">ChatCTG</span><button className="btn btn-ghost" onClick={onNew} title="New question">+ New</button></div>
       <nav className="history" aria-label="History">
-        {items.length === 0 && <div className="history-empty">Your questions will appear here.</div>}
+        {items.length === 0 && <div className="history-empty">Chats will appear here.</div>}
         {items.map((it) => (
           <div key={it.id} className="history-item">
             <button className="select" aria-current={it.id === activeId} onClick={() => onSelect(it.id)}>

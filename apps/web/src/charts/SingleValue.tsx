@@ -1,4 +1,4 @@
-import type { SingleValueViz } from "@cheiron/contracts";
+import type { SingleValueViz } from "@chatctg/contracts";
 import type { OnPick } from "./index";
 import { fmt } from "./common";
 

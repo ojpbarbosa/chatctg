@@ -11,3 +11,4 @@ dist/
 coverage/
 .superpowers/
 apps/api/public/
+.vscode/

@@ -13,11 +13,16 @@ export const QueryRequest = z
     sponsor: oneOrMany.optional(),
     country: oneOrMany.optional(),
     trial_phase: z.enum(PHASES).optional(),
-    status: z.enum(OVERALL_STATUSES).optional(),
+    status: z.enum(OVERALL_STATUSES).optional(), // i suppose this is trial status
     start_year: year.optional(),
     end_year: year.optional(),
-    intent: z.enum(INTENTS).optional(),
+    intent: z.enum(INTENTS).optional(), // what is this?
+    // TODO: what other fields might be relevant?
+    // TODO: how are we breaking down the prompt into the 
+    // isolated fields? is there a faster analyzer that breaks it?
     chart: z.enum(CHART_TYPES).optional(),
+    // TODO: add time series chart and sankey
+    // TODO: add 5 more types, and have jev pick the fallback one as well 
     max_studies: z.number().int().min(100).max(10_000).default(3000),
     citations_per_datum: z.number().int().min(0).max(25).default(5),
   })

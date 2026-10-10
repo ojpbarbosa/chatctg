@@ -638,7 +638,7 @@
         "A trial can match more than one arm, so coverage.total_count, the sum of the arms' totals, can count it more than once."
       ],
       "warnings": [],
-      "version": "cheiron/0.1.0"
+      "version": "chatctg/0.1.0"
     }
   }
 }

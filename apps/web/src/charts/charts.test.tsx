@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { Visualization } from "@cheiron/contracts";
-import type { BarViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@cheiron/contracts";
+import { Visualization } from "@chatctg/contracts";
+import type { BarViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";

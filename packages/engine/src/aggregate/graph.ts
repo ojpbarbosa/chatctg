@@ -1,5 +1,5 @@
-import type { EdgeKind } from "@cheiron/contracts";
-import type { Study } from "@cheiron/ctgov";
+import type { EdgeKind } from "@chatctg/contracts";
+import type { Study } from "@chatctg/ctgov";
 import { conditionIdentity, drugIdentity } from "../dimensions";
 
 export interface GraphNode { id: string; label: string; kind: string; size: number; study_count: number }

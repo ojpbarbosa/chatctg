@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { MapViz } from "@cheiron/contracts";
+import type { MapViz } from "@chatctg/contracts";
 import { geoEqualEarth, geoPath } from "d3-geo";
 import countries from "i18n-iso-countries";
 import { feature } from "topojson-client";

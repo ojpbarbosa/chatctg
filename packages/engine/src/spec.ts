@@ -1,5 +1,5 @@
-import type { Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@cheiron/contracts";
-import { iso3, type Study } from "@cheiron/ctgov";
+import type { Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@chatctg/contracts";
+import { iso3, type Study } from "@chatctg/ctgov";
 import type { Bucketized } from "./aggregate/buckets";
 import { KIND_FIELD, type GraphEdge, type GraphNode } from "./aggregate/graph";
 import type { Point } from "./aggregate/points";

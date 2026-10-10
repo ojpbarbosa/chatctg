@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { QueryRequest } from "@cheiron/contracts";
-import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@cheiron/judgment";
+import { QueryRequest } from "@chatctg/contracts";
+import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@chatctg/judgment";
 import { allowedCharts, armFilters, defaultChart, plan, type Entities } from "./plan";
 
 const models = { judge: "fake", extractor: "fake", titler: "fake" };

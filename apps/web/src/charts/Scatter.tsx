@@ -1,4 +1,4 @@
-import type { Citation, ScatterViz } from "@cheiron/contracts";
+import type { Citation, ScatterViz } from "@chatctg/contracts";
 import { CartesianGrid, Legend, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from "recharts";
 import type { OnPick } from "./index";
 import { AXIS, colorFor, GRID } from "./palette";

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { Interpretation, QueryRequestInput } from "@cheiron/contracts";
+import type { Interpretation, QueryRequestInput } from "@chatctg/contracts";
 import { streamQuery } from "./api";
 import { loadHistory, newId, pushHistory, saveHistory, type HistoryItem } from "./history";
 import { QueryBox } from "./components/QueryBox";
@@ -58,8 +58,8 @@ export function App() {
       <main className="main">
         {active === null ? (
           <section className="landing">
-            <h1>Ask the trial registry.</h1>
-            <p>One question in, one cited chart out, straight from ClinicalTrials.gov.</p>
+            <h1>ChatCTG</h1>
+            <p>Clinical trial questions answered (blazingly fast) with cited charts with ClinicalTrials.gov (CTG) data.</p>
             <QueryBox value={query} onChange={setQuery} onSubmit={() => submit(query)} busy={busy} docked={false} />
             <div className="chips">{EXAMPLES.map((ex) => <button key={ex} className="chip" disabled={busy} onClick={() => submit(ex)}>{ex}</button>)}</div>
           </section>

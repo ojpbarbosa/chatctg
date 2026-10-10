@@ -1,5 +1,5 @@
 {
-  "name": "@cheiron/web",
+  "name": "@chatctg/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@cheiron/contracts": "*",
+    "@chatctg/contracts": "*",
     "@fontsource-variable/schibsted-grotesk": "^5.2.0",
     "d3-drag": "^3.0.0",
     "d3-force": "^3.0.0",

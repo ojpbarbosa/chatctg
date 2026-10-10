@@ -1,19 +1,15 @@
-# Cheiron
+# ChatCTG 
 
-Cheiron answers a natural-language question about clinical trials with a visualization spec built from live ClinicalTrials.gov data. You send `POST /query` with a question such as "How are melanoma trials distributed across phases?". It returns a typed spec (chart type, encoding, data rows) that a frontend can render without guessing, and metadata that explains each decision and cites the registry records behind each number. A small React app renders the specs.
+ChatCTG (short for ChatClinicalTrials.gov) answers a natural-language question about clinical trials with a visualization spec built from live ClinicalTrials.gov data. You send `POST /query` with a question such as "How are melanoma trials distributed across phases?". It returns in a typesafe contract (chart type, encoding, data rows) that a frontend can render while being fault tolerant, and metadata that explains each decision and cites the registry records behind each number. A small Vite + React app renders the visualizations for the sake of the demo.
 
-The approach is a judged pipeline. Every closed decision about the question (its intent, the attribute to group by, the chart, the granularity, the metric, the relationship) is answered by TypeSafe's Jev, a model that returns a probability distribution over fixed options and cannot answer outside them. One generative call extracts the strings the question names, under a strict JSON schema, and another writes a title from the finished plan. Everything else is deterministic code: plan the registry requests, fetch, aggregate, cite, and emit a spec that is validated against a zod contract. Numbers are computed from records, never generated.
-
-The design is in [docs/superpowers/specs/2026-10-09-cheiron-design.md](docs/superpowers/specs/2026-10-09-cheiron-design.md). Where the spec and the shipped code differ, this README describes the code.
-
-Status on 2026-10-09: built, tested offline, and run against the live APIs. The Jev evaluation, the extractor benchmark, the five example runs (generated on 2026-10-09), a live end-to-end run of the API and a visual check of the charts are done. Each is described below.
+The approach is a judged pipeline. Every closed decision about the question (its intent, the attribute to group by, the chart, the granularity, the metric, the relationship) is answered by a SystemOne model (in this case, TypeSafe's Jev), which returns a probability distribution over fixed options. One generative call extracts the strings the question names, under a strict JSON schema, and another writes a title from the finished plan. Everything else is deterministic code: plan the registry requests, fetch, aggregate, cite, and emit a spec that is validated against a zod contract. Numbers are computed from records, never generated.
 
 ## Run it
 
 Prerequisites: Node 22 or later (`.nvmrc` pins 24; the scripts use `node --env-file-if-exists`, which needs 22.9 or later), npm, a TypeSafe key and an OpenAI key.
 
 ```bash
-cp .env.example .env      # then set TYPESAFE_API_KEY and OPENAI_API_KEY
+cp .env.example .env # then set TYPESAFE_API_KEY and OPENAI_API_KEY
 npm install
 ```
 
@@ -25,8 +21,6 @@ npm install
 | `PORT` | no | `3001` | the API port |
 | `EXTRACTOR_MODEL`, `TITLER_MODEL` | no | `gpt-5.4-nano` | the OpenAI model ids |
 | `TYPESAFE_BASE_URL`, `OPENAI_BASE_URL` | no | the vendors' public URLs | proxies |
-
-Without keys the API still starts and logs a warning per missing key. `/query` then answers 502 `upstream_failed` and names the missing key. Keys are never logged.
 
 ```bash
 npm run dev                  # API on http://localhost:3001 (tsx watch) and web on http://localhost:5173 (Vite, proxies the API)
@@ -43,14 +37,10 @@ npm run fixtures:record      # re-records the ClinicalTrials.gov fixture pages
 Docker:
 
 ```bash
-docker build -t cheiron .
-docker run --rm -p 3001:3001 --env-file .env cheiron
+docker build -t chatctg .
+docker run --rm -p 3001:3001 --env-file .env chatctg
 curl localhost:3001/health
 ```
-
-The image has two stages on `node:24-alpine`: install and build the web app, then run `npm start`. `.env` is excluded from the image and passed at run time. On 2026-10-09 the image built, `/health` answered 200, `/` served the web app, `/schema` answered, and an unknown request field got a 400.
-
-The web app has a question box with five example chips, a history sidebar (the last 30 responses, kept in `localStorage`), and a result card. The card shows the title and subtitle, interpretation chips ("did you mean" chips when the intent is uncertain), the chart, a coverage and timing footer, a JSON toggle, and a citations drawer that opens on any datum. Each chart component reads only the spec's `encoding` and `data`, which is the check that the contract is enough to render.
 
 ## API
 
@@ -63,7 +53,7 @@ The web app has a question box with five example chips, a history sidebar (the l
 
 ### Request
 
-`POST /query` with `content-type: application/json`, at most 64 KB. Unknown fields are rejected with 400, so a typo in a filter never silently widens a query.
+`POST /query` 
 
 | Field | Type | Required | Validation and effect |
 |---|---|---|---|
@@ -80,8 +70,6 @@ The web app has a question box with five example chips, a history sidebar (the l
 | `chart` | enum | no | one of the ten chart types; treated as an explicit ask and validated by the compatibility matrix |
 | `max_studies` | integer | no | 100–10,000; default 3,000; the most studies read per arm (a count reads 50 and a table only its rows) |
 | `citations_per_datum` | integer | no | 0–25; default 5; 0 turns citations off |
-
-The entity, phase, status, year, `intent` and `chart` fields the caller sets are listed in `meta.interpretation.provided_fields`. The entity, phase, status and year fields are also passed to Jev in its state, so Jev knows a drug was given and does not need to infer one.
 
 Example request:
 
@@ -101,11 +89,9 @@ curl -s localhost:3001/query -H 'content-type: application/json' -d '{
 { visualization: Visualization | null, meta: Meta }
 ```
 
-The engine validates every 200 response against the contract before it is sent. A response that fails its own contract becomes a 500, never a malformed 200. The contract allows `visualization: null`, but the engine answers an unanswerable question with a 422 error body instead (see [Errors](#errors)).
+`Visualization` is a discriminated union on `type`. Every member has `type`, `title`, `subtitle`, `encoding` and `data`. 
 
-`Visualization` is a discriminated union on `type`. Every member has `type`, `title`, `subtitle`, `encoding` and `data`. Every data row, and every network edge, carries `study_count` (how many studies it stands for) and `citations` (which ones; see [Citations](#citations)).
-
-Row conventions:
+A few conventions:
 
 - In the bucket charts (`bar`, `grouped_bar`, `stacked_bar`, `line`, `histogram`, `map`), the value cell is named after the metric: `trial_count`, `enrollment_total` or `enrollment_median`.
 - A category cell holds the label (`"Phase 3"`), and `<field>_key` holds the registry's raw key (`"PHASE3"`).
@@ -114,6 +100,8 @@ Row conventions:
 - Country rows carry `iso3`: the ISO 3166 alpha-3 code, or `null` when the registry's spelling cannot be mapped.
 - List cells in tables are comma-joined strings.
 
+<details>
+<summary>Chart types</summary>
 #### `bar`
 
 | `encoding` field | Value |
@@ -205,7 +193,8 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `timing` | `{ jev_ms, extract_ms, fetch_ms, title_ms, aggregate_ms, total_ms }` | milliseconds per stage |
 | `notes` | string[] | counting rules and fallbacks that were applied, a phase that was named but not applied, the trials left out for lack of a value, and the overlap of comparison arms |
 | `warnings` | string[] | truncation, periods left out of a trend because the sample holds them only in part, years beyond the 40 a per-year count covers, unplotted points, unmapped countries, network links cut to the limit |
-| `version` | string | `cheiron/0.1.0` |
+| `version` | string | `chatctg/0.1.0` |
+</details>
 
 Example response, trimmed from [examples/distribution-melanoma-phases.json](examples/distribution-melanoma-phases.json), a live run. Of the six rows, one is shown, with two of its five citations. Of the three registry URLs, the first is shown.
 
@@ -267,36 +256,14 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
     "notes": ["A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
               "531 trials without a phase are not shown."],
     "warnings": ["Only the 3,000 most recently started of 3,775 trials were read; counts are over that sample, the total is exact."],
-    "version": "cheiron/0.1.0"
+    "version": "chatctg/0.1.0"
   }
 }
 ```
 
-### Errors
-
-Every error has the shape `{ "error": { "code", "message", "details"? } }`.
-
-| Status | `code` | When | `details` |
-|---|---|---|---|
-| 400 | `invalid_request` | the body fails the schema | the zod issues |
-| 422 | `not_answerable` | Jev's `in_scope` is below 0.5, or the intent is `other` | `interpretation`: the full interpretation, so the caller sees what was understood |
-| 502 | `upstream_failed` | Jev, OpenAI or ClinicalTrials.gov failed after its retries | `upstream` (`jev`, `openai` or `ctgov`), `reason` and `detail`; after a 401 or 403 from Jev or OpenAI, `detail` is the status alone, because the body can echo the key |
-| 504 | `timeout` | the 40 s overall budget ran out | none |
-| 500 | `internal` | anything else, including a response that fails its own contract | `issues` or `detail` |
-
-`internal` also carries 404, 413 (body over 64 KB) and 415, which come from Fastify's own handlers.
-
-The `reason` is the client's typed failure:
-
-- Jev: `disabled` (no key), `state_too_large`, `timeout`, `network`, `rate_limited`, `overloaded`, `unauthorized`, `invalid_request`, `server_error`, `bad_response`.
-- OpenAI: `missing_api_key`, `openai_timeout`, `openai_network`, `openai_http`, `openai_incomplete`, `openai_invalid_json`, `openai_invalid_shape`.
-- ClinicalTrials.gov: `ctgov_invalid_request`, `ctgov_timeout`, `ctgov_network`, `ctgov_server_error`, `ctgov_bad_response`.
-
-Timeouts and retries: Jev has 5 s per attempt and up to two retries with jittered exponential backoff on 429, 529, 5xx, network errors and timeouts, honouring `retry-after`. The extractor has 8 s and the titler 4 s, each with one retry on 429, 5xx, network errors and timeouts. Each registry page has 15 s and one retry on network errors, 429 and 5xx. A registry 400 is not retried, because it means a malformed request.
-
 ### Streaming: `POST /query/stream`
 
-The body is the same as for `/query`. A body that fails validation gets the plain 400 JSON. Otherwise the response is `text/event-stream`:
+Same body as `POST /query`, but the response type is `text/event-stream`:
 
 | Event | Data | When |
 |---|---|---|
@@ -314,15 +281,11 @@ curl -N localhost:3001/query/stream -H 'content-type: application/json' -d '{"qu
 
 ### `GET /schema` and `GET /health`
 
-`GET /schema` returns `{ request, response }`, each a JSON Schema (draft 2020-12) generated from the zod contract by `z.toJSONSchema`. zod 4 drops refinements from the export, so the rule that `end_year` is not before `start_year` is enforced by the API but does not appear in the schema.
-
-`GET /health` returns the version and the registry's data version, cached for ten minutes, in snake_case like the rest of the API. The values below are from the Docker smoke test on 2026-10-09; the fields were renamed from `apiVersion` and `dataTimestamp` after it:
+`GET /schema` returns `{ request, response }`, each a JSON Schema (draft 2020-12) generated from the zod contract by `z.toJSONSchema`.
 
 ```json
-{ "ok": true, "version": "cheiron/0.1.0", "api_version": "2.0.5", "data_timestamp": "2026-10-08T09:00:05" }
+{ "ok": true, "version": "chatctg/0.1.0", "api_version": "2.0.5", "data_timestamp": "2026-10-08T09:00:05" }
 ```
-
-When the registry cannot be reached and no version is cached, both registry fields read `"unknown"`.
 
 ## How it decides
 
@@ -344,50 +307,7 @@ request ──► interpret ──► plan ──► fetch ──► aggregate �
 
 Jev receives a small state, `{ question, provided }`, where `provided` holds the structured request fields. It answers all twelve questions in one request. A `choice` returns a probability for every option and a confidence. A `noul` returns the probability that a statement is true. The instructions are in English. Each option has a `what`, a `not_for` where confusion is likely, and examples. Every choice has a way out (`none` or `other`). The set is `{ id: "query-interpretation", version: 2 }` and is returned in `meta`. The version goes up whenever wording or options change; version 2 added `phase_filter`. The wording is in [packages/judgment/src/interpretation.ts](packages/judgment/src/interpretation.ts).
 
-| Key | Type | Options or criterion | Used when |
-|---|---|---|---|
-| `in_scope` | noul | Can a registry of trials (conditions, interventions, phases, status, sponsors, sites, dates, enrollment, study type, eligibility) answer it? | always, unless the request sets `intent` |
-| `intent` | choice | `time_trend`, `distribution`, `comparison`, `ranking`, `geographic`, `network`, `count`, `lookup`, `other` | unless the request sets `intent` |
-| `dimension` | choice | `phase`, `status`, `sponsor_class`, `sponsor`, `intervention_type`, `drug`, `condition`, `country`, `start_year`, `enrollment`, `study_type`, `sex`, `age_group`, `none` | all intents but `network`, `count`, `lookup` |
-| `secondary_dimension` | choice | the same list | as `dimension`, unless it equals the primary or is `start_year` outside a time trend. Used only for `time_trend` and `distribution`; dropped with a note for `comparison`, `ranking` and `geographic`, and under a `histogram` |
-| `chart` | choice | `bar`, `grouped_bar`, `stacked_bar`, `line`, `histogram`, `scatter`, `network_graph`, `map`, `table`, `single_value` | unless the request sets `chart` |
-| `chart_named` | noul | Does the user name a visual form (chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie)? | always |
-| `granularity` | choice | `year`, `quarter`, `month` | when the dimension is `start_year` |
-| `metric` | choice | `trial_count`, `enrollment_total`, `enrollment_median` | all intents but `network`, `count`, `lookup` |
-| `edge_kind` | choice | `sponsor_drug`, `drug_drug`, `condition_drug`, `sponsor_condition`, `sponsor_collaborator` | `network` |
-| `recruiting_only` | noul | Does the user restrict to trials that are recruiting, open, enrolling or ongoing? | unless the request sets `status` |
-| `combination` | noul | When several drugs are named, are they used together in the same trials? | two or more drugs, outside a comparison |
-| `phase_filter` | choice | `EARLY_PHASE1`, `PHASE1`, `PHASE2`, `PHASE3`, `PHASE4`, `NA`, `none`: does the user restrict the answer to trials of one phase? `none` when no phase is named, or when phases are what the answer is split by | unless the request sets `trial_phase`; not applied when the chart splits by phase |
-
-### Thresholds
-
-A choice's confidence is `(p_max − 1/n) / (1 − 1/n)`, from the confidence page of the Jev docs. A noul near 0.5 means "cannot tell". The thresholds are one constant, `THRESHOLDS`, in [packages/engine/src/plan.ts](packages/engine/src/plan.ts).
-
-| Signal | Rule |
-|---|---|
-| Jev answer shape | every option present, each a probability, summing to 1 within 0.02, and the choice is one of the options; otherwise the whole answer set is rejected as `bad_response` (502), never read as zeros |
-| `in_scope < 0.5` | 422 `not_answerable`, with the interpretation (skipped when the request sets `intent`) |
-| intent `other` | 422 `not_answerable` |
-| intent confidence `< 0.4` | the top three intents with probabilities go to `meta.interpretation.intent.alternatives`; the UI shows them as "did you mean" chips |
-| `chart_named ≥ 0.6` | the chart is explicit: an explicit chart unlocks `scatter`, and `bar` for a geographic question, and sets `chart.explicit` in `meta`. Any other allowed chart is applied whether or not it is explicit |
-| `recruiting_only ≥ 0.7` | `filter.overallStatus=RECRUITING`; a `status` in the request takes precedence |
-| `combination ≥ 0.6` | the drugs are joined with `AND` in `query.intr`; otherwise `OR` |
-| `phase_filter` not `none`, its probability `≥ 0.5` | `AREA[Phase]<phase>` in `filter.advanced` on every arm, and "phase 3 only" in the subtitle. Below 0.5 no filter applies, `phase_filter` is null and `meta.notes` says "A phase was mentioned but not clearly enough to filter on (p=0.42)." A `trial_phase` in the request takes precedence, and the filter is skipped when the chart splits by phase (see [Normalization](#normalization)) |
-
-### Normalization
-
-Before the chart is chosen, the planner makes the answers consistent with each other. The rules marked (note) add a line to `meta.notes`.
-
-- A distribution over `start_year` becomes a time trend (note).
-- A time trend always runs over `start_year`. A different dimension that Jev named becomes the secondary dimension, if there is none.
-- A geographic question always runs over `country`.
-- A secondary dimension is used only for a time trend or a distribution. For a comparison, ranking or geographic question it is dropped (note), and the note is added only when one was dropped. This is checked after the comparison fallback, so a one-entity comparison shown as a distribution keeps its secondary dimension. It is also dropped when the chart applied is a `histogram` (note), which has no series.
-- A network, count or lookup has no dimension, and its metric is `trial_count`.
-- A distribution, ranking or comparison with no dimension falls back to `phase` (note).
-- A comparison needs two or more arms. The arms come from the first entity list with two or more members, in the order drugs, conditions, sponsors, countries; the other lists apply to every arm as common filters. With fewer than two, it becomes a distribution (note).
-- A phase Jev found named with a probability below 0.5 is not applied (note). Above it, it is not applied when the dimension or the secondary dimension is `phase`, because a split by phase filtered to one phase is a single bar (note: "Phase 3 was named, but phases are what the chart splits by, so no phase filter was applied."). This is checked last, on the dimensions the chart is drawn with, so a histogram that drops a split by phase keeps the filter. A `trial_phase` in the request always applies.
-
-Default limits: 10 for rankings and for open-dimension distributions and comparisons, 15 for country bars, 25 rows for tables, 40 edges for networks. A number the question names ("top 5") replaces the default.
+Before the chart is chosen, the planner makes the answers consistent with each other. The rules marked (note) add a line to `meta.notes`. Default limits: 10 for rankings and for open-dimension distributions and comparisons, 15 for country bars, 25 rows for tables, 40 edges for networks. A number the question names ("top 5") replaces the default.
 
 ### Chart compatibility
 
@@ -405,26 +325,6 @@ Jev's chart (or the request's) is applied when the matrix allows it for the inte
 | `lookup` | rows of studies | `table` | `scatter` when explicit |
 | `other` | none | none (422) | none |
 
-`scatter` plots one point per trial, which no aggregate intent asks for by itself, so it is applied only on an explicit ask (`chart_named ≥ 0.6`, or `chart` in the request). A scatter Jev picks without an explicit ask falls back to the default chart with the reason "scatter plots one point per trial and is only used when asked for; using" and the default's name. A geographic question is drawn as a map unless a bar chart is asked for in the same way: Jev often answers `bar` for "which countries have the most ..." (0.74 in the evaluation) without the question naming a chart, and a bar of countries without an explicit ask falls back to the map with the reason "bar is only used for a geographic question when asked for; using map". A lookup can draw one, because the question set describes a plot of individual trials as a `lookup`: in the evaluation, "Show a scatter plot of enrollment against start date for lupus trials" answered `lookup` with chart `scatter` (`chart_named` 0.99). Such a scatter reads the whole fetch (up to `max_studies`), while a table reads only its rows.
-
-With a secondary dimension, two allowed charts are adjusted rather than refused, so the chart the question named is kept as closely as the shape permits. A `bar` holds one value per category, so it is drawn as `stacked_bar`, and `meta.interpretation.chart` records `chosen: "bar"`, `applied: "stacked_bar"` and the reason. A `histogram` has no series, so the secondary dimension is dropped with a note and the histogram is drawn.
-
-### What Jev cannot do, and what does it instead
-
-Jev chooses among options it is given. It cannot write free text, count records or do arithmetic. Those jobs go elsewhere, each with a check.
-
-| Job | Why not Jev | What does it |
-|---|---|---|
-| Name the drugs, conditions, sponsors and countries | they are open text | The extractor: one OpenAI Responses call with `text.format` set to a `json_schema` with `strict: true`, `store: false`, and the lowest reasoning effort (`none`) for gpt-5 models. It is told to copy names as written, keep brand names, and never infer a condition from a drug. The question is passed as data, not instructions. The output is checked again (string lists, a trailing "trial", "trials", "study" or "studies" dropped from each name, deduplicated case-insensitively, at most 10 each; years 1900–2100; limit 1–100), and request fields replace it field by field. |
-| Resolve "since 2015" and "last five years" | arithmetic on today's date | The extractor, given today's date. The result must be an integer year, and `start_year` and `end_year` in the request replace it. |
-| Count, sum, take medians, bin, gap-fill | Jev returns probabilities, not data | Code over the fetched records. A count is the registry's own `totalCount`. |
-| Reconcile the answers | Jev answers each question on its own, so the answers can disagree (a `map` for a comparison) | The planner: thresholds, normalization and the matrix, with every override recorded in `meta`. |
-| Write a title | free text | The titler writes six to twelve words from a one-sentence summary of the plan, not from the question, so it cannot describe a chart that was not built. It is told to title the subject, not the chart, never to name the chart type or repeat a phrase, and to prefer a few shapes ("Melanoma trials by phase", "Recruiting phase 3 psoriasis trials"), each shown by one worked example with other entities. It is capped at 4 s; on failure the template title stands. The subtitle is always the template. |
-
-### No fallback from Jev to a generative classifier
-
-When Jev fails, `/query` answers 502 and names Jev and the failure reason. There is no fallback to a generative classifier, by decision. Every decision in a response traces to a probability from Jev, a threshold or a matrix rule. A fallback would make the same decisions with a different error profile and without calibrated probabilities to threshold, and the response would look the same, so a caller could not tell which procedure drew the chart. The cost is availability: `/query` depends on two model vendors, and either one failing stops it. The Jev client retries twice with backoff before giving up.
-
 ## Data handling
 
 ### Fields
@@ -435,48 +335,9 @@ Every registry request asks for exactly these 19 fields, verified against the li
 
 Each study is normalized into a flat `Study` (`packages/ctgov/src/study.ts`). `countries` is the distinct set across a study's locations. Missing modules become empty arrays or `null`; nothing is invented.
 
-### Identity sets
-
-A study's drug identity is its set of intervention MeSH terms when the registry mapped any. Otherwise it is the lowercased names of its interventions of type `DRUG` or `BIOLOGICAL`. Its condition identity is its condition MeSH terms when present, else its registered conditions. Both are deduplicated case-insensitively. MeSH terms collapse "Pembrolizumab 200 mg" and "MK-3475" into one bucket and one node; the fallback keeps the trials that have no MeSH mapping. `meta.notes` states the rule whenever a drug or condition dimension or a network uses it.
-
-### Multi-valued counting
-
-Phases, intervention types, drugs, conditions, countries and age groups can hold several values per study. A study counts once per distinct value, so a Phase 1/2 trial counts in Phase 1 and in Phase 2, and the bucket totals can exceed the number of trials. Whenever that happens, `meta.notes` and the subtitle say so ("counted once per phase"). A study without a value for the dimension (or without an enrollment, when the metric needs one, or without a value for the secondary dimension) is counted in `coverage.studies_without_value` and left out of the buckets. `meta.notes` and the subtitle say how many and why: "1 trial without a phase is not shown" in the notes and "1 trial without a phase not shown" in the subtitle, or "without an enrollment count" when the metric needs one. A scatter states the trials without a start date or an enrollment count the same way. Open dimensions keep the top N by value, and the number dropped goes to `coverage.omitted_categories`.
-
-### Truncation and sort order
-
-Every request uses `sort=StartDate:desc`, `format=json`, `countTotal=true` on the first page, and `pageSize=1000`, except that the first page asks for no more than the cap: a count reads one page of 50 (`pageSize=50`) and a table one page of its row count (25 by default). Pages follow `nextPageToken` until the cap (`max_studies`, default 3,000, for every other chart) or the end. The registry's `totalCount` is always reported. When the fetch stops early, `coverage.truncated` is true, `meta.warnings` says so, and the subtitle reads "N trials on ClinicalTrials.gov · based on the 3,000 most recently started". Sorting by start date descending makes the truncated sample deterministic and explainable. A single value never depends on the sample: it is the registry's `totalCount`. A table is not a sample either: it is the N most recently started trials.
-
-A sample of the most recently started trials holds only the last few years of a long series ("breast cancer trials per year since 2010" over 13,187 trials would read 2024 to 2028 only), so charts over start date are handled apart:
-
-- **A yearly trial count with no second grouping** (a time trend, or a comparison over start year) is counted exactly when the fetch was truncated. The registry answers one request per year and arm, sent in parallel: the arm's own parameters with `AREA[StartDate]RANGE[<year>-01-01,<year>-12-31]` added to `filter.advanced`, asking for the `citations_per_datum` most recently started trials of that year. Each year's `totalCount` is its value and its `study_count`; the trials read are its citations. The years run from the question's start year, else the arm's oldest start date (one more request, sorted `StartDate:asc`, `pageSize=1`), to its end year, else two years ahead, since registered start dates can be planned ones; empty years at either end are trimmed. At most 40 years are asked for; when older ones exist, `meta.warnings` says "Years before 1989 are not shown." `coverage.truncated` is false, `fetched_count` is the number of citations read, `meta.source.requests` lists the first fetch's URLs, then the oldest-start-date request and the per-year URLs, and `meta.notes` says "Counts per year are exact (one registry count per year); citations show the 5 most recent trials of each year."
-- **Any other chart over start date** (quarters or months, a second grouping, or an enrollment metric) keeps the sample. The period of the oldest trial read may hold only some of its trials, and every later period holds all of them, so that period and the ones before it are cut, and `meta.warnings` says "Periods before 2019-Q3 are incomplete because only the 3,000 most recently started trials were read; they are not shown."
-- **Every other truncated chart** (distributions, rankings, maps, networks, scatters) is aggregated over the sample of the most recently started trials, as above.
-
-A comparison's subtitle states each arm's total ("Pembrolizumab 2,973 · Nivolumab 1,734 trials on ClinicalTrials.gov") rather than their sum, because a trial that involves both drugs matches both arms. `coverage.total_count` is still the sum, and `meta.notes` says it can count such a trial twice.
-
-A page of 1,000 studies took about 0.8 s when measured on 2026-10-09, so the default cap costs about 2.5 s in the worst case. Pages within an arm are fetched one after another, because each needs the previous page's token. Arms are fetched in parallel.
-
 ### Caching
 
-An in-memory LRU cache (200 entries, one-hour TTL) keyed by the full request URL makes a repeated query skip the registry. The registry's version endpoint is cached for ten minutes. The cache is per process and is lost on restart.
-
-### Essie expressions
-
-The planner builds these registry parameters. Each term is quoted, and quotes inside a term are removed.
-
-| Plan field | Parameter | Example |
-|---|---|---|
-| drugs | `query.intr` | `"pembrolizumab" OR "nivolumab"`; `AND` for a combination |
-| conditions | `query.cond` | `"melanoma"` |
-| sponsors | `query.spons` | `"National Cancer Institute"` |
-| countries | `query.locn` | `"Germany" OR "France"` |
-| recruiting only, or `status` | `filter.overallStatus` | `RECRUITING` |
-| `trial_phase`, or the phase Jev found named | `filter.advanced` | `AREA[Phase]PHASE3` |
-| start and end year | `filter.advanced` | `AREA[StartDate]RANGE[2015-01-01,MAX]`, or `RANGE[MIN,2019-12-31]` |
-| phase and years together | `filter.advanced` | `AREA[Phase]PHASE3 AND AREA[StartDate]RANGE[2015-01-01,2020-12-31]` |
-
-A question that names nothing sends no `query.*` parameter and aggregates over the whole registry, truncated to `max_studies` and stated in the subtitle. Each arm's exact parameters are in `meta.arms[].filters`, and each URL is in `meta.source.requests`.
+An in-memory LRU (TODO: expand LRY) cache (200 entries, one-hour TTL) keyed by the full request URL makes a repeated query skip the registry. The registry's version endpoint is cached for ten minutes. The cache is per process and is lost on restart.
 
 ## Citations
 
@@ -489,42 +350,9 @@ A citation is one registry record that supports a datum, with the exact value th
 
 `field` is the JSON path in the ClinicalTrials.gov study record. `excerpt` is the value at that path. Each datum cites up to `citations_per_datum` studies (default 5, at most 25, 0 for none): the most recently started of the studies that contributed to it, with undated studies last and the NCT ID as the tie-break. `study_count` always gives the full number, so a reader knows how many studies the citations sample.
 
-| Datum | `field` | `excerpt` |
-|---|---|---|
-| a phase bucket | `protocolSection.designModule.phases` | the phase, such as `PHASE3` |
-| a time bucket | `protocolSection.statusModule.startDateStruct.date` | the start date as registered |
-| a country bucket | `protocolSection.contactsLocationsModule.locations[].country` | the country |
-| a sponsor bucket | `protocolSection.sponsorCollaboratorsModule.leadSponsor.name` | the sponsor name |
-| a sponsor class bucket | `protocolSection.sponsorCollaboratorsModule.leadSponsor.class` | the class, such as `INDUSTRY` |
-| a drug bucket | `derivedSection.interventionBrowseModule.meshes[].term \| protocolSection.armsInterventionsModule.interventions[].name` | the MeSH term or registered name that matched, in its registered case |
-| a condition bucket | `derivedSection.conditionBrowseModule.meshes[].term \| protocolSection.conditionsModule.conditions` | the MeSH term or registered condition that matched |
-| an enrollment bin | `protocolSection.designModule.enrollmentInfo.count` | the enrollment count |
-| status, intervention type, study type, sex, age group | the matching module path | the registry's value |
-| a scatter point, a table row, a single value | `protocolSection.identificationModule.nctId` | the NCT ID (the study cites itself) |
-
 A network edge cites the studies where both ends co-occur. Its `field` joins the two paths with ` | `, and its excerpt names both values, such as `leadSponsor.name: "Merck" · meshes[].term: "pembrolizumab"`.
 
 `meta.source.requests` lists every ClinicalTrials.gov URL sent, with its `total_count` and the number of studies `fetched` from it. Any number in a response can be checked by opening those URLs and applying the counting rules above, as long as the registry's `data_timestamp` has not changed.
-
-## Example runs
-
-`npm run examples` (`examples/run.ts`) sends five requests through the same engine against the live APIs. It writes `examples/<slug>.json` (the request, the status and the full response) and the table in [examples/README.md](examples/README.md), and it exits non-zero when any run fails. The runs below were generated on 2026-10-09, with question set version 2.
-
-| File | Question | Type | Total trials | Jev | Total |
-|---|---|---|---|---|---|
-| [time-trend-pembrolizumab.json](examples/time-trend-pembrolizumab.json) | How has the number of trials for this drug changed per year since 2015? | line | 2,909 | 321 ms | 2901 ms |
-| [distribution-melanoma-phases.json](examples/distribution-melanoma-phases.json) | How are melanoma trials distributed across phases? | bar | 3,775 | 233 ms | 2689 ms |
-| [comparison-pembrolizumab-nivolumab.json](examples/comparison-pembrolizumab-nivolumab.json) | Compare phases for trials involving pembrolizumab vs nivolumab | grouped_bar | 5,004 | 188 ms | 3693 ms |
-| [geographic-lupus-recruiting.json](examples/geographic-lupus-recruiting.json) | Which countries have the most recruiting trials for lupus? | map | 324 | 156 ms | 1484 ms |
-| [network-sponsors-drugs-melanoma.json](examples/network-sponsors-drugs-melanoma.json) | Show a network of sponsors and drugs for melanoma trials | network_graph | 3,775 | 223 ms | 1361 ms |
-
-- **Time trend** ([file](examples/time-trend-pembrolizumab.json)). The question says "this drug" and `drug_name` supplies it, so the request field replaces extraction, and "since 2015" becomes `AREA[StartDate]RANGE[2015-01-01,MAX]`.
-- **Distribution** ([file](examples/distribution-melanoma-phases.json)). Of 3,775 melanoma trials, the 3,000 most recently started were read, each counted once per phase, and the 531 without a phase are stated in the notes and the subtitle.
-- **Comparison** ([file](examples/comparison-pembrolizumab-nivolumab.json)). Two arms (2,974 pembrolizumab and 2,030 nivolumab trials) are fetched in parallel and merged into one series per drug, and the subtitle states each arm's total.
-- **Geographic** ([file](examples/geographic-lupus-recruiting.json)). The 324 recruiting lupus trials are drawn on a world map, and the request sets `chart: "map"`. Jev's own chart answer for this question is `bar` (0.74 in the evaluation); since this run, a geographic bar applies only when asked for, so the planner would draw the map without the request's `chart` too.
-- **Network** ([file](examples/network-sponsors-drugs-melanoma.json)). Sponsor–drug edges over MeSH identities from the 3,000 most recent melanoma trials are cut from 3,580 links to the 40 strongest, and each edge cites up to three trials where both ends co-occur.
-
-Each run was checked: the chart type matches the question, every excerpt matches its bucket (the phase key, the start date's period or the country, across 401 citations in the bucket charts), and each first-page URL in `meta.source.requests` returns the stated `totalCount` from the live registry.
 
 ## Validation
 
@@ -632,11 +460,11 @@ The visual check of the charts against live responses: done 2026-10-09; findings
 
 ## Design decisions and trade-offs
 
-**A judged pipeline instead of a tool-calling agent or text-to-SQL.** Two alternatives were rejected. A tool-calling agent (an LLM loop with search and aggregate tools) needs three to six round trips and puts the planning step, the one most prone to invention, inside a generative model. A pre-indexed warehouse with text-to-SQL gives fast aggregates, but it needs a mirror of the registry that goes stale, and text-to-SQL is the least constrained AI step possible. The judged pipeline limits generation to two narrow steps: the extraction copies names from the question, and the titler rephrases the plan. Neither chooses the chart, the grouping or any data value. The cost is coverage: Cheiron answers only the question classes its options describe (nine intents, thirteen dimensions, ten charts), and a question outside them gets a 422 or the nearest class.
+**A judged pipeline instead of a tool-calling agent or text-to-SQL.** Two alternatives were rejected. A tool-calling agent (an LLM loop with search and aggregate tools) needs three to six round trips and puts the planning step, the one most prone to invention, inside a generative model. A pre-indexed warehouse with text-to-SQL gives fast aggregates, but it needs a mirror of the registry that goes stale, and text-to-SQL is the least constrained AI step possible. The judged pipeline limits generation to two narrow steps: the extraction copies names from the question, and the titler rephrases the plan. Neither chooses the chart, the grouping or any data value. The cost is coverage: ChatCTG answers only the question classes its options describe (nine intents, thirteen dimensions, ten charts), and a question outside them gets a 422 or the nearest class.
 
 **Jev plus extraction instead of one LLM call.** One structured LLM call could return the intent, the chart and the entities together. Jev was chosen for the closed decisions because it returns a probability for every option, which gives the thresholds something to act on and lets the response show its alternatives, and because it cannot answer outside the options. All twelve questions go in one request (p50 181 ms in the latest evaluation). The strings still need a generative model, so the extractor runs in parallel with Jev and is limited to verbatim names under a strict schema. The cost is two vendors and two keys, and the wording of the questions matters: four wording edits moved agreement from 95% to 99%.
 
-**Download and aggregate instead of count queries.** The registry can return `totalCount` for any filter, so a bar chart could be one count query per bucket. Cheiron fetches the matching studies once (19 fields each) and aggregates locally instead. One fetch then serves any dimension, a secondary split, medians, networks and scatter, and every bucket can cite the studies in it. Count queries cannot cite and need one request per bucket, which open dimensions like sponsor make unbounded. The cost is the cap: a topic with more matching trials than `max_studies` is aggregated over its most recently started trials, and the response says so. Two shapes use counts instead: a single value is the registry's exact `totalCount`, and a yearly trial count over a truncated fetch, where the sample would hold only the last few years, is one count request per year (at most 40), each also reading a few trials of its year for the citations.
+**Download and aggregate instead of count queries.** The registry can return `totalCount` for any filter, so a bar chart could be one count query per bucket. ChatCTG fetches the matching studies once (19 fields each) and aggregates locally instead. One fetch then serves any dimension, a secondary split, medians, networks and scatter, and every bucket can cite the studies in it. Count queries cannot cite and need one request per bucket, which open dimensions like sponsor make unbounded. The cost is the cap: a topic with more matching trials than `max_studies` is aggregated over its most recently started trials, and the response says so. Two shapes use counts instead: a single value is the registry's exact `totalCount`, and a yearly trial count over a truncated fetch, where the sample would hold only the last few years, is one count request per year (at most 40), each also reading a few trials of its year for the citations.
 
 **Projected fields and a cap.** Asking for 19 fields instead of whole records keeps pages small. The default cap of 3,000 studies bounds the fetch to three pages (about 2.5 s at the measured 0.8 s per page). `sort=StartDate:desc` makes the truncated sample deterministic and lets the subtitle state exactly which trials were read. A caller who needs more can raise `max_studies` to 10,000 and wait longer.
 
@@ -649,7 +477,7 @@ The visual check of the charts against live responses: done 2026-10-09; findings
 ## Limitations and next steps
 
 - **Sequential paging.** Pages within an arm are fetched one after another, about 0.8 s per 1,000 studies. Partitioning the query by `StartDate` ranges would let the pages of one arm run in parallel.
-- **No synonym expansion.** The extractor keeps brand names as written and Cheiron does not map them to generic names, so "Keytruda" and "pembrolizumab" are separate queries. A synonym table or a MeSH lookup before the fetch would close this.
+- **No synonym expansion.** The extractor keeps brand names as written and ChatCTG does not map them to generic names, so "Keytruda" and "pembrolizumab" are separate queries. A synonym table or a MeSH lookup before the fetch would close this.
 - **MeSH fallback inconsistency.** A study with MeSH terms is identified by them; a study without them is identified by its registered names. The same drug can therefore appear as two buckets or two nodes ("pembrolizumab" from MeSH and "pembrolizumab 200mg" from a registered name). Edge citations always name the MeSH path for drugs and conditions and give the lowercased identity, even when the identity came from a registered name.
 - **No server-side persistence.** The cache is in memory and the history lives in the browser's `localStorage`.
 - **English only.** The Jev instructions, the extraction prompt and the labels are English.
@@ -663,7 +491,7 @@ The visual check of the charts against live responses: done 2026-10-09; findings
 
 ## AI tools
 
-Cheiron was built with Claude Code (Claude Fable 5.1) as the implementer, working from a design spec and an implementation plan that the author wrote and reviewed. Each task of the plan went to an implementer agent and then to a separate reviewer agent that checked it against the spec, with fixes before the next task.
+ChatCTG was built with Claude Code (Claude Fable 5.1) as the implementer, working from a design spec and an implementation plan that the author wrote and reviewed. Each task of the plan went to an implementer agent and then to a separate reviewer agent that checked it against the spec, with fixes before the next task.
 
 Designed deliberately by the author:
 
@@ -684,3 +512,5 @@ How correctness was checked:
 - review of each task against the spec;
 - the five example runs against the live APIs, their totals re-queried from the registry and their excerpts checked against their buckets;
 - a live end-to-end run of the API, and a visual check of the charts.
+
+The design is in [docs/superpowers/specs/2026-10-09-chatctg-design.md](docs/superpowers/specs/2026-10-09-chatctg-design.md). Where the spec and the shipped code differ, this README describes the code.

@@ -1,5 +1,5 @@
-import type { Dimension, Granularity, Phase } from "@cheiron/contracts";
-import type { Study } from "@cheiron/ctgov";
+import type { Dimension, Granularity, Phase } from "@chatctg/contracts";
+import type { Study } from "@chatctg/ctgov";
 
 export const ENROLLMENT_BINS: { label: string; min: number; max: number | null }[] = [
   { label: "1–50", min: 1, max: 50 }, { label: "51–100", min: 51, max: 100 }, { label: "101–200", min: 101, max: 200 },

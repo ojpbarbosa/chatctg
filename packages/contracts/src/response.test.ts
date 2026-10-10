@@ -25,7 +25,7 @@ const meta = {
   coverage: { total_count: 10, fetched_count: 10, truncated: false, sorted_by: "StartDate:desc", studies_without_value: 0, omitted_categories: 0 },
   units: { y: "trials" }, granularity: null,
   timing: { jev_ms: 1, extract_ms: 1, fetch_ms: 1, title_ms: 1, aggregate_ms: 1, total_ms: 5 },
-  notes: [], warnings: [], version: "cheiron/0.1.0",
+  notes: [], warnings: [], version: "chatctg/0.1.0",
 };
 
 describe("Visualization", () => {

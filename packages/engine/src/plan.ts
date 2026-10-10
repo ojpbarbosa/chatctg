@@ -1,7 +1,7 @@
-import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Interpretation, Metric, Phase, QueryRequest } from "@cheiron/contracts";
-import { essieAdvanced, essieTerms, type FetchQuery } from "@cheiron/ctgov";
-import { asList } from "@cheiron/contracts";
-import { QUESTION_SET, topK, type InterpretationAnswers } from "@cheiron/judgment";
+import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Interpretation, Metric, Phase, QueryRequest } from "@chatctg/contracts";
+import { essieAdvanced, essieTerms, type FetchQuery } from "@chatctg/ctgov";
+import { asList } from "@chatctg/contracts";
+import { QUESTION_SET, topK, type InterpretationAnswers } from "@chatctg/judgment";
 import { DIMENSION_LABEL, PHASE_PHRASE } from "./dimensions";
 
 export interface Entities { drugs: string[]; conditions: string[]; sponsors: string[]; countries: string[]; start_year: number | null; end_year: number | null; limit: number | null }

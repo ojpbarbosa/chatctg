@@ -85,7 +85,7 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 .chart { min-height: 360px; position: relative; }
 .skeleton { background: linear-gradient(90deg, var(--raised), #eef0f4, var(--raised)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: var(--radius-sm); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-.error { border-color: rgba(180, 35, 24, 0.3); background: #fff7f6; }
+.error { border-color: rgba(180, 35, 24, 0.3); background: rgba(180, 35, 24, 0.35); width: 400px; display: flex; }
 .error h2 { font-size: var(--t-lg); }
 .drawer { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
 .drawer h3 { margin: 0; font-size: var(--t-md); font-weight: 600; }

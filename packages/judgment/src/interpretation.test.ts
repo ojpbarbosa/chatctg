@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS, PHASES } from "@cheiron/contracts";
+import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS, PHASES } from "@chatctg/contracts";
 import { interpretationQuestions, interpretationState, QUESTION_SET } from "./interpretation";
 
 describe("interpretation questions", () => {

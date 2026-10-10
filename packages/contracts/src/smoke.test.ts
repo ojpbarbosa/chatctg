@@ -3,6 +3,6 @@ import { VERSION } from "./index";
 
 describe("workspace", () => {
   it("resolves the contracts package", () => {
-    expect(VERSION).toBe("cheiron/0.1.0");
+    expect(VERSION).toBe("chatctg/0.1.0");
   });
 });

@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { QueryRequest, type QueryRequestInput } from "@cheiron/contracts";
-import { runQuery } from "@cheiron/engine";
+import { QueryRequest, type QueryRequestInput } from "@chatctg/contracts";
+import { runQuery } from "@chatctg/engine";
 import { depsFromEnv } from "../apps/api/src/deps";
 
 const EXAMPLES: { slug: string; request: QueryRequestInput }[] = [

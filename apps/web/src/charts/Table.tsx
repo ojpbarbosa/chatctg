@@ -1,4 +1,4 @@
-import type { TableViz } from "@cheiron/contracts";
+import type { TableViz } from "@chatctg/contracts";
 import type { OnPick } from "./index";
 import { fmt } from "./common";
 

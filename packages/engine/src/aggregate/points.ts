@@ -1,4 +1,4 @@
-import type { Study } from "@cheiron/ctgov";
+import type { Study } from "@chatctg/ctgov";
 import { mostRecent } from "../cite";
 
 export interface Point { study: Study; nct_id: string; title: string; start_date: string; enrollment: number; phase: string; series: string | null }

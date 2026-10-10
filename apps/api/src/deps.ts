@@ -1,6 +1,6 @@
-import { HttpCtgovClient } from "@cheiron/ctgov";
-import { EXTRACTOR_MODEL, openAiExtractor, openAiTitler, TITLER_MODEL, type Deps } from "@cheiron/engine";
-import { judgmentClientFromEnv } from "@cheiron/judgment";
+import { HttpCtgovClient } from "@chatctg/ctgov";
+import { EXTRACTOR_MODEL, openAiExtractor, openAiTitler, TITLER_MODEL, type Deps } from "@chatctg/engine";
+import { judgmentClientFromEnv } from "@chatctg/judgment";
 
 export function depsFromEnv(env: Record<string, string | undefined> = process.env): Deps {
   return {

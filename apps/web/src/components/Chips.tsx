@@ -1,4 +1,4 @@
-import type { Interpretation, Phase } from "@cheiron/contracts";
+import type { Interpretation, Phase } from "@chatctg/contracts";
 
 const pct = (p: number) => `${Math.round(p * 100)}%`;
 const words = (s: string) => s.replace(/_/g, " ");

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { NetworkViz } from "@cheiron/contracts";
+import type { NetworkViz } from "@chatctg/contracts";
 import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, type SimulationLinkDatum, type SimulationNodeDatum } from "d3-force";
 import type { OnPick } from "./index";
 import { colorFor } from "./palette";

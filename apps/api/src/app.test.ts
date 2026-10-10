@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { FastifyReply } from "fastify";
-import { fakeDeps } from "@cheiron/engine";
+import { fakeDeps } from "@chatctg/engine";
 import { buildApp } from "./app";
 import { startSse } from "./sse";
 
@@ -9,7 +9,7 @@ const app = () => buildApp(fakeDeps({ intent: { choice: "distribution" }, dimens
 describe("API", () => {
   it("GET /health", async () => {
     const r = await app().inject({ method: "GET", url: "/health" });
-    expect(r.statusCode).toBe(200); expect(r.json()).toEqual({ ok: true, version: "cheiron/0.1.0", api_version: "2.0.5", data_timestamp: "2026-10-08T09:00:05" });
+    expect(r.statusCode).toBe(200); expect(r.json()).toEqual({ ok: true, version: "chatctg/0.1.0", api_version: "2.0.5", data_timestamp: "2026-10-08T09:00:05" });
   });
   it("GET /schema", async () => {
     const r = await app().inject({ method: "GET", url: "/schema" });

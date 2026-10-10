@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Citation } from "@cheiron/contracts";
+import type { Citation } from "@chatctg/contracts";
 import type { InterpretationEvent } from "../api";
 import type { HistoryItem } from "../history";
 import { renderChart } from "../charts";
@@ -16,8 +16,8 @@ export function ResultCard({ item, live, onDidYouMean }: { item: HistoryItem; li
   const [picked, setPicked] = useState<{ label: string; citations: Citation[] } | null>(null);
   const r = item.response; const i = r?.meta.interpretation ?? live?.interpretation?.interpretation ?? null;
   const applied = r?.meta.interpretation.chart.applied ?? live?.interpretation?.chart ?? null;
-  const title = r?.visualization?.title ?? live?.title ?? (i ? "Working…" : "Understanding the question…");
-  if (item.error) return <div className="card error rise"><h2>Could not answer</h2><p className="sub">{item.error}</p>{i && <InterpretationChips i={i} applied={applied} onDidYouMean={onDidYouMean} />}</div>;
+  const title = r?.visualization?.title ?? live?.title ?? (i ? "Working…" : "Classifying the question…");
+  if (item.error) return <div style={{ width: "100%", display: "flex", justifyContent: "center"}}><div className="card error rise"><h2>Could not answer</h2><p className="sub">{item.error}</p>{i && <InterpretationChips i={i} applied={applied} onDidYouMean={onDidYouMean} />}</div></div>;
   return (
     <>
       <div className="card rise">

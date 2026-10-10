@@ -1,4 +1,4 @@
-import type { Citation, Interpretation, QueryRequestInput, QueryResponse } from "@cheiron/contracts";
+import type { Citation, Interpretation, QueryRequestInput, QueryResponse } from "@chatctg/contracts";
 
 export interface InterpretationEvent { interpretation: Interpretation; chart: string; arms: { label: string; filters: Record<string, string> }[] }
 export interface Handlers {

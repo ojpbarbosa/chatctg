@@ -1,4 +1,4 @@
-import type { BarViz, GroupedBarViz, StackedBarViz } from "@cheiron/contracts";
+import type { BarViz, GroupedBarViz, StackedBarViz } from "@chatctg/contracts";
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts";
 import type { OnPick } from "./index";
 import { AXIS, colorFor, GRID } from "./palette";

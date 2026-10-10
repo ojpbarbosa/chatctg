@@ -1,6 +1,6 @@
-import { asList, QueryResponse, VERSION, type ChartType, type ErrorBody, type Interpretation, type Meta, type QueryRequest } from "@cheiron/contracts";
-import { FakeCtgovClient, type CtgovClient, type CtgovFailureReason, type CtgovRequestLog, type Study } from "@cheiron/ctgov";
-import { FakeJudgmentClient, interpretationQuestions, interpretationState, type JudgmentClient, type ProvidedFields, type Scripted } from "@cheiron/judgment";
+import { asList, QueryResponse, VERSION, type ChartType, type ErrorBody, type Interpretation, type Meta, type QueryRequest } from "@chatctg/contracts";
+import { FakeCtgovClient, type CtgovClient, type CtgovFailureReason, type CtgovRequestLog, type Study } from "@chatctg/ctgov";
+import { FakeJudgmentClient, interpretationQuestions, interpretationState, type JudgmentClient, type ProvidedFields, type Scripted } from "@chatctg/judgment";
 import { bucketize, mergeArms, type Bucketized } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { boundaryPeriod, MAX_YEARS, trimThrough, withinYear, yearBuckets, yearRange, type YearCount } from "./aggregate/periods";
@@ -26,7 +26,7 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 
 const error = (status: 422 | 500 | 502 | 504, code: ErrorBody["error"]["code"], message: string, details?: unknown): RunResult => ({ ok: false, status, body: { error: { code, message, ...(details !== undefined ? { details } : {}) } } });
 const upstream = (which: "jev" | "openai" | "ctgov", reason: string, detail?: string): RunResult =>
-  error(502, "upstream_failed", `${which === "jev" ? "Jev" : which === "openai" ? "OpenAI" : "ClinicalTrials.gov"} did not answer (${reason})`, { upstream: which, reason, ...(detail ? { detail } : {}) });
+  error(502, "upstream_failed", `${which === "jev" ? "Classifier" : which === "openai" ? "LLM" : "ClinicalTrials.gov"} did not answer (${reason})`, { upstream: which, reason, ...(detail ? { detail } : {}) });
 
 /** The title never holds the response: after the cap it is the template title. */
 async function cappedTitle(deps: Deps, summary: string, signal: AbortSignal): Promise<{ title: string | null; ms: number }> {
@@ -54,6 +54,12 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     ...(request.trial_phase !== undefined ? { trial_phase: request.trial_phase } : {}), ...(request.status !== undefined ? { status: request.status } : {}),
     ...(request.start_year !== undefined ? { start_year: request.start_year } : {}), ...(request.end_year !== undefined ? { end_year: request.end_year } : {}),
   };
+    // TODO: use chart_named as a suggestion. if they named a type that also happens to match
+    // with jev's suggestion, show a little banner highlighting that they have a great taste
+    // for visualizations and then show a suggested graphic with jev's 2nd option for chart. 
+    // if the answer diverges, then show de suggestion with a little banner saying that's the 
+    // best way we think that information can be shown.
+    // havent named, then behave normally and show just the highest rated one.
   const [judged, extracted] = await Promise.all([
     deps.judge.ask({ state: interpretationState(request.query, provided), questions: interpretationQuestions(), signal }),
     deps.extract(request.query, today(), signal),
