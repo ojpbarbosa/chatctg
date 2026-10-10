@@ -32,6 +32,33 @@ describe("Sidebar", () => {
     act(() => toggle().click());
     expect(toggle().getAttribute("aria-expanded")).toBe("true");
     expect(aside.classList.contains("rail")).toBe(false);
+    expect(el.querySelector(".sidebar-backdrop")).toBeNull();
+    act(() => root.unmount());
+    el.remove();
+  });
+
+  it("on a narrow screen, opens over the page and folds on Escape or a backdrop click, focus back on the toggle", () => {
+    const mq = { matches: true, addEventListener: () => {}, removeEventListener: () => {} };
+    vi.stubGlobal("matchMedia", () => mq);
+    const el = document.createElement("div");
+    document.body.append(el);
+    const root = createRoot(el);
+    act(() => root.render(<Sidebar items={[]} activeId={null} onSelect={noop} onNew={noop} onRemove={noop} />));
+    const toggle = () => el.querySelector<HTMLButtonElement>("button[aria-expanded]")!;
+    const backdrop = () => el.querySelector<HTMLButtonElement>(".sidebar-backdrop");
+    expect(toggle().getAttribute("aria-expanded")).toBe("false");
+    expect(backdrop()).toBeNull();
+    act(() => toggle().click());
+    expect(toggle().getAttribute("aria-expanded")).toBe("true");
+    expect(backdrop()).not.toBeNull();
+    act(() => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); });
+    expect(toggle().getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(toggle());
+    expect(backdrop()).toBeNull();
+    act(() => toggle().click());
+    act(() => backdrop()!.click());
+    expect(toggle().getAttribute("aria-expanded")).toBe("false");
+    expect(localStorage.getItem("chatctg.sidebar.v1")).toBeNull();
     act(() => root.unmount());
     el.remove();
   });
