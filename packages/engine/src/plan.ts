@@ -39,13 +39,18 @@ export function defaultChart(intent: Intent, dimension: Dimension | null, second
   }
 }
 
+/** The grids of two categorical attributes: one cell per pair of categories, the second attribute a secondary dimension or a comparison's arms. */
+const GRIDS: ChartType[] = ["bubble"];
+
 /**
  * The matrix from the spec: what the data shape of an intent can render. `scatter`, and `bar` for a geographic question, are in the set
  * only when the chart was asked for explicitly.
  * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
+ * A grid needs two categorical attributes: a distribution with a secondary dimension, or a comparison over anything but start dates.
  */
 export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
   const set = new Set<ChartType>([defaultChart(intent, dimension, secondary)]);
+  const add = (charts: ChartType[]) => { for (const c of charts) set.add(c); };
   switch (intent) {
     case "time_trend":
       set.add("bar"); if (secondary) set.add("stacked_bar"); if (explicit) set.add("scatter"); break;
@@ -53,10 +58,12 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
       set.add("bar");
       if (dimension === "enrollment" || dimension === "start_year") set.add("histogram");
       if (dimension === "start_year") set.add("line");
-      if (secondary) { set.add("stacked_bar"); set.add("grouped_bar"); }
+      if (secondary) add(["stacked_bar", "grouped_bar", ...GRIDS]);
       if (explicit) set.add("scatter"); break;
     case "comparison":
-      set.add("grouped_bar"); set.add("stacked_bar"); if (dimension === "start_year") set.add("line"); if (explicit) set.add("scatter"); break;
+      set.add("grouped_bar"); set.add("stacked_bar");
+      if (dimension === "start_year") set.add("line"); else add(GRIDS);
+      if (explicit) set.add("scatter"); break;
     case "ranking":
       set.add("bar"); if (dimension === "country") set.add("map"); break;
     case "geographic":

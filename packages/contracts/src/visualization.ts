@@ -7,6 +7,8 @@ const QuantAxis = z.object({ field: z.string(), type: z.literal("quantitative"),
 const CatAxis = z.object({ field: z.string(), type: z.enum(["nominal", "ordinal"]), label: z.string(), order: z.array(z.string()).optional() });
 const TemporalAxis = z.object({ field: z.string(), type: z.literal("temporal"), granularity: z.enum(GRANULARITIES), label: z.string() });
 const Series = z.object({ field: z.string(), label: z.string(), values: z.array(z.string()) });
+/** A measured value carried by a mark's size or colour rather than by an axis. */
+const Measure = z.object({ field: z.string(), label: z.string(), unit });
 const head = { title: z.string(), subtitle: z.string() };
 
 const barEncoding = z.object({ x: CatAxis, y: QuantAxis, orientation: z.enum(["vertical", "horizontal"]), sort: z.enum(["x_order", "value_desc"]) });
@@ -59,8 +61,16 @@ export const SingleValueViz = z.object({
   data: z.array(DataRow).length(1),
 });
 
+/** Two categorical axes and one circle per pair of categories, its area proportional to the value. Rows: `{ x, x_key, y, y_key, [size.field] }`. */
+export const BubbleViz = z.object({
+  type: z.literal("bubble"), ...head,
+  encoding: z.object({ x: CatAxis, y: CatAxis, size: Measure }),
+  data: z.array(DataRow),
+});
+
 export const Visualization = z.discriminatedUnion("type", [
   BarViz, GroupedBarViz, StackedBarViz, LineViz, HistogramViz, ScatterViz, NetworkViz, MapViz, TableViz, SingleValueViz,
+  BubbleViz,
 ]);
 export type Visualization = z.infer<typeof Visualization>;
 export type BarViz = z.infer<typeof BarViz>;
@@ -73,3 +83,4 @@ export type NetworkViz = z.infer<typeof NetworkViz>;
 export type MapViz = z.infer<typeof MapViz>;
 export type TableViz = z.infer<typeof TableViz>;
 export type SingleValueViz = z.infer<typeof SingleValueViz>;
+export type BubbleViz = z.infer<typeof BubbleViz>;

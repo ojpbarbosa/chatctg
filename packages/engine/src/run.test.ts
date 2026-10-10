@@ -132,6 +132,17 @@ describe("runQuery", () => {
     const phase3 = body.visualization.data.filter((r) => r.phase_key === "PHASE3");
     expect(phase3.map((r) => [r.series, r.trial_count])).toEqual([["Industry", 4], ["NIH", 0], ["Other (academic, hospital)", 0]]);
   });
+  it("bubble: phase by sponsor class as a complete grid, each cell cited", async () => {
+    const deps = fakeDeps({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "bubble" }, chart_named: { noul: 0.9 } }, { conditions: ["melanoma"] });
+    const body = okBody(await runQuery(req("Show phase by sponsor class for melanoma trials as bubbles"), deps));
+    if (body.visualization?.type !== "bubble") throw new Error(body.visualization?.type);
+    expect(body.visualization.data).toHaveLength(5 * 3);
+    expect(body.visualization.encoding.size).toEqual({ field: "trial_count", label: "Trials", unit: "trials" });
+    expect(body.visualization.data.filter((r) => r.study_count === 0).length).toBeGreaterThan(0);
+    expect(body.meta.interpretation.chart).toMatchObject({ chosen: "bubble", applied: "bubble", reason: null });
+    expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
+    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+  });
   it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));

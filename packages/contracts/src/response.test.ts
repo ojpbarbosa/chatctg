@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { QueryResponse, Visualization, ErrorBody } from "./response";
+import { CHART_TYPES } from "./enums";
 import { Judged } from "./events";
 import { jsonSchemas } from "./json-schema";
 
@@ -46,6 +47,21 @@ describe("Visualization", () => {
       data: { nodes: [{ id: "sponsor:merck", label: "Merck", kind: "sponsor", size: 3, study_count: 3 }], edges: [{ source: "sponsor:merck", target: "drug:x", weight: 2, study_count: 2, citations: [citation] }] },
     };
     expect(Visualization.safeParse(v).success).toBe(true);
+  });
+
+  it("lists the ten first chart types, then the grid, timeline and flow types", () => {
+    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble"]);
+  });
+
+  it("accepts a bubble spec over two categorical axes, and requires its size channel", () => {
+    const v = {
+      type: "bubble", title: "t", subtitle: "s",
+      encoding: { x: { field: "x", type: "ordinal", label: "Phase", order: ["Phase 1"] }, y: { field: "y", type: "ordinal", label: "Sponsor class", order: ["Industry"] }, size: { field: "trial_count", label: "Trials", unit: "trials" } },
+      data: [row({ x: "Phase 1", x_key: "PHASE1", y: "Industry", y_key: "INDUSTRY", trial_count: 3 })],
+    };
+    expect(Visualization.safeParse(v).success).toBe(true);
+    const { size: _, ...unsized } = v.encoding;
+    expect(Visualization.safeParse({ ...v, encoding: unsized }).success).toBe(false);
   });
 
   it("rejects a single_value with two rows", () => {

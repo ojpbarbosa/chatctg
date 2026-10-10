@@ -62,4 +62,16 @@ describe("Sidebar", () => {
     act(() => root.unmount());
     el.remove();
   });
+
+  it("marks each past answer with its chart type's glyph", () => {
+    const glyphs: Record<string, string> = { bubble: "◉" };
+    const items = Object.keys(glyphs).map((type, i) => ({ id: type, query: `q${i}`, created_at: new Date().toISOString(), response: { visualization: { type } } as never, error: null }));
+    const el = document.createElement("div");
+    document.body.append(el);
+    const root = createRoot(el);
+    act(() => root.render(<Sidebar items={items} activeId={null} onSelect={noop} onNew={noop} onRemove={noop} />));
+    expect([...el.querySelectorAll(".history-item .select span:first-child")].map((s) => s.textContent)).toEqual(Object.values(glyphs));
+    act(() => root.unmount());
+    el.remove();
+  });
 });

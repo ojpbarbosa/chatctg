@@ -2,7 +2,7 @@ import type { ChartType, Dimension, EdgeKind, Granularity, Intent, Metric, Phase
 import { choice, noul } from "./questions";
 import type { AnswersFor, JsonValue } from "./types";
 
-export const QUESTION_SET = { id: "query-interpretation", version: 2 } as const;
+export const QUESTION_SET = { id: "query-interpretation", version: 3 } as const;
 
 export interface ProvidedFields {
   drugs?: string[]; conditions?: string[]; sponsors?: string[]; countries?: string[];
@@ -68,6 +68,7 @@ export function interpretationQuestions() {
       map: { what: "Values per country drawn on a world map." },
       table: { what: "A list of individual trials with their details.", not_for: "Counts per category such as per phase (bar)." },
       single_value: { what: "One number, such as a total count." },
+      bubble: { what: "A grid of two attributes, one circle per pair of categories sized by its number of trials, such as phase by sponsor class, or the categories of one attribute for each of several named things.", not_for: "A single attribute (bar), or change over time (line)." },
     }),
     chart_named: noul("Does the user explicitly name the kind of visual they want?", {
       true: "The question contains a word for a visual form: chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie.",

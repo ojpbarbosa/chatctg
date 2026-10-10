@@ -8,8 +8,10 @@ export const fmt = (v: unknown): string => (typeof v === "number" ? v.toLocaleSt
 /** What a click picked, for the citations drawer: "Phase 3, nivolumab", or just "Phase 3". */
 export const pickLabel = (category: string, series: string | null): string => (series ? `${category}, ${series}` : category);
 
+/** A count with its unit: "24 trials", "1 trial", "1,200 participants". */
+export const quantity = (n: number, unit: string): string => `${fmt(n)} ${n === 1 ? unit.replace(/s$/, "") : unit}`;
 /** A named count: "Germany, 24 trials", "Pfizer, 1 trial", "Canada, 1,200 participants". */
-export const countLabel = (name: string, n: number, unit: string): string => `${name}, ${fmt(n)} ${n === 1 ? unit.replace(/s$/, "") : unit}`;
+export const countLabel = (name: string, n: number, unit: string): string => `${name}, ${quantity(n, unit)}`;
 
 export const reducedMotion = (): boolean => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 

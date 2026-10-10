@@ -33,12 +33,21 @@ describe("interpretation questions", () => {
     expect(q.phase_filter.criteria).toHaveProperty("none");
   });
 
+  it("says what each grid, timeline and flow chart is for, and what it is not for", () => {
+    for (const chart of CHART_TYPES.slice(10)) {
+      const c = q.chart.criteria[chart] as { what: string; not_for: string };
+      expect(c.what.length, chart).toBeGreaterThan(20);
+      expect(c.not_for.length, chart).toBeGreaterThan(10);
+    }
+    expect(CHART_TYPES.slice(10).length).toBeGreaterThan(0);
+  });
+
   it("builds a small state with only the provided fields", () => {
     expect(interpretationState("q", {})).toEqual({ question: "q", provided: {} });
     expect(interpretationState("q", { drugs: ["a"], start_year: 2015 })).toEqual({ question: "q", provided: { drugs: ["a"], start_year: 2015 } });
   });
 
   it("is versioned", () => {
-    expect(QUESTION_SET).toEqual({ id: "query-interpretation", version: 2 });
+    expect(QUESTION_SET).toEqual({ id: "query-interpretation", version: 3 });
   });
 });

@@ -27,3 +27,19 @@ export function citeEdge(studies: Study[], a: { field: string; value: string }, 
     excerpt: `${tail(a.field)} "${a.value}"; ${tail(b.field)} "${b.value}"`,
   }));
 }
+
+/** The one registry path that holds a study's value: a drug or a condition is its MeSH term when the registry mapped any, else its name as registered. */
+function pathOf(s: Study, d: Dimension): string {
+  const [mesh, named] = citationField(d).split(" | ") as [string, string | undefined];
+  if (named === undefined) return mesh;
+  const mapped = d === "drug" ? s.mesh_interventions.length > 0 : s.mesh_conditions.length > 0;
+  return mapped ? mesh : named;
+}
+
+/** A grid cell or a flow: the studies with both values, each citing the two paths and values that put it there. */
+export function citeCell(studies: Study[], a: { dimension: Dimension; key: string }, b: { dimension: Dimension; key: string }, k: number): Citation[] {
+  return mostRecent(studies, k).map((s) => {
+    const pa = pathOf(s, a.dimension), pb = pathOf(s, b.dimension);
+    return { nct_id: s.nct_id, title: studyLabel(s), field: `${pa} | ${pb}`, excerpt: `${tail(pa)} "${citationExcerpt(s, a.dimension, a.key)}"; ${tail(pb)} "${citationExcerpt(s, b.dimension, b.key)}"` };
+  });
+}

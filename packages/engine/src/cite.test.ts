@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { citeBucket, citeEdge, citeSelf, mostRecent } from "./cite";
+import { citeBucket, citeCell, citeEdge, citeSelf, mostRecent } from "./cite";
 import { SAMPLE } from "./test-studies";
 
 describe("citations", () => {
@@ -21,6 +21,20 @@ describe("citations", () => {
     const c = citeEdge([SAMPLE[0]!], { field: "protocolSection.sponsorCollaboratorsModule.leadSponsor.name", value: "Merck" }, { field: "derivedSection.interventionBrowseModule.meshes[].term", value: "lenvatinib" }, 5);
     expect(c[0]).toMatchObject({ nct_id: "NCT00000001", excerpt: 'leadSponsor.name "Merck"; meshes[].term "lenvatinib"' });
     expect(c[0]!.field).toBe("protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term");
+  });
+  it("cites both values that put a study in a grid cell", () => {
+    const c = citeCell(SAMPLE.filter((s) => s.phases.includes("PHASE3")), { dimension: "phase", key: "PHASE3" }, { dimension: "sponsor_class", key: "INDUSTRY" }, 1);
+    expect(c).toEqual([{
+      nct_id: "NCT00000012", title: "Study NCT00000012",
+      field: "protocolSection.designModule.phases | protocolSection.sponsorCollaboratorsModule.leadSponsor.class",
+      excerpt: 'designModule.phases "PHASE3"; leadSponsor.class "INDUSTRY"',
+    }]);
+    // A drug or condition cites the path that holds the study's value: the MeSH term when mapped, else the name as registered.
+    const named = citeCell([SAMPLE[5]!], { dimension: "drug", key: "pembrolizumab" }, { dimension: "phase", key: "PHASE2" }, 5);
+    expect(named[0]).toMatchObject({ field: "protocolSection.armsInterventionsModule.interventions[].name | protocolSection.designModule.phases", excerpt: 'interventions[].name "pembrolizumab"; designModule.phases "PHASE2"' });
+    const mesh = citeCell([SAMPLE[0]!], { dimension: "condition", key: "Melanoma" }, { dimension: "phase", key: "PHASE3" }, 5);
+    expect(mesh[0]!.field).toBe("derivedSection.conditionBrowseModule.meshes[].term | protocolSection.designModule.phases");
+    expect(citeCell(SAMPLE, { dimension: "phase", key: "PHASE3" }, { dimension: "sponsor_class", key: "INDUSTRY" }, 0)).toEqual([]);
   });
   it("respects k = 0", () => expect(citeBucket(SAMPLE, "phase", "PHASE2", 0)).toEqual([]));
 });

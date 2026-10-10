@@ -1,6 +1,7 @@
 import type { Citation, Visualization } from "@chatctg/contracts";
 import type { ReactNode } from "react";
 import { BarView } from "./Bar";
+import { BubbleView } from "./Bubble";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { NetworkView } from "./Network";
@@ -21,6 +22,7 @@ export function renderChart(viz: Visualization, onPick: OnPick): ReactNode {
     case "map": return <WorldMapView viz={viz} onPick={onPick} />;
     case "table": return <TableView viz={viz} onPick={onPick} />;
     case "single_value": return <SingleValueView viz={viz} onPick={onPick} />;
+    case "bubble": return <BubbleView viz={viz} onPick={onPick} />;
     default: return <pre className="json">{JSON.stringify(viz, null, 2)}</pre>;
   }
 }

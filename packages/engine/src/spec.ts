@@ -1,9 +1,9 @@
-import type { Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@chatctg/contracts";
+import type { BubbleViz, Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@chatctg/contracts";
 import { iso3, type Study } from "@chatctg/ctgov";
 import type { Bucketized } from "./aggregate/buckets";
 import { KIND_FIELD, type GraphEdge, type GraphNode } from "./aggregate/graph";
 import type { Point } from "./aggregate/points";
-import { citeBucket, citeEdge, citeSelf, mostRecent } from "./cite";
+import { citeBucket, citeCell, citeEdge, citeSelf, mostRecent } from "./cite";
 import { bucketLabel, conditionIdentity, DIMENSION_LABEL, DIMENSION_LABEL_PLURAL, ENROLLMENT_BINS, fixedOrder, PHASE_PHRASE } from "./dimensions";
 import { entityLabel, type Plan } from "./plan";
 
@@ -157,6 +157,27 @@ function comparisonAxisLabel(p: Plan): string {
 }
 const seriesValueLabel = (p: Plan, v: string) => (p.secondary ? bucketLabel(p.secondary, v) : v);
 
+type CatAxis = BubbleViz["encoding"]["x"];
+const categorical = (d: Dimension | null): CatAxis["type"] => (d !== null && (d === "start_year" || fixedOrder(d) !== null) ? "ordinal" : "nominal");
+
+/**
+ * A grid of two categorical attributes: the dimension across, the secondary dimension (or a comparison's arms) down, and one row per
+ * cell, empty cells included so the grid is complete. A cell cites both values that put a study in it; an arm is a query, not a value,
+ * so a comparison's cell cites its category.
+ */
+function grid(p: Plan, r: Bucketized, k: number): { x: CatAxis; y: CatAxis; data: DataRow[] } {
+  const dim = p.dimension ?? "phase";
+  const x: CatAxis = { field: "x", type: categorical(dim), label: DIMENSION_LABEL[dim], order: r.order.map((key) => bucketLabel(dim, key)) };
+  const y: CatAxis = { field: "y", type: categorical(p.secondary), label: seriesLabel(p), order: r.seriesValues.map((v) => seriesValueLabel(p, v)) };
+  const data = r.buckets.map((b) => {
+    const sk = b.series ?? "";
+    const citations = p.secondary ? citeCell(b.studies, { dimension: dim, key: b.key }, { dimension: p.secondary, key: sk }, k) : citeBucket(b.studies, dim, b.key, k);
+    return row({ x: b.label, x_key: b.key, y: seriesValueLabel(p, sk), y_key: sk, [p.metric]: b.value }, b.count ?? b.studies.length, citations);
+  });
+  return { x, y, data };
+}
+const measure = (m: Metric) => ({ field: m, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] });
+
 /** Category keys by their value summed over series, highest first; ties keep the given order. */
 function byValue(r: Bucketized): string[] {
   const total = new Map<string, number>();
@@ -182,6 +203,10 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
     }
     if (p.chart === "map") {
       return { type: "map", ...head, encoding: { geo: { field: "country", code_field: "iso3", level: "country" }, value: { field: m, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] } }, data: r.buckets.map((b) => rowOf(b, { country: b.key, iso3: iso3(b.key) })) };
+    }
+    if (p.chart === "bubble" && series) {
+      const { x, y, data } = grid(p, r, k);
+      return { type: "bubble", ...head, encoding: { x, y, size: measure(m) }, data };
     }
     const xField = dim === "start_year" ? "period" : dim;
     const ordinal = dim === "start_year" || fixedOrder(dim) !== null;

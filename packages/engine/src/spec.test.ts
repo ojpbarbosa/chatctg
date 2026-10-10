@@ -129,6 +129,36 @@ describe("buildVisualization", () => {
     if (plain.type !== "grouped_bar") throw new Error(plain.type);
     expect(plain.encoding.series.label).toBe("Arm");
   });
+  it("bubble: a complete grid of two attributes, zero cells included, each cell citing both values", () => {
+    const r = bucketize(SAMPLE, { dimension: "phase", secondary: "sponsor_class", metric: "trial_count" });
+    const v = valid(buildVisualization(base({ chart: "bubble", secondary: "sponsor_class" }), { kind: "buckets", result: r }, ctx, null));
+    if (v.type !== "bubble") throw new Error(v.type);
+    expect(v.encoding).toEqual({
+      x: { field: "x", type: "ordinal", label: "Phase", order: ["Early Phase 1", "Phase 1", "Phase 2", "Phase 3", "Not applicable"] },
+      y: { field: "y", type: "ordinal", label: "Sponsor class", order: ["Industry", "NIH", "Other (academic, hospital)"] },
+      size: { field: "trial_count", label: "Trials", unit: "trials" },
+    });
+    expect(v.data).toHaveLength(15);
+    const cell = (x: string, y: string) => v.data.find((d) => d.x_key === x && d.y_key === y)!;
+    expect(cell("PHASE3", "INDUSTRY")).toMatchObject({ x: "Phase 3", y: "Industry", trial_count: 4, study_count: 4 });
+    expect(cell("PHASE3", "INDUSTRY").citations).toEqual([
+      { nct_id: "NCT00000012", title: "Study NCT00000012", field: "protocolSection.designModule.phases | protocolSection.sponsorCollaboratorsModule.leadSponsor.class", excerpt: 'designModule.phases "PHASE3"; leadSponsor.class "INDUSTRY"' },
+      { nct_id: "NCT00000009", title: "Study NCT00000009", field: "protocolSection.designModule.phases | protocolSection.sponsorCollaboratorsModule.leadSponsor.class", excerpt: 'designModule.phases "PHASE3"; leadSponsor.class "INDUSTRY"' },
+    ]);
+    expect(cell("PHASE3", "NIH")).toMatchObject({ x: "Phase 3", y: "NIH", trial_count: 0, study_count: 0, citations: [] });
+    expect(v.title).toBe("Pembrolizumab trials by phase and sponsor class");
+  });
+  it("bubble over a comparison: the arms are the y axis, and a cell cites its category", () => {
+    const a = bucketize(SAMPLE.filter((s) => s.lead_sponsor.name === "Merck"), { dimension: "phase", metric: "trial_count" });
+    const b = bucketize(SAMPLE.filter((s) => s.lead_sponsor.name === "Acme"), { dimension: "phase", metric: "trial_count" });
+    const m = mergeArms([{ label: "Merck", result: a }, { label: "Acme", result: b }], { dimension: "phase", metric: "trial_count" });
+    const v = valid(buildVisualization(base({ intent: "comparison", chart: "bubble", arms: [{ label: "Merck", query: { spons: '"Merck"' } }, { label: "Acme", query: { spons: '"Acme"' } }] }), { kind: "buckets", result: m }, ctx, null));
+    if (v.type !== "bubble") throw new Error(v.type);
+    expect(v.encoding.y).toEqual({ field: "y", type: "nominal", label: "Sponsor", order: ["Merck", "Acme"] });
+    expect(v.data).toHaveLength(m.order.length * 2);
+    expect(v.data.find((d) => d.x_key === "PHASE3" && d.y === "Merck")).toMatchObject({ y_key: "Merck", trial_count: 3 });
+    expect(v.data.find((d) => d.x_key === "PHASE3" && d.y === "Merck")!.citations[0]).toMatchObject({ field: "protocolSection.designModule.phases", excerpt: "PHASE3" });
+  });
   it("histogram over enrollment bins", () => {
     const v = valid(buildVisualization(base({ chart: "histogram", dimension: "enrollment" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" }) }, ctx, null));
     if (v.type !== "histogram") throw new Error(v.type);

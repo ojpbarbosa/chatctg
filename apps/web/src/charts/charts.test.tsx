@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import { Visualization } from "@chatctg/contracts";
-import type { BarViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
+import type { BarViz, BubbleViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarView, widen } from "./Bar";
+import { BubbleView } from "./Bubble";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { CATEGORICAL, colorFor, sequential } from "./palette";
@@ -242,6 +243,36 @@ describe("network, map, table and single value", () => {
   });
 });
 
+/** A phase by sponsor class grid; `values[i][j]` is the count for the i-th phase and j-th class, and an empty cell cites nothing. */
+const gridRows = (values: number[][]) => ["Phase 1", "Phase 2", "Phase 3"].flatMap((x, i) => ["Industry", "Other"].map((y, j) => {
+  const v = values[i]![j]!;
+  return { x, x_key: x.toUpperCase().replace(" ", ""), y, y_key: y.toUpperCase(), trial_count: v, study_count: v, citations: v ? cite(i * 2 + j) : [] };
+}));
+const gridAxes = { x: { field: "x", type: "ordinal", label: "Phase", order: ["Phase 1", "Phase 2", "Phase 3"] }, y: { field: "y", type: "ordinal", label: "Sponsor class", order: ["Industry", "Other"] } };
+const bubble = parse<BubbleViz>({ type: "bubble", title: "T", subtitle: "S", encoding: { ...gridAxes, size: { field: "trial_count", label: "Trials", unit: "trials" } }, data: gridRows([[10, 0], [3, 1], [40, 0]]) });
+/** The grid cell whose hover title is `title`. */
+const cellTitled = (el: HTMLElement, title: string) => [...el.querySelectorAll("g.cell")].find((g) => g.querySelector("title")?.textContent === title)!;
+
+describe("grid charts", () => {
+  it("bubble: a circle per non-empty cell, area proportional to the value, labelled inside when the label fits", async () => {
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<BubbleView viz={bubble} onPick={(c, l) => picked.push({ c, l })} />, async () => {});
+    expect(el.querySelectorAll("g.cell")).toHaveLength(6);
+    expect(el.querySelectorAll("circle.bubble")).toHaveLength(4);
+    const r = (title: string) => Number(cellTitled(el, title).querySelector("circle")!.getAttribute("r"));
+    expect(r("Phase 3, Industry, 40 trials") / r("Phase 1, Industry, 10 trials")).toBeCloseTo(2, 5);
+    expect(cellTitled(el, "Phase 3, Industry, 40 trials").querySelector("text")!.textContent).toBe("40");
+    expect(cellTitled(el, "Phase 2, Other, 1 trial").querySelector("text")).toBeNull();
+    expect(cellTitled(el, "Phase 1, Other, 0 trials").querySelector("circle")).toBeNull();
+    expect(el.textContent).toContain("Sponsor class");
+    act(() => { cellTitled(el, "Phase 1, Other, 0 trials").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([]);
+    act(() => { cellTitled(el, "Phase 3, Industry, 40 trials").querySelector("circle")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: bubble.data[4]!.citations, l: "Phase 3, Industry" }]);
+    done();
+  });
+});
+
 describe("labels", () => {
   it("name what was clicked with commas, not separator characters", () => {
     expect(pickLabel("Phase 3", "nivolumab")).toBe("Phase 3, nivolumab");
@@ -253,7 +284,11 @@ describe("labels", () => {
 });
 
 describe("renderChart", () => {
-  it("routes the four non-cartesian types to their renderers", () => {
+  it("routes the non-cartesian types to their renderers", () => {
+    for (const [viz, mark] of [[bubble, 'class="bubble"']] as const) {
+      const html = renderToStaticMarkup(<>{renderChart(viz, noop)}</>);
+      expect(html, viz.type).toContain(mark); expect(html, viz.type).not.toContain("<pre");
+    }
     expect(renderToStaticMarkup(<>{renderChart(single, noop)}</>)).toContain("12,345");
     expect(renderToStaticMarkup(<>{renderChart(table, noop)}</>)).toContain("<table");
     expect(renderToStaticMarkup(<>{renderChart(map, noop)}</>)).not.toContain("<pre");

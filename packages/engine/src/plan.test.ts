@@ -157,7 +157,7 @@ describe("chart matrix", () => {
 
   it("allows only what the shape can render", () => {
     expect(allowedCharts("distribution", "phase", null, false)).toEqual(["bar"]);
-    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "grouped_bar", "stacked_bar"]);
+    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "bubble", "grouped_bar", "stacked_bar"]);
     expect(allowedCharts("distribution", "enrollment", null, false).sort()).toEqual(["bar", "histogram"]);
     expect(allowedCharts("time_trend", "start_year", null, false).sort()).toEqual(["bar", "line"]);
     expect(allowedCharts("time_trend", "start_year", null, true)).toContain("scatter");
@@ -229,6 +229,38 @@ describe("chart matrix", () => {
   });
   it("a request chart counts as explicit", async () => {
     expect(okPlan(plan({ answers: await answers({}), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
+  });
+});
+
+describe("chart matrix: two categorical attributes", () => {
+  it("a bubble needs two attributes: a secondary dimension, or the arms of a comparison", () => {
+    expect(allowedCharts("distribution", "phase", "sponsor_class", false)).toContain("bubble");
+    expect(allowedCharts("distribution", "phase", null, true)).not.toContain("bubble");
+    expect(allowedCharts("comparison", "phase", null, false)).toContain("bubble");
+    expect(allowedCharts("comparison", "start_year", null, true)).not.toContain("bubble");
+    for (const intent of ["time_trend", "ranking", "geographic", "network", "count", "lookup"] as const) expect(allowedCharts(intent, null, "phase", true), intent).not.toContain("bubble");
+    expect(defaultChart("distribution", "phase", "sponsor_class")).toBe("stacked_bar");
+  });
+  it("applies a bubble Jev chose over phase by sponsor class, and over two compared drugs", async () => {
+    const d = okPlan(plan({ answers: await answers({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "bubble" } }), entities: none, request: req(), models }));
+    expect(d.chart).toBe("bubble"); expect(d.secondary).toBe("sponsor_class"); expect(d.interpretation.chart).toEqual({ chosen: "bubble", applied: "bubble", explicit: false, reason: null });
+    const c = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "bubble" } }), entities: { ...none, drugs: ["pembrolizumab", "nivolumab"] }, request: req(), models }));
+    expect(c.chart).toBe("bubble"); expect(c.arms).toHaveLength(2);
+  });
+  it("a bubble over one attribute falls back to the next most likely chart that can draw it", async () => {
+    const a = await withChartMass({ dimension: { choice: "phase" }, chart: { choice: "bubble" } }, { bubble: 0.6, bar: 0.3 });
+    const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
+    expect(p.interpretation.chart).toEqual({ chosen: "bubble", applied: "bar", explicit: false, reason: "bubble cannot render a distribution over phase; the next most likely chart that can, bar, is used" });
+    // A one-name comparison becomes a distribution without a second attribute, so its bubble falls back too.
+    const one = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "bubble" } }), entities: { ...none, drugs: ["pembrolizumab"] }, request: req(), models }));
+    expect(one.chart).toBe("bar");
+  });
+  it("the provisional chart agrees with the planner on a bubble", async () => {
+    const scripts: Record<string, Scripted>[] = [{ dimension: { choice: "phase" }, secondary_dimension: { choice: "status" }, chart: { choice: "bubble" } }, { dimension: { choice: "phase" }, chart: { choice: "bubble" } }];
+    for (const s of scripts) {
+      const a = await answers(s);
+      expect(provisionalChart(a), JSON.stringify(s)).toBe(okPlan(plan({ answers: a, entities: none, request: req(), models })).chart);
+    }
   });
 });
 
