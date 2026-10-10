@@ -1,4 +1,4 @@
-import { asList, QueryResponse, VERSION, type ChartType, type ErrorBody, type Interpretation, type Meta, type QueryRequest } from "@chatctg/contracts";
+import { asList, QueryResponse, VERSION, type ChartType, type ErrorBody, type Interpretation, type Judged, type Meta, type QueryRequest } from "@chatctg/contracts";
 import { FakeCtgovClient, type CtgovClient, type CtgovFailureReason, type CtgovRequestLog, type Study } from "@chatctg/ctgov";
 import { FakeJudgmentClient, interpretationQuestions, interpretationState, type JudgmentClient, type ProvidedFields, type Scripted } from "@chatctg/judgment";
 import { bucketize, mergeArms, type Bucketized } from "./aggregate/buckets";
@@ -7,6 +7,7 @@ import { boundaryPeriod, MAX_YEARS, trimThrough, withinYear, yearBuckets, yearRa
 import { scatterPoints } from "./aggregate/points";
 import { tableRows } from "./aggregate/rows";
 import { fakeExtractor, type Extractor } from "./extract";
+import { judgedEvent } from "./judged";
 import { DIMENSION_LABEL_PLURAL } from "./dimensions";
 import { armFilters, DEFAULT_LIMITS, plan, type Entities, type Plan } from "./plan";
 import { buildVisualization, METRIC_UNIT, notShown, planSummary, type Aggregate } from "./spec";
@@ -15,6 +16,7 @@ import { SAMPLE } from "./test-studies";
 
 export interface Deps { judge: JudgmentClient; extract: Extractor; title: Titler; ctgov: CtgovClient; models?: { extractor: string; titler: string }; now?: () => number; today?: () => string }
 export type QueryEvent =
+  | { event: "judged"; data: Judged }
   | { event: "interpretation"; data: { interpretation: Interpretation; chart: ChartType; arms: { label: string; filters: Record<string, string> }[] } }
   | { event: "progress"; data: { arm: string; fetched: number; total: number } }
   | { event: "title"; data: { title: string } };
@@ -47,17 +49,22 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const emit = (e: QueryEvent) => { if (done) return; try { onEvent?.(e); } catch { /* a listener must not break the pipeline */ } };
 
   try {
-  // 1. Interpret: Jev and the extractor, in parallel.
+  // 1. Interpret: Jev and the extractor, in parallel. Jev answers in about 200 ms and the extractor in about a second, so the
+  // judgment is sent as soon as it lands, with the chart it implies, while the names are still being read.
   const provided: ProvidedFields = {
     ...(request.drug_name !== undefined ? { drugs: asList(request.drug_name) } : {}), ...(request.condition !== undefined ? { conditions: asList(request.condition) } : {}),
     ...(request.sponsor !== undefined ? { sponsors: asList(request.sponsor) } : {}), ...(request.country !== undefined ? { countries: asList(request.country) } : {}),
     ...(request.trial_phase !== undefined ? { trial_phase: request.trial_phase } : {}), ...(request.trial_status !== undefined ? { trial_status: request.trial_status } : {}),
     ...(request.start_year !== undefined ? { start_year: request.start_year } : {}), ...(request.end_year !== undefined ? { end_year: request.end_year } : {}),
   };
-  const [judged, extracted] = await Promise.all([
-    deps.judge.ask({ state: interpretationState(request.query, provided), questions: interpretationQuestions(), signal }),
-    deps.extract(request.query, today(), signal),
-  ]);
+  let judged_ms = 0;
+  const judging = deps.judge.ask({ state: interpretationState(request.query, provided), questions: interpretationQuestions(), signal }).then((r) => {
+    judged_ms = now() - started;
+    const early = r.ok && !signal.aborted ? judgedEvent(r.answers, request, r.ms) : null;
+    if (early) emit({ event: "judged", data: early });
+    return r;
+  });
+  const [judged, extracted] = await Promise.all([judging, deps.extract(request.query, today(), signal)]);
   if (signal.aborted) return error(504, "timeout", "The request timed out while interpreting the question");
   if (!judged.ok) return upstream("jev", judged.reason, judged.detail);
   if (!extracted.ok) return upstream("openai", extracted.reason, extracted.detail);
@@ -164,7 +171,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     source: { name: "clinicaltrials.gov", api_version: version.apiVersion, data_timestamp: version.dataTimestamp, requests: [...results.flatMap((r) => r.requests), ...(yearly?.requests ?? [])] },
     coverage: { total_count, fetched_count, truncated, sorted_by: "StartDate:desc", studies_without_value, omitted_categories },
     units: { y: METRIC_UNIT[p.metric] }, granularity: p.granularity,
-    timing: { jev_ms: judged.ms, extract_ms: extracted.ms, fetch_ms, title_ms: title.ms, aggregate_ms, total_ms: now() - started },
+    timing: { jev_ms: judged.ms, judged_ms, extract_ms: extracted.ms, fetch_ms, title_ms: title.ms, aggregate_ms, total_ms: now() - started },
     notes, warnings, version: VERSION,
   };
   const body = QueryResponse.safeParse({ visualization, meta });

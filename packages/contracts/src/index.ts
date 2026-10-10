@@ -5,4 +5,5 @@ export * from "./citation";
 export * from "./visualization";
 export * from "./meta";
 export * from "./response";
+export * from "./events";
 export * from "./json-schema";

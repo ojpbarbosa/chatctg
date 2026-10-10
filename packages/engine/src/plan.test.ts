@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CHART_TYPES, QueryRequest, type ChartType } from "@chatctg/contracts";
 import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@chatctg/judgment";
-import { allowedCharts, armFilters, defaultChart, plan, type Entities } from "./plan";
+import { allowedCharts, armFilters, defaultChart, plan, provisionalChart, type Entities } from "./plan";
 
 const models = { judge: "fake", extractor: "fake", titler: "fake" };
 const none: Entities = { drugs: [], conditions: [], sponsors: [], countries: [], start_year: null, end_year: null, limit: null };
@@ -225,6 +225,31 @@ describe("chart matrix", () => {
   });
   it("a request chart counts as explicit", async () => {
     expect(okPlan(plan({ answers: await answers({}), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
+  });
+});
+
+describe("provisionalChart", () => {
+  it("is the chart the planner applies to the judgment alone", async () => {
+    const scripts: Record<string, Scripted>[] = [
+      {}, { chart: { choice: "line" } }, { intent: { choice: "time_trend" }, dimension: { choice: "phase" }, chart: { choice: "bar" } },
+      { intent: { choice: "geographic" }, chart: { choice: "bar" } }, { intent: { choice: "geographic" }, chart: { choice: "bar" }, chart_named: { noul: 0.9 } },
+      { dimension: { choice: "enrollment" }, secondary_dimension: { choice: "phase" }, chart: { choice: "histogram" } },
+      { intent: { choice: "ranking" }, dimension: { choice: "sponsor" }, secondary_dimension: { choice: "phase" }, chart: { choice: "bar" } },
+      { intent: { choice: "lookup" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }, { intent: { choice: "network" }, chart: { choice: "bar" } },
+    ];
+    for (const s of scripts) {
+      const a = await answers(s);
+      expect(provisionalChart(a), JSON.stringify(s)).toBe(okPlan(plan({ answers: a, entities: none, request: req(), models })).chart);
+    }
+    const mass = await withChartMass({ dimension: { choice: "enrollment" }, chart: { choice: "line" } }, { line: 0.6, bar: 0.25, histogram: 0.1 });
+    expect(provisionalChart(mass)).toBe("bar");
+  });
+  it("assumes a comparison finds its arms, and follows the request's intent and chart", async () => {
+    const compare = await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } });
+    expect(provisionalChart(compare)).toBe("grouped_bar");
+    expect(okPlan(plan({ answers: compare, entities: { ...none, drugs: ["one"] }, request: req(), models })).chart).toBe("bar");
+    expect(provisionalChart(await answers({ intent: { choice: "other" } }), { intent: "count" })).toBe("single_value");
+    expect(provisionalChart(await answers({}), { chart: "scatter" })).toBe("scatter");
   });
 });
 

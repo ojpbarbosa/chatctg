@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { QueryRequest, QueryResponse } from "@chatctg/contracts";
+import { describe, expect, it, vi } from "vitest";
+import { Judged, QueryRequest, QueryResponse } from "@chatctg/contracts";
 import { fakeDeps, runQuery, type QueryEvent } from "./run";
 import { SAMPLE, study } from "./test-studies";
 
@@ -20,8 +20,37 @@ describe("runQuery", () => {
     expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
     expect(body.meta.source.requests[0]?.url).toContain("query.intr");
     expect(body.meta.timing.total_ms).toBeGreaterThanOrEqual(0);
-    expect(events.map((e) => e.event)).toEqual(["interpretation", "progress", "title"]);
+    expect(events.map((e) => e.event)).toEqual(["judged", "interpretation", "progress", "title"]);
     expect(deps.ctgov.calls[0]).toEqual({ intr: '"pembrolizumab"' });
+  });
+  it("emits the judgment as soon as Jev answers, before the names are extracted", async () => {
+    const deps = fakeDeps({ intent: { choice: "geographic" }, dimension: { choice: "none" }, chart: { choice: "bar" }, recruiting_only: { noul: 0.9 } }, { conditions: ["lupus"] });
+    // Jev answers at 200 ms; the extractor waits for a gate and answers at 1,000 ms.
+    let t = 0; deps.now = () => t;
+    const ask = deps.judge.ask.bind(deps.judge);
+    deps.judge.ask = (async (r: Parameters<typeof ask>[0]) => { const out = await ask(r); t = 200; return out; }) as typeof deps.judge.ask;
+    let open!: () => void; const gate = new Promise<void>((resolve) => { open = resolve; });
+    const extract = deps.extract; deps.extract = async (...args) => { await gate; t = 1000; return extract(...args); };
+    const events: QueryEvent[] = [];
+    const running = runQuery(req("Which countries have the most recruiting trials for lupus?"), deps, (e) => events.push(e));
+    await vi.waitFor(() => expect(events).toHaveLength(1));
+    const judged = events[0]!;
+    if (judged.event !== "judged") throw new Error(judged.event);
+    expect(Judged.safeParse(judged.data).success).toBe(true);
+    expect(judged.data).toMatchObject({ intent: { value: "geographic" }, dimension: { value: "country" }, secondary_dimension: null, chart: { chosen: "bar", provisional: "map" }, chart_named: false, recruiting_only: true, phase_filter: null, jev_ms: 0 });
+    open();
+    const body = okBody(await running);
+    expect(events.map((e) => e.event)).toEqual(["judged", "interpretation", "progress", "title"]);
+    expect(body.meta.timing).toMatchObject({ jev_ms: 0, judged_ms: 200, total_ms: 1000 });
+    expect(body.meta.interpretation.chart.applied).toBe(judged.data.chart.provisional);
+  });
+  it("emits no judgment when Jev fails or no chart will answer", async () => {
+    const failed = fakeDeps({}, {}); failed.judge.failWith("server_error");
+    const out: QueryEvent[] = [];
+    await runQuery(req("q"), failed, (e) => out.push(e));
+    await runQuery(req("what is the weather"), fakeDeps({ in_scope: { noul: 0.1 } }, {}), (e) => out.push(e));
+    await runQuery(req("write a poem"), fakeDeps({ intent: { choice: "other" } }, {}), (e) => out.push(e));
+    expect(out).toEqual([]);
   });
   it("time trend: line, gap-filled", async () => {
     const deps = fakeDeps({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "line" } }, {}, SAMPLE.filter((s) => s.start_year !== 2020));

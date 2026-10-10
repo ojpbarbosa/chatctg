@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { QueryResponse, Visualization, ErrorBody } from "./response";
+import { Judged } from "./events";
 import { jsonSchemas } from "./json-schema";
 
 const citation = { nct_id: "NCT01234567", title: "A study", field: "protocolSection.designModule.phases", excerpt: "PHASE3" };
@@ -24,7 +25,7 @@ const meta = {
   source: { name: "clinicaltrials.gov", api_version: "2.0.5", data_timestamp: "2026-10-08T09:00:05", requests: [{ url: "https://x", total_count: 10, fetched: 10 }] },
   coverage: { total_count: 10, fetched_count: 10, truncated: false, sorted_by: "StartDate:desc", studies_without_value: 0, omitted_categories: 0 },
   units: { y: "trials" }, granularity: null,
-  timing: { jev_ms: 1, extract_ms: 1, fetch_ms: 1, title_ms: 1, aggregate_ms: 1, total_ms: 5 },
+  timing: { jev_ms: 1, judged_ms: 1, extract_ms: 1, fetch_ms: 1, title_ms: 1, aggregate_ms: 1, total_ms: 5 },
   notes: [], warnings: [], version: "chatctg/0.1.0",
 };
 
@@ -53,6 +54,15 @@ describe("Visualization", () => {
   });
 });
 
+describe("Judged", () => {
+  const judged = {
+    intent: { value: "geographic", p: 0.9 }, dimension: { value: "country", p: 0.5 }, secondary_dimension: null,
+    chart: { chosen: "bar", provisional: "map" }, chart_named: false, recruiting_only: true, phase_filter: null, jev_ms: 180,
+  };
+  it("accepts the early judgment", () => expect(Judged.safeParse(judged).success).toBe(true));
+  it("rejects a provisional chart outside the chart types", () => expect(Judged.safeParse({ ...judged, chart: { chosen: "bar", provisional: "pie" } }).success).toBe(false));
+});
+
 describe("QueryResponse", () => {
   it("accepts a null visualization with meta", () => {
     expect(QueryResponse.safeParse({ visualization: null, meta }).success).toBe(true);
@@ -61,6 +71,10 @@ describe("QueryResponse", () => {
     const s = jsonSchemas();
     expect(s.request).toHaveProperty("properties.query");
     expect(s.response).toHaveProperty("properties.visualization");
+  });
+  it("requires the moment the judgment landed in the timing", () => {
+    const { judged_ms: _, ...timing } = meta.timing;
+    expect(QueryResponse.safeParse({ visualization: null, meta: { ...meta, timing } }).success).toBe(false);
   });
   it("shapes errors", () => {
     expect(ErrorBody.safeParse({ error: { code: "not_answerable", message: "m" } }).success).toBe(true);

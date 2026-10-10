@@ -36,11 +36,13 @@ describe("API", () => {
     const r = await buildApp(fakeDeps({ in_scope: { noul: 0.1 } }, {})).inject({ method: "POST", url: "/query", payload: { query: "weather" } });
     expect(r.statusCode).toBe(422); expect(r.json().error.code).toBe("not_answerable");
   });
-  it("POST /query/stream emits interpretation, progress, title, result", async () => {
+  it("POST /query/stream emits judged, interpretation, progress, title, result", async () => {
     const r = await app().inject({ method: "POST", url: "/query/stream", payload: { query: "pembrolizumab trials by phase" } });
     expect(r.statusCode).toBe(200); expect(r.headers["content-type"]).toContain("text/event-stream");
     const events = r.body.split("\n\n").filter(Boolean).map((chunk) => /^event: (\w+)/m.exec(chunk)?.[1]);
-    expect(events).toEqual(["interpretation", "progress", "title", "result"]);
+    expect(events).toEqual(["judged", "interpretation", "progress", "title", "result"]);
+    const judged = r.body.split("\n\n").find((c) => c.startsWith("event: judged"))!;
+    expect(JSON.parse(judged.replace(/^event: judged\ndata: /, "")).chart).toEqual({ chosen: "bar", provisional: "bar" });
     const result = r.body.split("\n\n").find((c) => c.startsWith("event: result"))!;
     expect(JSON.parse(result.replace(/^event: result\ndata: /, "")).visualization.type).toBe("bar");
   });

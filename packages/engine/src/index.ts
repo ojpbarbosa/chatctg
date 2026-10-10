@@ -1,5 +1,6 @@
 export * from "./dimensions";
 export * from "./plan";
+export * from "./judged";
 export * from "./aggregate/buckets";
 export * from "./cite";
 export * from "./aggregate/points";

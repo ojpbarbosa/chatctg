@@ -97,9 +97,88 @@ export function chooseChart(intent: Intent, dimension: Dimension | null, seconda
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+/** A judged value with Jev's probability for it, or null. */
+export const judgedValue = <T extends string>(value: T | null, answer: { probabilities: Record<string, number> }): { value: T; p: number } | null =>
+  value ? { value, p: answer.probabilities[value] ?? 1 } : null;
+
+/** The intent to answer, Jev's probability for it and Jev's confidence. A caller-supplied intent is a decision already taken. */
+export function judgedIntent(a: InterpretationAnswers, request: Pick<QueryRequest, "intent">): { value: Intent; p: number; confidence: number } {
+  if (request.intent) return { value: request.intent, p: 1, confidence: 1 };
+  return { value: a.intent.choice, p: a.intent.probabilities[a.intent.choice] ?? 0, confidence: a.intent.confidence };
+}
+
+export const inScope = (a: InterpretationAnswers, request: Pick<QueryRequest, "intent">): boolean => request.intent !== undefined || a.in_scope.noul >= THRESHOLDS.in_scope;
+export const chartNamed = (a: InterpretationAnswers, request: Pick<QueryRequest, "chart">): boolean => request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
+export const recruitingOnly = (a: InterpretationAnswers, request: Pick<QueryRequest, "trial_status">): boolean =>
+  request.trial_status === "RECRUITING" || (request.trial_status === undefined && a.recruiting_only.noul >= THRESHOLDS.recruiting_only);
+
+/** What the chart is drawn over: the intent, the dimension and an optional second grouping. */
+export interface Shape { intent: Intent; dimension: Dimension | null; secondary: Dimension | null }
+
+/** Jev's dimensions made consistent with the intent; the notes say what changed. */
+export function normalizeShape(intent: Intent, a: InterpretationAnswers): { shape: Shape; notes: string[] } {
+  const notes: string[] = [];
+  let dimension: Dimension | null = a.dimension.choice === "none" ? null : a.dimension.choice;
+  let secondary: Dimension | null = a.secondary_dimension.choice === "none" ? null : a.secondary_dimension.choice;
+  if (intent === "distribution" && dimension === "start_year") { intent = "time_trend"; notes.push("A split by start year is a time trend; shown as one."); }
+  if (intent === "time_trend") { if (dimension && dimension !== "start_year" && !secondary) secondary = dimension; dimension = "start_year"; }
+  if (intent === "geographic") dimension = "country";
+  if (intent === "network" || intent === "count" || intent === "lookup") { dimension = null; secondary = null; }
+  if ((intent === "distribution" || intent === "ranking" || intent === "comparison") && !dimension) { dimension = "phase"; notes.push("No attribute was named; grouped by phase."); }
+  if (secondary === "start_year" && intent !== "time_trend") secondary = null;
+  if (secondary === dimension) secondary = null;
+  return { shape: { intent, dimension, secondary }, notes };
+}
+
+/** A second grouping only fits a time trend or a distribution. */
+export function dropForeignSecondary(shape: Shape): { shape: Shape; note: string | null } {
+  const { intent, secondary } = shape;
+  if (!secondary || (intent !== "comparison" && intent !== "ranking" && intent !== "geographic")) return { shape, note: null };
+  const what = intent === "geographic" ? "map" : intent;
+  return { shape: { ...shape, secondary: null }, note: `A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown for a ${what}.` };
+}
+
+/** The chart for a shape, and the shape it is drawn with: a bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes. */
+export function applyChart(shape: Shape, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>): { applied: ChartType; reason: string | null; shape: Shape; note: string | null } {
+  const { applied, reason } = chooseChart(shape.intent, shape.dimension, shape.secondary, chosen, explicit, probabilities);
+  const { secondary } = shape;
+  if (secondary && applied === "bar") {
+    return { applied: "stacked_bar", reason: `a bar chart has one bar per category, so the split by ${DIMENSION_LABEL[secondary].toLowerCase()} is stacked; using stacked_bar`, shape, note: null };
+  }
+  if (secondary && applied === "histogram") {
+    return { applied, reason, shape: { ...shape, secondary: null }, note: `A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown in a histogram.` };
+  }
+  return { applied, reason, shape, note: null };
+}
+
+/**
+ * The phase every arm is restricted to. The request's trial_phase wins. A phase Jev found named applies when its probability reaches
+ * the threshold, unless the chart splits by phase, which this checks on the final shape: a split by phase filtered to one phase would
+ * be a single bar.
+ */
+export function phaseFilter(a: InterpretationAnswers, request: Pick<QueryRequest, "trial_phase">, shape: Shape): { phase: Phase | null; note: string | null } {
+  if (request.trial_phase) return { phase: request.trial_phase, note: null };
+  const named: Phase | null = a.phase_filter.choice === "none" ? null : a.phase_filter.choice;
+  if (named === null) return { phase: null, note: null };
+  const pNamed = a.phase_filter.probabilities[named] ?? 0;
+  if (pNamed < THRESHOLDS.phase_filter) return { phase: null, note: `A phase was mentioned but not clearly enough to filter on (p=${pNamed.toFixed(2)}).` };
+  if (shape.dimension === "phase" || shape.secondary === "phase") return { phase: null, note: `${cap(PHASE_PHRASE[named])} was named, but phases are what the chart splits by, so no phase filter was applied.` };
+  return { phase: named, note: null };
+}
+
+/** What the planner decides from the judgment alone, before the names are read; a comparison is assumed to find its arms. */
+export function provisionalPlan(a: InterpretationAnswers, request: Pick<QueryRequest, "intent" | "chart" | "trial_phase"> = {}): { shape: Shape; chosen: ChartType; chart: ChartType; phase: Phase | null } {
+  const shape = dropForeignSecondary(normalizeShape(judgedIntent(a, request).value, a).shape).shape;
+  const chosen = request.chart ?? a.chart.choice;
+  const drawn = applyChart(shape, chosen, chartNamed(a, request), a.chart.probabilities);
+  return { shape: drawn.shape, chosen, chart: drawn.applied, phase: phaseFilter(a, request, drawn.shape).phase };
+}
+
+/** The chart the planner would apply to this judgment before the names in the question are read. */
+export const provisionalChart = (a: InterpretationAnswers, request: Pick<QueryRequest, "intent" | "chart"> = {}): ChartType => provisionalPlan(a, request).chart;
+
 export function plan(input: PlanInput): PlanResult {
   const { answers: a, request, models } = input;
-  const notes: string[] = [];
   // Request fields are decisions already taken: they replace what was extracted, field by field.
   const provided_fields = (["drug_name", "condition", "sponsor", "country", "trial_phase", "trial_status", "start_year", "end_year", "intent", "chart"] as const).filter((k) => request[k] !== undefined) as string[];
   const entities: Entities = {
@@ -112,26 +191,17 @@ export function plan(input: PlanInput): PlanResult {
     ...(request.end_year !== undefined ? { end_year: request.end_year } : {}),
   };
 
-  // 1. Scope and intent. A caller-supplied intent is a decision already taken.
-  let intent: Intent = request.intent ?? a.intent.choice;
-  const intentP = request.intent ? 1 : (a.intent.probabilities[intent] ?? 0);
-  const intentConfidence = request.intent ? 1 : a.intent.confidence;
-
-  // 2. Dimensions, normalized by intent.
-  let dimension: Dimension | null = a.dimension.choice === "none" ? null : a.dimension.choice;
-  let secondary: Dimension | null = a.secondary_dimension.choice === "none" ? null : a.secondary_dimension.choice;
-  if (intent === "distribution" && dimension === "start_year") { intent = "time_trend"; notes.push("A split by start year is a time trend; shown as one."); }
-  if (intent === "time_trend") { if (dimension && dimension !== "start_year" && !secondary) secondary = dimension; dimension = "start_year"; }
-  if (intent === "geographic") dimension = "country";
-  if (intent === "network" || intent === "count" || intent === "lookup") { dimension = null; secondary = null; }
-  if ((intent === "distribution" || intent === "ranking" || intent === "comparison") && !dimension) { dimension = "phase"; notes.push("No attribute was named; grouped by phase."); }
-  if (secondary === "start_year" && intent !== "time_trend") secondary = null;
-  if (secondary === dimension) secondary = null;
+  // 1. Scope and intent, then 2. dimensions, normalized by intent.
+  const judged = judgedIntent(a, request);
+  const normalized = normalizeShape(judged.value, a);
+  const notes = normalized.notes;
+  const { dimension } = normalized.shape;
+  let { intent, secondary } = normalized.shape;
 
   const metric: Metric = intent === "network" || intent === "lookup" || intent === "count" ? "trial_count" : a.metric.choice;
   const granularity: Granularity | null = dimension === "start_year" ? a.granularity.choice : null;
   const edge_kind: EdgeKind | null = intent === "network" ? a.edge_kind.choice : null;
-  const recruiting_only = request.trial_status === "RECRUITING" || (request.trial_status === undefined && a.recruiting_only.noul >= THRESHOLDS.recruiting_only);
+  const recruiting_only = recruitingOnly(a, request);
   const combination: boolean | null = entities.drugs.length >= 2 && intent !== "comparison" ? a.combination.noul >= THRESHOLDS.combination : null;
 
   // 3. Arms: who each arm is about. Their registry queries are built in step 6, once the phase filter is known.
@@ -144,12 +214,10 @@ export function plan(input: PlanInput): PlanResult {
     armEntities = [{ label: entityLabel(entities), over: {} }];
   }
 
-  // A secondary grouping only fits a time trend or a distribution; this runs after the comparison fallback.
-  if (secondary && (intent === "comparison" || intent === "ranking" || intent === "geographic")) {
-    const what = intent === "geographic" ? "map" : intent;
-    notes.push(`A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown for a ${what}.`);
-    secondary = null;
-  }
+  // The foreign second grouping goes after the comparison fallback, so a comparison that became a distribution keeps it.
+  const kept = dropForeignSecondary({ intent, dimension, secondary });
+  secondary = kept.shape.secondary;
+  if (kept.note) notes.push(kept.note);
 
   // 4. Limit.
   let limit: number | null = entities.limit;
@@ -162,30 +230,16 @@ export function plan(input: PlanInput): PlanResult {
 
   // 5. Chart: Jev's choice, validated against the shape, with Jev's next most likely allowed chart as the fallback.
   const chosen: ChartType = request.chart ?? a.chart.choice;
-  const explicit = request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
-  let { applied, reason } = chooseChart(intent, dimension, secondary, chosen, explicit, a.chart.probabilities);
-  // A bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes.
-  if (secondary && applied === "bar") {
-    applied = "stacked_bar";
-    reason = `a bar chart has one bar per category, so the split by ${DIMENSION_LABEL[secondary].toLowerCase()} is stacked; using stacked_bar`;
-  } else if (secondary && applied === "histogram") {
-    notes.push(`A second grouping (${DIMENSION_LABEL[secondary].toLowerCase()}) is not shown in a histogram.`);
-    secondary = null;
-  }
-
+  const explicit = chartNamed(a, request);
+  const drawn = applyChart({ intent, dimension, secondary }, chosen, explicit, a.chart.probabilities);
+  const { applied, reason } = drawn;
+  secondary = drawn.shape.secondary;
+  if (drawn.note) notes.push(drawn.note);
   if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;
 
-  // 6. Phase filter and queries. The request's trial_phase wins. A phase Jev found named applies when its probability reaches the
-  // threshold, unless the chart splits by phase, which this checks on the final dimensions: a split by phase filtered to one phase
-  // would be a single bar.
-  const named: Phase | null = a.phase_filter.choice === "none" ? null : a.phase_filter.choice;
-  let phase: Phase | null = request.trial_phase ?? null;
-  if (phase === null && named !== null) {
-    const pNamed = a.phase_filter.probabilities[named] ?? 0;
-    if (pNamed < THRESHOLDS.phase_filter) notes.push(`A phase was mentioned but not clearly enough to filter on (p=${pNamed.toFixed(2)}).`);
-    else if (dimension === "phase" || secondary === "phase") notes.push(`${cap(PHASE_PHRASE[named])} was named, but phases are what the chart splits by, so no phase filter was applied.`);
-    else phase = named;
-  }
+  // 6. Phase filter and queries.
+  const { phase, note: phaseNote } = phaseFilter(a, request, drawn.shape);
+  if (phaseNote) notes.push(phaseNote);
   const common = (over: Partial<Entities>): FetchQuery => {
     const e = { ...entities, ...over };
     const q: FetchQuery = {};
@@ -201,10 +255,9 @@ export function plan(input: PlanInput): PlanResult {
   };
   const arms: Arm[] = armEntities.map((x) => ({ label: x.label, query: common(x.over) }));
 
-  const p = (d: Dimension | null, ans: { probabilities: Record<string, number> }) => (d ? { value: d, p: ans.probabilities[d] ?? 1 } : null);
   const interpretation: Interpretation = {
-    intent: { value: intent, p: intentP, confidence: intentConfidence, alternatives: intentConfidence < THRESHOLDS.intent_alternatives ? (topK(a.intent.probabilities, 3) as { value: Intent; p: number }[]) : [] },
-    dimension: p(dimension, a.dimension), secondary_dimension: p(secondary, a.secondary_dimension),
+    intent: { value: intent, p: judged.p, confidence: judged.confidence, alternatives: judged.confidence < THRESHOLDS.intent_alternatives ? (topK(a.intent.probabilities, 3) as { value: Intent; p: number }[]) : [] },
+    dimension: judgedValue(dimension, a.dimension), secondary_dimension: judgedValue(secondary, a.secondary_dimension),
     chart: { chosen, applied, explicit, reason },
     metric, granularity, edge_kind,
     entities: { drugs: entities.drugs, conditions: entities.conditions, sponsors: entities.sponsors, countries: entities.countries },
@@ -213,7 +266,7 @@ export function plan(input: PlanInput): PlanResult {
     question_set: { id: QUESTION_SET.id, version: QUESTION_SET.version }, models,
   };
 
-  if (!request.intent && a.in_scope.noul < THRESHOLDS.in_scope) {
+  if (!inScope(a, request)) {
     return { ok: false, reason: "not_answerable", message: "This does not look like a question the clinical-trials registry can answer.", interpretation: { ...interpretation, chart: { ...interpretation.chart, applied: null } } };
   }
   if (intent === "other") {

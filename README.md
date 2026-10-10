@@ -190,7 +190,7 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `coverage` | `{ total_count, fetched_count, truncated, sorted_by, studies_without_value, omitted_categories }` | how much of the registry the answer covers; `sorted_by` is always `StartDate:desc`. For a comparison, `total_count` is the sum of the arms' totals, which can count a trial matching two arms twice. `truncated` is false for a count, a table and a yearly trend counted per year, which are exact |
 | `units` | `{ y }` | `trials` or `participants` |
 | `granularity` | enum or null | as in the interpretation |
-| `timing` | `{ jev_ms, extract_ms, fetch_ms, title_ms, aggregate_ms, total_ms }` | milliseconds per stage |
+| `timing` | `{ jev_ms, judged_ms, extract_ms, fetch_ms, title_ms, aggregate_ms, total_ms }` | milliseconds per stage; `judged_ms` is when the judgment was available, from the start of the request |
 | `notes` | string[] | counting rules and fallbacks that were applied, a phase that was named but not applied, the trials left out for lack of a value, and the overlap of comparison arms |
 | `warnings` | string[] | truncation, periods left out of a trend because the sample holds them only in part, years beyond the 40 a per-year count covers, unplotted points, unmapped countries, network links cut to the limit |
 | `version` | string | `chatctg/0.1.0` |
@@ -267,13 +267,14 @@ Same body as `POST /query`, but the response type is `text/event-stream`:
 
 | Event | Data | When |
 |---|---|---|
+| `judged` | `{ intent, dimension, secondary_dimension, chart: { chosen, provisional }, chart_named, recruiting_only, phase_filter, jev_ms }`: Jev's answers as the planner applies them before the names are read, and the chart they imply | as soon as Jev answers, while the names are being extracted; not sent when no chart will answer |
 | `interpretation` | `{ interpretation, chart, arms }`: `meta.interpretation`, the applied chart and `meta.arms` | after interpret and plan, before any fetch |
 | `progress` | `{ arm, fetched, total }` | after each registry page |
 | `title` | `{ title }` | when the titler returns within its 4 s cap |
 | `result` | the full response body | at the end |
 | `error` | the error body | on failure; the stream then closes |
 
-The web app draws a skeleton of the applied chart type as soon as `interpretation` arrives, so the shape of the answer shows before the data.
+The web app draws a skeleton of the provisional chart type as soon as `judged` arrives, so the shape of the answer shows before the data.
 
 ```bash
 curl -N localhost:3001/query/stream -H 'content-type: application/json' -d '{"query":"Where are CAR-T trials run?"}'
@@ -452,7 +453,7 @@ The API was run on a local port against the live services (registry data of 2026
 - `GET /health` answered 200 with the version and the registry's data version.
 - "How many phase 3 psoriasis trials are recruiting?" answered a `single_value` of 24, the registry's total for `query.cond="psoriasis"`, `filter.overallStatus=RECRUITING` and `filter.advanced=AREA[Phase]PHASE3`, titled "Recruiting phase 3 psoriasis trials". Before the `phase_filter` question, the same question counted all 220 recruiting psoriasis trials.
 - "Trials per year for breast cancer since 2010" answered a `line` with every year from 2010 to 2028 (19 rows, 2027 and 2028 being planned start dates), each the registry's exact count for that year (500 in 2010, 1,046 in 2024), with `coverage.truncated: false` over 13,187 trials. It sent 22 requests (three pages of the first fetch and one per year) and took 3.3 s in all, 2.0 s of it fetching. Before the per-year counts, the same question drew only 2024 to 2028 from the 3,000 most recently started.
-- `POST /query/stream` emitted `interpretation`, then `progress` per page with `title` as soon as the titler returned, then `result`.
+- `POST /query/stream` emitted `judged`, then `interpretation`, then `progress` per page with `title` as soon as the titler returned, then `result`.
 - An unknown field (`phase` in place of `trial_phase`) got 400 `invalid_request`, naming the key.
 - "What is the weather in Boston?" got 422 `not_answerable`, with the interpretation in `details`.
 

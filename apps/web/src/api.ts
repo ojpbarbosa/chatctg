@@ -1,7 +1,8 @@
-import type { Citation, Interpretation, QueryRequestInput, QueryResponse } from "@chatctg/contracts";
+import type { Citation, Interpretation, Judged, QueryRequestInput, QueryResponse } from "@chatctg/contracts";
 
 export interface InterpretationEvent { interpretation: Interpretation; chart: string; arms: { label: string; filters: Record<string, string> }[] }
 export interface Handlers {
+  onJudged?: (e: Judged) => void;
   onInterpretation?: (e: InterpretationEvent) => void;
   onProgress?: (e: { arm: string; fetched: number; total: number }) => void;
   onTitle?: (title: string) => void;
@@ -31,7 +32,8 @@ export async function streamQuery(body: QueryRequestInput, h: Handlers, signal?:
       const ev = /^event: (\w+)/m.exec(chunk)?.[1]; const data = /^data: (.*)$/m.exec(chunk)?.[1];
       if (!ev || data === undefined) continue;
       const j = JSON.parse(data) as never;
-      if (ev === "interpretation") h.onInterpretation?.(j);
+      if (ev === "judged") h.onJudged?.(j);
+      else if (ev === "interpretation") h.onInterpretation?.(j);
       else if (ev === "progress") h.onProgress?.(j);
       else if (ev === "title") h.onTitle?.((j as { title: string }).title);
       else if (ev === "result") { terminal = true; h.onResult(j); }

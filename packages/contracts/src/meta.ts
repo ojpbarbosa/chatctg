@@ -40,7 +40,8 @@ export const Meta = z.object({
   }),
   units: z.object({ y: z.enum(["trials", "participants"]) }),
   granularity: z.enum(GRANULARITIES).nullable(),
-  timing: z.object({ jev_ms: z.number(), extract_ms: z.number(), fetch_ms: z.number(), title_ms: z.number(), aggregate_ms: z.number(), total_ms: z.number() }),
+  /** `judged_ms` is the moment the judgment was available and `total_ms` the whole request, both from its start; the others are each stage's own duration. */
+  timing: z.object({ jev_ms: z.number(), judged_ms: z.number(), extract_ms: z.number(), fetch_ms: z.number(), title_ms: z.number(), aggregate_ms: z.number(), total_ms: z.number() }),
   notes: z.array(z.string()),
   warnings: z.array(z.string()),
   version: z.string(),

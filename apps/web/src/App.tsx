@@ -35,6 +35,7 @@ export function App() {
     setItems((xs) => pushHistory(xs, item)); setActiveId(id); setQuery(q); setBusy(true); setLive({ id, state: {} });
     try {
       await streamQuery({ query: q, ...extra }, {
+        onJudged: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, judged: e } } : l)); },
         onInterpretation: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, interpretation: e } } : l)); },
         onProgress: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, progress: { fetched: e.fetched, total: e.total } } } : l)); },
         onTitle: (title) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, title } } : l)); },
