@@ -146,7 +146,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   }
   if (agg.kind === "points") { studies_without_value = agg.withoutValue; if (agg.dropped) warnings.push(`${agg.dropped} trials beyond the 500 most recent are not plotted.`); }
   const missing = notShown(p, agg);
-  if (missing) notes.push(missing.note);
+  if (missing) notes.push(missing);
   if (agg.kind === "graph") {
     notes.push("Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur.");
     const kept = agg.edges.length, all = kept + agg.prunedEdges;

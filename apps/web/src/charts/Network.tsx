@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { NetworkViz } from "@chatctg/contracts";
 import { forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY, type SimulationLinkDatum, type SimulationNodeDatum } from "d3-force";
 import type { OnPick } from "./index";
+import { countLabel } from "./common";
 import { colorFor } from "./palette";
 
 type N = SimulationNodeDatum & { id: string; label: string; kind: string; size: number };
@@ -42,13 +43,13 @@ export function NetworkView({ viz, onPick }: { viz: NetworkViz; onPick: OnPick }
     <div className="chart">
       <svg ref={ref} viewBox={`0 0 ${W} ${H}`} width="100%" height={H} role="img" aria-label={viz.title} style={{ display: "block" }}>
         {links.map((l) => { const s = l.source as N, t = l.target as N; if (s.x === undefined || t.x === undefined) return null; const e = viz.data.edges[l.idx]!; const faded = hover !== null && s.id !== hover && t.id !== hover;
-          return <line key={l.idx} x1={s.x} y1={s.y} x2={t.x} y2={t.y} stroke="var(--fg)" strokeOpacity={faded ? 0.04 : 0.18} strokeWidth={1 + 5 * (l.weight / maxW)} style={{ cursor: "pointer" }} onClick={() => onPick(e.citations, `${s.label} — ${t.label} (${e.weight})`)}><title>{`${s.label} — ${t.label}: ${e.weight} trials`}</title></line>; })}
+          return <line key={l.idx} x1={s.x} y1={s.y} x2={t.x} y2={t.y} stroke="var(--fg)" strokeOpacity={faded ? 0.04 : 0.18} strokeWidth={1 + 5 * (l.weight / maxW)} style={{ cursor: "pointer" }} onClick={() => onPick(e.citations, countLabel(`${s.label} and ${t.label}`, e.weight, "trials"))}><title>{countLabel(`${s.label} and ${t.label}`, e.weight, "trials")}</title></line>; })}
         {nodes.map((n) => n.x === undefined ? null : (
           <g key={n.id} transform={`translate(${n.x},${n.y})`} opacity={dim(n.id) ? 0.25 : 1} onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)} style={{ cursor: "pointer" }}
-            onClick={() => { const es = viz.data.edges.filter((e) => e.source === n.id || e.target === n.id); onPick(es.flatMap((e) => e.citations), `${n.label} (${n.size} trials)`); }}>
+            onClick={() => { const es = viz.data.edges.filter((e) => e.source === n.id || e.target === n.id); onPick(es.flatMap((e) => e.citations), countLabel(n.label, n.size, "trials")); }}>
             <circle r={r(n)} fill={colorFor(kinds.indexOf(n.kind))} fillOpacity={0.9} stroke="var(--bg)" strokeWidth={1.5} />
             {(r(n) > medianR || hover === n.id) && <text y={r(n) + 12} textAnchor="middle" fontSize={11} fill="var(--muted)">{n.label.length > 28 ? n.label.slice(0, 26) + "…" : n.label}</text>}
-            <title>{`${n.label}: ${n.size} trials`}</title>
+            <title>{countLabel(n.label, n.size, "trials")}</title>
           </g>
         ))}
       </svg>

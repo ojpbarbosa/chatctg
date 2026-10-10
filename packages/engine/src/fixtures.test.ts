@@ -44,7 +44,7 @@ describe("the engine over recorded registry pages", () => {
     expect(counted).toBeGreaterThanOrEqual(melanoma.length - body.meta.coverage.studies_without_value);
     expect(body.visualization.data.every((r) => r.citations.every((c) => c.field === "protocolSection.designModule.phases" && c.excerpt === r.phase_key))).toBe(true);
   });
-  it("sponsor–drug network", async () => {
+  it("sponsor to drug network", async () => {
     const body = okBody(await runQuery(req("Show a network of sponsors and drugs for pembrolizumab trials"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, { drugs: ["pembrolizumab"] }, pembrolizumab)));
     if (body.visualization?.type !== "network_graph") throw new Error(body.visualization?.type);
     const { nodes, edges } = body.visualization.data;

@@ -44,7 +44,7 @@ describe("bucketize", () => {
   });
   it("bins enrollment", () => {
     const r = bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" });
-    expect(r.order).toEqual(["1–50", "51–100", "201–500", "501–1000", "1001+"]);
+    expect(r.order).toEqual(["1-50", "51-100", "201-500", "501-1000", "1001+"]);
   });
 });
 

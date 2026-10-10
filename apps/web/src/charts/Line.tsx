@@ -2,7 +2,7 @@ import type { LineViz } from "@chatctg/contracts";
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import type { OnPick } from "./index";
 import { AXIS, colorFor, GRID } from "./palette";
-import { fmt, Frame, Tip } from "./common";
+import { fmt, Frame, pickLabel, Tip } from "./common";
 import type { Size } from "./common";
 
 export function LineView({ viz, onPick, width, height }: { viz: LineViz; onPick: OnPick } & Size) {
@@ -15,7 +15,7 @@ export function LineView({ viz, onPick, width, height }: { viz: LineViz; onPick:
     if (series) for (const s of series) wide[s] = rows.find((r) => r.series === s)?.[y] ?? 0; else wide[y] = rows[0]?.[y] ?? 0;
     return wide;
   });
-  const pick = (p: string, s: string | null) => onPick(viz.data.filter((r) => String(r[x]) === p && (s === null || r.series === s)).flatMap((r) => r.citations), s ? `${p} · ${s}` : p);
+  const pick = (p: string, s: string | null) => onPick(viz.data.filter((r) => String(r[x]) === p && (s === null || r.series === s)).flatMap((r) => r.citations), pickLabel(p, s));
   const dot = (s: string | null, color: string) => (props: { cx?: number; cy?: number; payload?: Record<string, unknown>; key?: unknown }) => (
     <circle key={String(props.key)} cx={props.cx} cy={props.cy} r={3.5} fill="var(--bg)" stroke={color} strokeWidth={2} style={{ cursor: "pointer" }} onClick={() => pick(String(props.payload?.[x]), s)} />
   );

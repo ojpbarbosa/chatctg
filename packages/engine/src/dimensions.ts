@@ -2,8 +2,8 @@ import type { Dimension, Granularity, Phase } from "@chatctg/contracts";
 import type { Study } from "@chatctg/ctgov";
 
 export const ENROLLMENT_BINS: { label: string; min: number; max: number | null }[] = [
-  { label: "1–50", min: 1, max: 50 }, { label: "51–100", min: 51, max: 100 }, { label: "101–200", min: 101, max: 200 },
-  { label: "201–500", min: 201, max: 500 }, { label: "501–1000", min: 501, max: 1000 }, { label: "1001+", min: 1001, max: null },
+  { label: "1-50", min: 1, max: 50 }, { label: "51-100", min: 51, max: 100 }, { label: "101-200", min: 101, max: 200 },
+  { label: "201-500", min: 201, max: 500 }, { label: "501-1000", min: 501, max: 1000 }, { label: "1001+", min: 1001, max: null },
 ];
 
 const dedupeCi = (xs: string[]): string[] => {
@@ -83,7 +83,7 @@ export function fixedOrder(d: Dimension): string[] | null {
 
 const title = (s: string): string => s.toLowerCase().replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 const PHASE_LABEL: Record<string, string> = { EARLY_PHASE1: "Early Phase 1", PHASE1: "Phase 1", PHASE2: "Phase 2", PHASE3: "Phase 3", PHASE4: "Phase 4", NA: "Not applicable" };
-/** A phase inside a sentence: "phase 3 only", "Phase 3 was named". */
+/** A phase inside a sentence: "Recruiting phase 3 trials only.", "Phase 3 was named". */
 export const PHASE_PHRASE: Record<Phase, string> = { EARLY_PHASE1: "early phase 1", PHASE1: "phase 1", PHASE2: "phase 2", PHASE3: "phase 3", PHASE4: "phase 4", NA: "phase not applicable" };
 const CLASS_LABEL: Record<string, string> = { INDUSTRY: "Industry", NIH: "NIH", FED: "US federal", OTHER_GOV: "Other government", NETWORK: "Network", OTHER: "Other (academic, hospital)", INDIV: "Individual", UNKNOWN: "Unknown", AMBIG: "Ambiguous" };
 

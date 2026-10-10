@@ -2,7 +2,7 @@ import type { BarViz, GroupedBarViz, StackedBarViz } from "@chatctg/contracts";
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts";
 import type { OnPick } from "./index";
 import { AXIS, colorFor, GRID } from "./palette";
-import { fmt, Frame, reducedMotion, Tip } from "./common";
+import { fmt, Frame, pickLabel, reducedMotion, Tip } from "./common";
 import type { Size } from "./common";
 
 export type AnyBar = BarViz | GroupedBarViz | StackedBarViz;
@@ -38,7 +38,7 @@ export function BarView({ viz, onPick, gap, radius, width, height }: Props) {
   const data = widen(viz);
   const pick = (cat: string, s: string | null) => {
     const rows = viz.data.filter((r) => String(r[x]) === cat && (s === null || r.series === s));
-    onPick(rows.flatMap((r) => r.citations), s ? `${cat} · ${s}` : cat);
+    onPick(rows.flatMap((r) => r.citations), pickLabel(cat, s));
   };
   const defaultHeight = horizontal ? Math.max(320, 28 * data.length + 60) : 380;
   const r = radius ?? (stacked ? 0 : 3);

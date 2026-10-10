@@ -24,6 +24,6 @@ const tail = (path: string) => path.split(".").slice(-2).join(".");
 export function citeEdge(studies: Study[], a: { field: string; value: string }, b: { field: string; value: string }, k: number): Citation[] {
   return mostRecent(studies, k).map((s) => ({
     nct_id: s.nct_id, title: studyLabel(s), field: `${a.field} | ${b.field}`,
-    excerpt: `${tail(a.field)}: "${a.value}" · ${tail(b.field)}: "${b.value}"`,
+    excerpt: `${tail(a.field)} "${a.value}"; ${tail(b.field)} "${b.value}"`,
   }));
 }

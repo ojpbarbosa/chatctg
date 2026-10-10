@@ -15,6 +15,7 @@ import { SingleValueView } from "./SingleValue";
 import { TableView } from "./Table";
 import { WorldMapView } from "./WorldMap";
 import { renderChart } from "./index";
+import { countLabel, pickLabel } from "./common";
 
 // Two square "countries": USA (840) and Canada (124), as a topology without a transform.
 vi.mock("world-atlas/countries-110m.json", () => {
@@ -195,10 +196,11 @@ describe("network, map, table and single value", () => {
       expect(y).toBeGreaterThanOrEqual(r + 4); expect(y).toBeLessThanOrEqual(560 - r - 4);
     }
     act(() => { el.querySelector("line")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
-    expect(picked).toEqual([{ c: network.data.edges[0]!.citations, l: "Pfizer — Aspirin (3)" }]);
+    expect(picked).toEqual([{ c: network.data.edges[0]!.citations, l: "Pfizer and Aspirin, 3 trials" }]);
+    expect(el.querySelector("line title")!.textContent).toBe("Pfizer and Aspirin, 3 trials");
     picked.length = 0;
     act(() => { el.querySelector("circle")!.parentElement!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
-    expect(picked).toEqual([{ c: [...network.data.edges[0]!.citations, ...network.data.edges[1]!.citations], l: "Pfizer (5 trials)" }]);
+    expect(picked).toEqual([{ c: [...network.data.edges[0]!.citations, ...network.data.edges[1]!.citations], l: "Pfizer, 5 trials" }]);
     done();
   });
   it("map: a path per country once the topology loads, plus the sphere, with unmapped rows listed", async () => {
@@ -206,14 +208,14 @@ describe("network, map, table and single value", () => {
     const { el, done } = await mount(<WorldMapView viz={map} onPick={(c, l) => picked.push({ c, l })} />, async () => { await new Promise((r) => setTimeout(r, 20)); });
     expect(el.querySelectorAll("path")).toHaveLength(3);
     const usa = [...el.querySelectorAll("path")].find((p) => p.querySelector("title")?.textContent?.includes("United States"))!;
-    expect(usa.querySelector("title")!.textContent).toBe("United States: 9 trials");
+    expect(usa.querySelector("title")!.textContent).toBe("United States, 9 trials");
     expect(usa.getAttribute("fill")).not.toBe("#eceef2");
     const grey = [...el.querySelectorAll("path")].filter((p) => p.getAttribute("fill") === "#eceef2");
     expect(grey).toHaveLength(0);
     act(() => { usa.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
-    expect(picked).toEqual([{ c: map.data[0]!.citations, l: "United States · 9" }]);
+    expect(picked).toEqual([{ c: map.data[0]!.citations, l: "United States, 9 trials" }]);
     expect(el.textContent).toContain("Not on the map: Kosovo 1");
-    expect(el.textContent).toContain("Top: United States 9");
+    expect(el.textContent).toContain("Top: United States 9, Canada 4, Kosovo 1");
     done();
   });
   it("table: a row per trial with an NCT link", () => {
@@ -236,7 +238,17 @@ describe("network, map, table and single value", () => {
   it("single value: the formatted number and its label", () => {
     const html = renderToStaticMarkup(<SingleValueView viz={single} onPick={noop} />);
     expect(html).toContain("12,345");
-    expect(html).toContain("trials");
+    expect(html).toContain("trials, click for the most recent");
+  });
+});
+
+describe("labels", () => {
+  it("name what was clicked with commas, not separator characters", () => {
+    expect(pickLabel("Phase 3", "nivolumab")).toBe("Phase 3, nivolumab");
+    expect(pickLabel("2021", null)).toBe("2021");
+    expect(countLabel("Germany", 24, "trials")).toBe("Germany, 24 trials");
+    expect(countLabel("Pfizer", 1, "trials")).toBe("Pfizer, 1 trial");
+    expect(countLabel("Canada", 1200, "participants")).toBe("Canada, 1,200 participants");
   });
 });
 

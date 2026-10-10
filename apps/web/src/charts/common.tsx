@@ -5,6 +5,12 @@ import { ResponsiveContainer } from "recharts";
 
 export const fmt = (v: unknown): string => (typeof v === "number" ? v.toLocaleString("en-US") : String(v ?? ""));
 
+/** What a click picked, for the citations drawer: "Phase 3, nivolumab", or just "Phase 3". */
+export const pickLabel = (category: string, series: string | null): string => (series ? `${category}, ${series}` : category);
+
+/** A named count: "Germany, 24 trials", "Pfizer, 1 trial", "Canada, 1,200 participants". */
+export const countLabel = (name: string, n: number, unit: string): string => `${name}, ${fmt(n)} ${n === 1 ? unit.replace(/s$/, "") : unit}`;
+
 export const reducedMotion = (): boolean => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export type Size = { width?: number; height?: number };

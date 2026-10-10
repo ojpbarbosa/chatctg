@@ -17,7 +17,7 @@ describe("runQuery", () => {
     expect(body.meta.coverage).toMatchObject({ total_count: 12, fetched_count: 12, truncated: false, studies_without_value: 1 });
     expect(body.meta.notes.join(" ")).toMatch(/once per phase/);
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
-    expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov · counted once per phase · 1 trial without a phase not shown · data as of 2026-10-08");
+    expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
     expect(body.meta.source.requests[0]?.url).toContain("query.intr");
     expect(body.meta.timing.total_ms).toBeGreaterThanOrEqual(0);
     expect(events.map((e) => e.event)).toEqual(["judged", "interpretation", "progress", "title"]);
@@ -78,7 +78,7 @@ describe("runQuery", () => {
     expect(body.meta.source.requests[2]).toMatchObject({ total_count: 250, fetched: 1 });
     expect(body.meta.notes).toContain("Counts per year are exact (one registry count per year); citations show the 1 most recent trials of each year.");
     expect(body.meta.warnings).toEqual([]);
-    expect(body.visualization.subtitle).toBe("3,000 trials on ClinicalTrials.gov · data as of 2026-10-08");
+    expect(body.visualization.subtitle).toBe("3,000 trials on ClinicalTrials.gov. Data as of 2026-10-08.");
   });
   it("exact yearly counts start at the question's start year, and keep at most 40 years", async () => {
     const trend = { intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "bar" } };
@@ -138,7 +138,7 @@ describe("runQuery", () => {
     expect(deps.ctgov.calls).toEqual([{ intr: '"pembrolizumab"' }, { intr: '"nivolumab"' }]);
     if (body.visualization?.type !== "grouped_bar") throw new Error(body.visualization?.type);
     expect(body.visualization.encoding.series.values).toEqual(["pembrolizumab", "nivolumab"]);
-    expect(body.visualization.subtitle).toMatch(/^Pembrolizumab 12 · Nivolumab 12 trials on ClinicalTrials\.gov · /);
+    expect(body.visualization.subtitle).toMatch(/^Pembrolizumab 12 and Nivolumab 12 trials on ClinicalTrials\.gov\. /);
     expect(body.meta.coverage.total_count).toBe(24);
     expect(body.meta.notes.join(" ")).toMatch(/can match more than one arm/);
   });
@@ -208,7 +208,7 @@ describe("runQuery", () => {
     expect(deps.ctgov.calls[0]).toEqual({ cond: '"psoriasis"', overallStatus: "RECRUITING", advanced: "AREA[Phase]PHASE3" });
     expect(body.meta.interpretation.phase_filter).toBe("PHASE3");
     expect(body.meta.arms[0]?.filters).toEqual({ "query.cond": '"psoriasis"', "filter.overallStatus": "RECRUITING", "filter.advanced": "AREA[Phase]PHASE3" });
-    expect(body.visualization?.subtitle).toMatch(/ · recruiting only · phase 3 only · /);
+    expect(body.visualization?.subtitle).toMatch(/\. Recruiting phase 3 trials only\. /);
   });
   it("not answerable → 422 with the interpretation", async () => {
     const r = await runQuery(req("what is the weather"), fakeDeps({ in_scope: { noul: 0.1 } }, {}));

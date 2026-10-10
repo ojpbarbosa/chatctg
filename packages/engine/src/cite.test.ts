@@ -19,7 +19,7 @@ describe("citations", () => {
   });
   it("cites both ends of an edge", () => {
     const c = citeEdge([SAMPLE[0]!], { field: "protocolSection.sponsorCollaboratorsModule.leadSponsor.name", value: "Merck" }, { field: "derivedSection.interventionBrowseModule.meshes[].term", value: "lenvatinib" }, 5);
-    expect(c[0]).toMatchObject({ nct_id: "NCT00000001", excerpt: 'leadSponsor.name: "Merck" · meshes[].term: "lenvatinib"' });
+    expect(c[0]).toMatchObject({ nct_id: "NCT00000001", excerpt: 'leadSponsor.name "Merck"; meshes[].term "lenvatinib"' });
     expect(c[0]!.field).toBe("protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term");
   });
   it("respects k = 0", () => expect(citeBucket(SAMPLE, "phase", "PHASE2", 0)).toEqual([]));

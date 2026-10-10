@@ -276,10 +276,10 @@ export function plan(input: PlanInput): PlanResult {
   return { ok: true, plan: { intent, chart: applied, dimension, secondary, metric, granularity, edge_kind, arms, limit, entities, recruiting_only, phase, notes, interpretation } };
 }
 
-/** "Pembrolizumab", "Pembrolizumab · Melanoma", or "All trials". */
+/** "Pembrolizumab", "Pembrolizumab, Melanoma", or "All trials". */
 export function entityLabel(e: Entities): string {
   const parts = [...e.drugs, ...e.conditions, ...e.sponsors, ...e.countries];
-  return parts.length ? parts.map(cap).join(" · ") : "All trials";
+  return parts.length ? parts.map(cap).join(", ") : "All trials";
 }
 
 export function armFilters(arm: Arm): Record<string, string> {

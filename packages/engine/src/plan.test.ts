@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CHART_TYPES, QueryRequest, type ChartType } from "@chatctg/contracts";
 import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@chatctg/judgment";
-import { allowedCharts, armFilters, defaultChart, plan, provisionalChart, type Entities } from "./plan";
+import { allowedCharts, armFilters, defaultChart, entityLabel, plan, provisionalChart, type Entities } from "./plan";
 
 const models = { judge: "fake", extractor: "fake", titler: "fake" };
 const none: Entities = { drugs: [], conditions: [], sponsors: [], countries: [], start_year: null, end_year: null, limit: null };
@@ -72,6 +72,10 @@ describe("plan: dimensions", () => {
 });
 
 describe("plan: arms and filters", () => {
+  it("labels an arm by its names, joined by commas", () => {
+    expect(entityLabel({ ...none, drugs: ["pembrolizumab"], conditions: ["melanoma"] })).toBe("Pembrolizumab, Melanoma");
+    expect(entityLabel(none)).toBe("All trials");
+  });
   it("builds one arm with no query parameters when nothing is named", async () => {
     const p = okPlan(plan({ answers: await answers({}), entities: none, request: req(), models }));
     expect(p.arms).toEqual([{ label: "All trials", query: {} }]);

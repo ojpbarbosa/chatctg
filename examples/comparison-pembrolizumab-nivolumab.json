@@ -7,7 +7,7 @@
     "visualization": {
       "type": "grouped_bar",
       "title": "Pembrolizumab and nivolumab trials by phase",
-      "subtitle": "Pembrolizumab 2,974 · Nivolumab 2,030 trials on ClinicalTrials.gov · counted once per phase · 390 trials without a phase not shown · data as of 2026-10-09",
+      "subtitle": "Pembrolizumab 2,974 and Nivolumab 2,030 trials on ClinicalTrials.gov. Each trial is counted once per phase. 390 trials without a phase are not shown. Data as of 2026-10-09.",
       "encoding": {
         "x": {
           "field": "phase",
@@ -521,7 +521,7 @@
         },
         "dimension": {
           "value": "phase",
-          "p": 0.83
+          "p": 0.8
         },
         "secondary_dimension": null,
         "chart": {
@@ -625,12 +625,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 188,
-        "extract_ms": 1045,
-        "fetch_ms": 2621,
-        "title_ms": 752,
-        "aggregate_ms": 25,
-        "total_ms": 3693
+        "jev_ms": 227,
+        "judged_ms": 227,
+        "extract_ms": 882,
+        "fetch_ms": 2756,
+        "title_ms": 700,
+        "aggregate_ms": 20,
+        "total_ms": 3663
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

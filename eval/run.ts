@@ -19,7 +19,7 @@ for (const c of cases) {
 latencies.sort((x, y) => x - y);
 const pct = (p: number) => latencies[Math.min(latencies.length - 1, Math.floor(p * latencies.length))] ?? 0;
 const report = [
-  `# Jev agreement on ${cases.length} labelled questions`, "", `Run: ${new Date().toISOString()} · model: ${judge.model} · question set: ${QUESTION_SET.id} v${QUESTION_SET.version} · agreement: ${hits}/${checks} (${Math.round((100 * hits) / Math.max(1, checks))}%) · latency p50 ${pct(0.5)} ms, p90 ${pct(0.9)} ms`, "",
+  `# Jev agreement on ${cases.length} labelled questions`, "", `Run: ${new Date().toISOString()}, model: ${judge.model}, question set: ${QUESTION_SET.id} v${QUESTION_SET.version}, agreement: ${hits}/${checks} (${Math.round((100 * hits) / Math.max(1, checks))}%), latency p50 ${pct(0.5)} ms and p90 ${pct(0.9)} ms`, "",
   "| Question | Intent | Dimension | Chart | Flags | Other | ms |", "|---|---|---|---|---|---|---|", ...rows, "",
   "## Disagreements", "", ...(confusions.length ? confusions.map((x) => `- ${x}`) : ["None."]), "",
 ].join("\n");

@@ -22,7 +22,7 @@ describe("valuesOf", () => {
     expect(timeKey(byId("NCT00000004"), "year")).toBeNull();
   });
   it("enrollment falls into a bin", () => {
-    expect(valuesOf(byId("NCT00000001"), "enrollment")).toEqual(["201–500"]);
+    expect(valuesOf(byId("NCT00000001"), "enrollment")).toEqual(["201-500"]);
     expect(valuesOf(byId("NCT00000009"), "enrollment")).toEqual(["1001+"]);
     expect(valuesOf(byId("NCT00000003"), "enrollment")).toEqual([]);
   });
@@ -43,7 +43,7 @@ describe("labels, order, citations", () => {
   });
   it("orders closed sets and bins", () => {
     expect(fixedOrder("phase")).toEqual(["EARLY_PHASE1", "PHASE1", "PHASE2", "PHASE3", "PHASE4", "NA"]);
-    expect(fixedOrder("enrollment")).toEqual(["1–50", "51–100", "101–200", "201–500", "501–1000", "1001+"]);
+    expect(fixedOrder("enrollment")).toEqual(["1-50", "51-100", "101-200", "201-500", "501-1000", "1001+"]);
     expect(fixedOrder("sponsor")).toBeNull();
   });
   it("labels phases and classes", () => {
@@ -56,7 +56,7 @@ describe("labels, order, citations", () => {
     expect(citationField("start_year")).toBe("protocolSection.statusModule.startDateStruct.date");
     expect(citationExcerpt(byId("NCT00000005"), "start_year", "2019")).toBe("2019-05-20");
     expect(citationExcerpt(byId("NCT00000001"), "country", "Germany")).toBe("Germany");
-    expect(citationExcerpt(byId("NCT00000001"), "enrollment", "201–500")).toBe("500");
+    expect(citationExcerpt(byId("NCT00000001"), "enrollment", "201-500")).toBe("500");
     expect(citationExcerpt(byId("NCT00000006"), "drug", "placebo")).toBe("Placebo");
   });
 });

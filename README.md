@@ -57,19 +57,19 @@ curl localhost:3001/health
 
 | Field | Type | Required | Validation and effect |
 |---|---|---|---|
-| `query` | string | yes | 1–500 characters after trim |
-| `drug_name` | string or string[] | no | each 1–200 characters after trim, at most 10; replaces the extracted drugs |
+| `query` | string | yes | 1 to 500 characters after trim |
+| `drug_name` | string or string[] | no | each 1 to 200 characters after trim, at most 10; replaces the extracted drugs |
 | `condition` | string or string[] | no | same; replaces the extracted conditions |
 | `sponsor` | string or string[] | no | same; replaces the extracted sponsors |
 | `country` | string or string[] | no | same; replaces the extracted countries |
 | `trial_phase` | enum | no | `EARLY_PHASE1`, `PHASE1`, `PHASE2`, `PHASE3`, `PHASE4`, `NA`; becomes `AREA[Phase]` in `filter.advanced` and replaces Jev's `phase_filter` |
 | `trial_status` | enum | no | the registry's overall status: `RECRUITING`, `NOT_YET_RECRUITING`, `ENROLLING_BY_INVITATION`, `ACTIVE_NOT_RECRUITING`, `COMPLETED`, `SUSPENDED`, `TERMINATED`, `WITHDRAWN`, `AVAILABLE`, `NO_LONGER_AVAILABLE`, `TEMPORARILY_NOT_AVAILABLE`, `APPROVED_FOR_MARKETING`, `WITHHELD`, `UNKNOWN`; becomes `filter.overallStatus` and replaces Jev's `recruiting_only` |
-| `start_year` | integer | no | 1900–2100; replaces the extracted start year |
-| `end_year` | integer | no | 1900–2100, and not before `start_year` when both are given |
+| `start_year` | integer | no | 1900 to 2100; replaces the extracted start year |
+| `end_year` | integer | no | 1900 to 2100, and not before `start_year` when both are given |
 | `intent` | enum | no | one of the nine intents; replaces Jev's intent and skips the scope check (a "did you mean" chip sends this) |
 | `chart` | enum | no | one of the ten chart types; treated as an explicit ask and validated by the compatibility matrix |
-| `max_studies` | integer | no | 100–10,000; default 3,000; the most studies read per arm (a count reads 50 and a table only its rows) |
-| `citations_per_point` | integer | no | 0–25; default 5; 0 turns citations off |
+| `max_studies` | integer | no | 100 to 10,000; default 3,000; the most studies read per arm (a count reads 50 and a table only its rows) |
+| `citations_per_point` | integer | no | 0 to 25; default 5; 0 turns citations off |
 
 Example request:
 
@@ -129,7 +129,7 @@ Row: `{ period, series?, [y.field], study_count, citations }`. Periods are gap-f
 
 #### `histogram`
 
-`x: { field, type: "ordinal", label, bins: [{ label, min, max }] }` and `y`. Over enrollment the bins are `1–50`, `51–100`, `101–200`, `201–500`, `501–1000` and `1001+` (the last with `max: null`). Only bins with data are listed. Row: `{ [x.field]: bin label, [x.field]_key, [y.field], study_count, citations }`. A histogram has no series, so a secondary dimension is dropped with a note.
+`x: { field, type: "ordinal", label, bins: [{ label, min, max }] }` and `y`. Over enrollment the bins are `1-50`, `51-100`, `101-200`, `201-500`, `501-1000` and `1001+` (the last with `max: null`). Only bins with data are listed. Row: `{ [x.field]: bin label, [x.field]_key, [y.field], study_count, citations }`. A histogram has no series, so a secondary dimension is dropped with a note.
 
 #### `scatter`
 
@@ -151,7 +151,7 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `edges` | `{ source_field: "source", target_field: "target", weight_field: "weight" }` |
 | `layout` | `"force"` |
 
-`data` is an object here, not an array: `{ nodes: [{ id, label, kind, size, study_count }], edges: [{ source, target, weight, study_count, citations }] }`. A node id is `<kind>:<lowercased value>`, such as `sponsor:merck` or `drug:pembrolizumab`. A node's `size` and `study_count` are the number of studies it appears in. An edge's `weight` and `study_count` are the number of studies where both ends co-occur. Edges carry the citations. Only the `limit` heaviest edges are kept (40 by default, or the N the question names), and then the nodes they touch; sorting by weight makes the weight-1 edges the first to go, and a graph made only of weight-1 edges still shows `limit` of them. When edges are cut, the subtitle says "N strongest links shown" and `meta.warnings` says "Only the N strongest links of M are shown."
+`data` is an object here, not an array: `{ nodes: [{ id, label, kind, size, study_count }], edges: [{ source, target, weight, study_count, citations }] }`. A node id is `<kind>:<lowercased value>`, such as `sponsor:merck` or `drug:pembrolizumab`. A node's `size` and `study_count` are the number of studies it appears in. An edge's `weight` and `study_count` are the number of studies where both ends co-occur. Edges carry the citations. Only the `limit` heaviest edges are kept (40 by default, or the N the question names), and then the nodes they touch; sorting by weight makes the weight-1 edges the first to go, and a graph made only of weight-1 edges still shows `limit` of them. When edges are cut, the subtitle says "The N strongest links are shown." and `meta.warnings` says "Only the N strongest links of M are shown."
 
 #### `map`
 
@@ -159,7 +159,7 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 
 #### `table`
 
-`columns` is a list of `{ field, label, type }`: `nct_id` (string), `title` (string), `status` (string), `phases` (list), `start_date` (date), `sponsor` (string), `conditions` (list), `enrollment` (number). `sort` is `{ field: "start_date", direction: "desc" }`. There is one row per study, the 25 most recently started by default (or the N the question names), and each row cites itself. Only those rows are fetched: the registry returns the most recently started first, so the first page, sized to the row count, holds them. A table is not a sample, so `coverage.truncated` is false; when the registry holds more trials, the subtitle says "25 most recently started shown" and `meta.notes` gives the total.
+`columns` is a list of `{ field, label, type }`: `nct_id` (string), `title` (string), `status` (string), `phases` (list), `start_date` (date), `sponsor` (string), `conditions` (list), `enrollment` (number). `sort` is `{ field: "start_date", direction: "desc" }`. There is one row per study, the 25 most recently started by default (or the N the question names), and each row cites itself. Only those rows are fetched: the registry returns the most recently started first, so the first page, sized to the row count, holds them. A table is not a sample, so `coverage.truncated` is false; when the registry holds more trials, the subtitle says "The 25 most recently started are shown." and `meta.notes` gives the total.
 
 #### `single_value`
 
@@ -203,7 +203,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
   "visualization": {
     "type": "bar",
     "title": "Melanoma trials by phase",
-    "subtitle": "3,775 trials on ClinicalTrials.gov · based on the 3,000 most recently started · counted once per phase · 531 trials without a phase not shown · data as of 2026-10-09",
+    "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 531 trials without a phase are not shown. Data as of 2026-10-09.",
     "encoding": {
       "x": { "field": "phase", "type": "ordinal", "label": "Phase",
              "order": ["Early Phase 1", "Phase 1", "Phase 2", "Phase 3", "Phase 4", "Not applicable"] },
@@ -230,7 +230,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
     "query": "How are melanoma trials distributed across phases?",
     "interpretation": {
       "intent": { "value": "distribution", "p": 1, "confidence": 1, "alternatives": [] },
-      "dimension": { "value": "phase", "p": 0.99 },
+      "dimension": { "value": "phase", "p": 1 },
       "secondary_dimension": null,
       "chart": { "chosen": "bar", "applied": "bar", "explicit": false, "reason": null },
       "metric": "trial_count", "granularity": null, "edge_kind": null,
@@ -252,7 +252,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
                   "studies_without_value": 531, "omitted_categories": 0 },
     "units": { "y": "trials" },
     "granularity": null,
-    "timing": { "jev_ms": 233, "extract_ms": 758, "fetch_ms": 1917, "title_ms": 576, "aggregate_ms": 11, "total_ms": 2689 },
+    "timing": { "jev_ms": 216, "judged_ms": 216, "extract_ms": 858, "fetch_ms": 2268, "title_ms": 1016, "aggregate_ms": 13, "total_ms": 3142 },
     "notes": ["A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
               "531 trials without a phase are not shown."],
     "warnings": ["Only the 3,000 most recently started of 3,775 trials were read; counts are over that sample, the total is exact."],
@@ -351,7 +351,7 @@ A citation is one registry record that supports a data point, with the exact val
 
 `field` is the JSON path in the ClinicalTrials.gov study record. `excerpt` is the value at that path. Each data point cites up to `citations_per_point` studies (default 5, at most 25, 0 for none): the most recently started of the studies that contributed to it, with undated studies last and the NCT ID as the tie-break. `study_count` always gives the full number, so a reader knows how many studies the citations sample.
 
-A network edge cites the studies where both ends co-occur. Its `field` joins the two paths with ` | `, and its excerpt names both values, such as `leadSponsor.name: "Merck" · meshes[].term: "pembrolizumab"`.
+A network edge cites the studies where both ends co-occur. Its `field` joins the two paths with ` | `, and its excerpt names both values, such as `leadSponsor.name "Merck"; meshes[].term "pembrolizumab"`.
 
 `meta.source.requests` lists every ClinicalTrials.gov URL sent, with its `total_count` and the number of studies `fetched` from it. Any number in a response can be checked by opening those URLs and applying the counting rules above, as long as the registry's `data_timestamp` has not changed.
 

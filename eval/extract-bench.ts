@@ -20,6 +20,6 @@ for (const model of models) {
     if (good) ok++; else misses.push(`${c.q}: got ${JSON.stringify(g)}`);
   }
   ms.sort((a, b) => a - b);
-  console.log(`\n${model}: ${ok}/${cases.length} correct · p50 ${ms[Math.floor(ms.length / 2)] ?? 0} ms · p90 ${ms[Math.floor(ms.length * 0.9)] ?? 0} ms`);
+  console.log(`\n${model}: ${ok}/${cases.length} correct, p50 ${ms[Math.floor(ms.length / 2)] ?? 0} ms, p90 ${ms[Math.floor(ms.length * 0.9)] ?? 0} ms`);
   for (const m of misses) console.log(`  - ${m}`);
 }

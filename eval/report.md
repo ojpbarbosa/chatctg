@@ -1,6 +1,6 @@
 # Jev agreement on 25 labelled questions
 
-Run: 2026-10-09T18:54:19.834Z · model: jev-latest · question set: query-interpretation v2 · agreement: 87/87 (100%) · latency p50 181 ms, p90 197 ms
+Run: 2026-10-09T18:54:19.834Z, model: jev-latest, question set: query-interpretation v2, agreement: 87/87 (100%), latency p50 181 ms and p90 197 ms
 
 | Question | Intent | Dimension | Chart | Flags | Other | ms |
 |---|---|---|---|---|---|---|
@@ -48,7 +48,7 @@ Version 2 of the question set adds a twelfth question, `phase_filter`, a choice 
 
 `npm run eval:extract` on 2026-10-09 sent the 24 questions with labelled entities to each model:
 
-- `gpt-5.4-nano`: 23/24 correct · p50 770 ms · p90 935 ms. The miss: "Show me a table of phase 2 trials for migraine started in 2023" returned `start_year` 2023 with `end_year` null.
-- `gpt-4.1-nano`: 22/24 correct · p50 795 ms · p90 1582 ms. The same miss, plus "Which sponsors test the most drugs for rare diseases, as a network?" returned no condition.
+- `gpt-5.4-nano`: 23/24 correct, p50 770 ms, p90 935 ms. The miss: "Show me a table of phase 2 trials for migraine started in 2023" returned `start_year` 2023 with `end_year` null.
+- `gpt-4.1-nano`: 22/24 correct, p50 795 ms, p90 1582 ms. The same miss, plus "Which sponsors test the most drugs for rare diseases, as a network?" returned no condition.
 
 `gpt-5.4-nano` stays for both roles (`EXTRACTOR_MODEL` and `TITLER_MODEL`): it is more accurate and has the lower p50 and p90. The Responses API required `reasoning: { effort: "none" }` for it; `minimal` is rejected for this model.

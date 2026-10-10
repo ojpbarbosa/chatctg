@@ -1,14 +1,14 @@
 {
   "request": {
     "query": "Show a network of sponsors and drugs for melanoma trials",
-    "citations_per_datum": 3
+    "citations_per_point": 3
   },
   "status": 200,
   "response": {
     "visualization": {
       "type": "network_graph",
       "title": "Sponsors and the drugs they test in melanoma trials",
-      "subtitle": "3,775 trials on ClinicalTrials.gov · based on the 3,000 most recently started · 40 strongest links shown · data as of 2026-10-09",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. The 40 strongest links are shown. Data as of 2026-10-09.",
       "encoding": {
         "nodes": {
           "id_field": "id",
@@ -292,19 +292,19 @@
                 "nct_id": "NCT07091695",
                 "title": "Real-world Outcomes Among Patients With Melanoma Treated With Neoadjuvant Nivolumab+Relatlimab or Nivolumab+Ipilimumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT07079644",
                 "title": "Outcomes of Nivolumab in Combination With Relatlimab in Patients With Advanced Melanoma in the Flatiron Database",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT03978611",
                 "title": "A Study to Assess Safety of Relatlimab With Ipilimumab in Participants With Advanced Melanoma Who Progressed on Anti-Programmed Cell Death Protein 1 (Anti-PD-1) Treatment",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"ipilimumab\""
               }
             ]
           },
@@ -318,19 +318,19 @@
                 "nct_id": "NCT07459543",
                 "title": "A Study to Assess the Safety, and Tolerability of Nivolumab + Relatlimab Fixed-Dose Combination (FDC) In Unresectable or Metastatic Melanoma Participants In India",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT07492680",
                 "title": "A Study of BMS-986504 Monotherapy and in Combination With Other Agents in Participants With Advanced and/or Metastatic Solid Tumors With Homozygous MTAP Deletion (MountainTAP-5)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT07091695",
                 "title": "Real-world Outcomes Among Patients With Melanoma Treated With Neoadjuvant Nivolumab+Relatlimab or Nivolumab+Ipilimumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"nivolumab\""
               }
             ]
           },
@@ -344,19 +344,19 @@
                 "nct_id": "NCT06961006",
                 "title": "A Clinical Study of Intismeran Autogene (V940) and Pembrolizumab (MK-3475) in People With Melanoma (V940-012/INTerpath-012)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Merck Sharp & Dohme LLC\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"Merck Sharp & Dohme LLC\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT06894771",
                 "title": "A Study of MK-4700 Alone or With Pembrolizumab in Participants With Advanced or Metastatic Solid Tumors (MK-4700-001)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Merck Sharp & Dohme LLC\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"Merck Sharp & Dohme LLC\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT06099782",
                 "title": "A Study of Participant Reported Preference for Subcutaneous Pembrolizumab Coformulated With Berahyaluronidase Alfa (MK-3475A) Over Intravenous Pembrolizumab (MK-3475) Formulation in Multiple Tumor Types (MK-3475A-F11)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Merck Sharp & Dohme LLC\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"Merck Sharp & Dohme LLC\"; meshes[].term \"pembrolizumab\""
               }
             ]
           },
@@ -370,19 +370,19 @@
                 "nct_id": "NCT02830724",
                 "title": "Administering Peripheral Blood Lymphocytes Transduced With a CD70-Binding Chimeric Antigen Receptor to People With CD70 Expressing Cancers",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"cyclophosphamide\""
               },
               {
                 "nct_id": "NCT02621021",
                 "title": "A Phase 2 Trial for Metastatic Melanoma Using Adoptive Cell Therapy With Tumor Infiltrating Lymphocytes Plus IL-2 Either Alone or Following the Administration of Pembrolizumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"cyclophosphamide\""
               },
               {
                 "nct_id": "NCT02489266",
                 "title": "In Vivo Persistence of Adoptively-Transferred TIL Cultured With Akti in People With Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"cyclophosphamide\""
               }
             ]
           },
@@ -396,19 +396,19 @@
                 "nct_id": "NCT05155033",
                 "title": "Phase II Trial of Combination Anti-PD-1 and Aldesleukin for Metastatic Melanoma and Renal Cell Carcinoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"aldesleukin\""
               },
               {
                 "nct_id": "NCT02830724",
                 "title": "Administering Peripheral Blood Lymphocytes Transduced With a CD70-Binding Chimeric Antigen Receptor to People With CD70 Expressing Cancers",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"aldesleukin\""
               },
               {
                 "nct_id": "NCT02621021",
                 "title": "A Phase 2 Trial for Metastatic Melanoma Using Adoptive Cell Therapy With Tumor Infiltrating Lymphocytes Plus IL-2 Either Alone or Following the Administration of Pembrolizumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"aldesleukin\""
               }
             ]
           },
@@ -422,19 +422,19 @@
                 "nct_id": "NCT03625141",
                 "title": "A Study Evaluating the Safety and Efficacy of Cobimetinib Plus Atezolizumab in BRAFV600 Wild-type Melanoma With Central Nervous System Metastases and Cobimetinib Plus Atezolizumab and Vemurafenib in BRAFV600 Mutation-positive Melanoma With Central Nervous System Metastases",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"vemurafenib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"vemurafenib\""
               },
               {
                 "nct_id": "NCT02908672",
                 "title": "A Study of Atezolizumab Plus Cobimetinib and Vemurafenib Versus Placebo Plus Cobimetinib and Vemurafenib in Previously Untreated BRAFv600 Mutation-Positive Patients With Metastatic or Unresectable Locally Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"vemurafenib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"vemurafenib\""
               },
               {
                 "nct_id": "NCT03139513",
                 "title": "A Study of Adult Participants With BRAF V600 Mutation-Positive Advanced Melanoma Treated With Cobimetinib (Cotellic®) During the French Early Access Program (Temporary Authorization for Use [TAU])",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"vemurafenib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"vemurafenib\""
               }
             ]
           },
@@ -448,19 +448,19 @@
                 "nct_id": "NCT02830724",
                 "title": "Administering Peripheral Blood Lymphocytes Transduced With a CD70-Binding Chimeric Antigen Receptor to People With CD70 Expressing Cancers",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine\""
               },
               {
                 "nct_id": "NCT02621021",
                 "title": "A Phase 2 Trial for Metastatic Melanoma Using Adoptive Cell Therapy With Tumor Infiltrating Lymphocytes Plus IL-2 Either Alone or Following the Administration of Pembrolizumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine\""
               },
               {
                 "nct_id": "NCT02489266",
                 "title": "In Vivo Persistence of Adoptively-Transferred TIL Cultured With Akti in People With Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine\""
               }
             ]
           },
@@ -474,19 +474,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"specimen handling\""
               },
               {
                 "nct_id": "NCT05136196",
                 "title": "BiCaZO: A Study Combining Two Immunotherapies (Cabozantinib and Nivolumab) to Treat Patients With Advanced Melanoma or Squamous Cell Head and Neck Cancer, an immunoMATCH Pilot Study",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"specimen handling\""
               },
               {
                 "nct_id": "NCT05111574",
                 "title": "Using Nivolumab Alone or With Cabozantinib to Prevent Mucosal Melanoma Return After Surgery",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"specimen handling\""
               }
             ]
           },
@@ -500,19 +500,19 @@
                 "nct_id": "NCT07511036",
                 "title": "PROSECCO: A Phase 2, Single Arm, Neoadjuvant Study Evaluating Combination Cemiplimab, Fianlimab, And Ipilimumab In Patients With Surgically Resectable Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT06683755",
                 "title": "Phase I/IIa Dose Finding Study of Triplet Regimen of Relatlimab Ipilimumab and NIvolumab in First Line Therapy of Metastatic Melanoma (TRINITY)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT06250335",
                 "title": "Impact of a Prebiotic Food-enriched Diet (PreFED) in Combination With Ipilimumab/Nivolumab Combination Immune Checkpoint Blockade (ICB) in ICB-refractory Melanoma Patients",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ipilimumab\""
               }
             ]
           },
@@ -526,19 +526,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"magnetic resonance spectroscopy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"magnetic resonance spectroscopy\""
               },
               {
                 "nct_id": "NCT05136196",
                 "title": "BiCaZO: A Study Combining Two Immunotherapies (Cabozantinib and Nivolumab) to Treat Patients With Advanced Melanoma or Squamous Cell Head and Neck Cancer, an immunoMATCH Pilot Study",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"magnetic resonance spectroscopy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"magnetic resonance spectroscopy\""
               },
               {
                 "nct_id": "NCT05111574",
                 "title": "Using Nivolumab Alone or With Cabozantinib to Prevent Mucosal Melanoma Return After Surgery",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"magnetic resonance spectroscopy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"magnetic resonance spectroscopy\""
               }
             ]
           },
@@ -552,19 +552,19 @@
                 "nct_id": "NCT04961619",
                 "title": "Adjuvant Dabrafenib and Trametinib Treatment in Patients With Completely Resected High-risk Stage III Melanoma.",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT04547946",
                 "title": "Observational Study for Melanoma Adjuvant Treatment With Tafinlar® + Mekinist® (Dabrafenib + Trametinib)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT05714371",
                 "title": "Retrospective Assessment of Adverse Events-related Healthcare Resource Utilization and Costs of Immune Checkpoint Inhibitor and Targeted Therapy for Adjuvant Treatment of Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"trametinib\""
               }
             ]
           },
@@ -578,19 +578,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ctla-4 antigen\""
               },
               {
                 "nct_id": "NCT03816332",
                 "title": "Tacrolimus, Nivolumab, and Ipilimumab in Treating Kidney Transplant Recipients With Selected Unresectable or Metastatic Cancers",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ctla-4 antigen\""
               },
               {
                 "nct_id": "NCT03326258",
                 "title": "Glembatumumab Vedotin, Nivolumab, and Ipilimumab in Treating Patients With Advanced Metastatic Solid Tumors That Cannot Be Removed by Surgery",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ctla-4 antigen\""
               }
             ]
           },
@@ -604,19 +604,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT03816332",
                 "title": "Tacrolimus, Nivolumab, and Ipilimumab in Treating Kidney Transplant Recipients With Selected Unresectable or Metastatic Cancers",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT03326258",
                 "title": "Glembatumumab Vedotin, Nivolumab, and Ipilimumab in Treating Patients With Advanced Metastatic Solid Tumors That Cannot Be Removed by Surgery",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"ipilimumab\""
               }
             ]
           },
@@ -630,19 +630,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT05136196",
                 "title": "BiCaZO: A Study Combining Two Immunotherapies (Cabozantinib and Nivolumab) to Treat Patients With Advanced Melanoma or Squamous Cell Head and Neck Cancer, an immunoMATCH Pilot Study",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT05111574",
                 "title": "Using Nivolumab Alone or With Cabozantinib to Prevent Mucosal Melanoma Return After Surgery",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"nivolumab\""
               }
             ]
           },
@@ -656,19 +656,19 @@
                 "nct_id": "NCT05926960",
                 "title": "A Study Comparing 3 Study Medicines (Encorafenib, Binimetinib, Pembrolizumab) to 2 Study Medicines (Ipilimumab and Nivolumab) in Patients With Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"binimetinib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"binimetinib\""
               },
               {
                 "nct_id": "NCT05355701",
                 "title": "A Study to Learn About the Study Medicine Called PF-07799933 in People With Advanced Solid Tumors With BRAF Alterations.",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"binimetinib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"binimetinib\""
               },
               {
                 "nct_id": "NCT05260684",
                 "title": "Comparative Effectiveness of Targeted Therapies in BRAF Positive Metastatic Melanoma in the US",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"binimetinib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"binimetinib\""
               }
             ]
           },
@@ -682,19 +682,19 @@
                 "nct_id": "NCT04961619",
                 "title": "Adjuvant Dabrafenib and Trametinib Treatment in Patients With Completely Resected High-risk Stage III Melanoma.",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT04547946",
                 "title": "Observational Study for Melanoma Adjuvant Treatment With Tafinlar® + Mekinist® (Dabrafenib + Trametinib)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT05714371",
                 "title": "Retrospective Assessment of Adverse Events-related Healthcare Resource Utilization and Costs of Immune Checkpoint Inhibitor and Targeted Therapy for Adjuvant Treatment of Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"dabrafenib\""
               }
             ]
           },
@@ -708,19 +708,19 @@
                 "nct_id": "NCT06660420",
                 "title": "Phase 1 Dose Escalation and Expansion Study of PRAME T Cell Receptor (TCR) Engineered NK Cells in Participants With Recurrent and/or Refractory Melanoma (PRAMETIME-Mel)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"cyclophosphamide\""
               },
               {
                 "nct_id": "NCT06237881",
                 "title": "A Phase 1/2 Study of KSQ-001EX, Autologous Tumor Infiltrating Lymphocytes Engineered to Inactivate the SOCS1 Gene, in Patients With Select Advanced Solid Tumors",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"cyclophosphamide\""
               },
               {
                 "nct_id": "NCT05470283",
                 "title": "Phase I, Open-Label, Study of Tumor Infiltrating Lymphocytes Engineered With Membrane Bound IL15 Plus Acetazolamide in Adult Patients With Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"cyclophosphamide\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"cyclophosphamide\""
               }
             ]
           },
@@ -734,19 +734,19 @@
                 "nct_id": "NCT02153905",
                 "title": "T Cell Receptor Immunotherapy Targeting MAGE-A3 for Patients With Metastatic Cancer Who Are HLA-A*01 Positive",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine phosphate\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine phosphate\""
               },
               {
                 "nct_id": "NCT02111863",
                 "title": "Immunotherapy Using 41BB Selected Tumor Infiltrating Lymphocytes for Patients With Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine phosphate\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine phosphate\""
               },
               {
                 "nct_id": "NCT02111850",
                 "title": "T Cell Receptor Immunotherapy Targeting MAGE-A3 for Patients With Metastatic Cancer Who Are HLA-DP0401 Positive",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"fludarabine phosphate\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"fludarabine phosphate\""
               }
             ]
           },
@@ -760,19 +760,19 @@
                 "nct_id": "NCT04261439",
                 "title": "A Phase I/Ib Study of NIZ985 Alone and in Combination With Spartalizumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"spartalizumab\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"spartalizumab\""
               },
               {
                 "nct_id": "NCT03891953",
                 "title": "Study of Safety and Efficacy of DKY709 Alone or in Combination With PDR001 in Patients With Advanced Solid Tumors.",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"spartalizumab\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"spartalizumab\""
               },
               {
                 "nct_id": "NCT03484923",
                 "title": "Study of Efficacy and Safety of Novel Spartalizumab Combinations in Patients With Previously Treated Unresectable or Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Novartis Pharmaceuticals\" · meshes[].term: \"spartalizumab\""
+                "excerpt": "leadSponsor.name \"Novartis Pharmaceuticals\"; meshes[].term \"spartalizumab\""
               }
             ]
           },
@@ -786,19 +786,19 @@
                 "nct_id": "NCT02447939",
                 "title": "Pharmacokinetics of Repeat Oral Doses of Dabrafenib and the Combination of Dabrafenib and Trametinib in Chinese Subjects With Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT02065063",
                 "title": "A Study to Investigate the Safety, Pharmacokinetics, Pharmacodynamics, and Anti-Cancer Activity of Trametinib in Combination With Palbociclib in Subjects With Solid Tumors",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT01978236",
                 "title": "Dabrafenib/Trametinib, BRAF or BRAF AND MEK Pre-op With BRAF and MEK Post-op, Phase IIB, Melanoma With Brain Mets,Biomarkers and Metabolites",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"trametinib\""
               }
             ]
           },
@@ -812,19 +812,19 @@
                 "nct_id": "NCT06295159",
                 "title": "Neoadjuvant and Adjuvant Anti-PD1 or Combinations for Locoregionally Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT05704933",
                 "title": "Pilot Study of Nivolumab w/Ipilimumab or Relatlimab in Surgically Resectable Melanoma Brain Metastases",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT05358938",
                 "title": "Exercise to Boost Response to Checkpoint Blockade Immunotherapy",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"nivolumab\""
               }
             ]
           },
@@ -838,19 +838,19 @@
                 "nct_id": "NCT05896839",
                 "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"biopsy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"biopsy\""
               },
               {
                 "nct_id": "NCT05136196",
                 "title": "BiCaZO: A Study Combining Two Immunotherapies (Cabozantinib and Nivolumab) to Treat Patients With Advanced Melanoma or Squamous Cell Head and Neck Cancer, an immunoMATCH Pilot Study",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"biopsy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"biopsy\""
               },
               {
                 "nct_id": "NCT04708418",
                 "title": "A Study Evaluating Whether Pembrolizumab Alone or in Combination With CMP-001 Improves Efficacy of Treatment in Patients With Operable Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"biopsy\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"biopsy\""
               }
             ]
           },
@@ -864,19 +864,19 @@
                 "nct_id": "NCT02447939",
                 "title": "Pharmacokinetics of Repeat Oral Doses of Dabrafenib and the Combination of Dabrafenib and Trametinib in Chinese Subjects With Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT02082665",
                 "title": "Effects of Dabrafenib on the Single Dose Pharmacokinetics (PK) of Rosuvastatin and Midazolam",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT01978236",
                 "title": "Dabrafenib/Trametinib, BRAF or BRAF AND MEK Pre-op With BRAF and MEK Post-op, Phase IIB, Melanoma With Brain Mets,Biomarkers and Metabolites",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"GlaxoSmithKline\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"GlaxoSmithKline\"; meshes[].term \"dabrafenib\""
               }
             ]
           },
@@ -890,19 +890,19 @@
                 "nct_id": "NCT03068624",
                 "title": "Autologous CD8+ SLC45A2-Specific T Lymphocytes With Cyclophosphamide, Aldesleukin, and Ipilimumab in Treating Patients With Metastatic Uveal Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"aldesleukin\""
               },
               {
                 "nct_id": "NCT02500576",
                 "title": "Pembrolizumab, Standard Chemotherapy, Tumor Infiltrating Lymphocytes, and High- or Low-Dose Aldesleukin in Treating Patients With Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"aldesleukin\""
               },
               {
                 "nct_id": "NCT01740557",
                 "title": "Genetically Modified Therapeutic Autologous Lymphocytes Followed by Aldesleukin in Treating Patients With Stage III or Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"aldesleukin\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"aldesleukin\""
               }
             ]
           },
@@ -916,19 +916,19 @@
                 "nct_id": "NCT06683755",
                 "title": "Phase I/IIa Dose Finding Study of Triplet Regimen of Relatlimab Ipilimumab and NIvolumab in First Line Therapy of Metastatic Melanoma (TRINITY)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT06250335",
                 "title": "Impact of a Prebiotic Food-enriched Diet (PreFED) in Combination With Ipilimumab/Nivolumab Combination Immune Checkpoint Blockade (ICB) in ICB-refractory Melanoma Patients",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"nivolumab\""
               },
               {
                 "nct_id": "NCT05704647",
                 "title": "Phase II Study of Nivolumab in Combination With Relatlimab in Patients With Active Melanoma Brain Metastases",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"nivolumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"nivolumab\""
               }
             ]
           },
@@ -942,19 +942,19 @@
                 "nct_id": "NCT05155033",
                 "title": "Phase II Trial of Combination Anti-PD-1 and Aldesleukin for Metastatic Melanoma and Renal Cell Carcinoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT04708418",
                 "title": "A Study Evaluating Whether Pembrolizumab Alone or in Combination With CMP-001 Improves Efficacy of Treatment in Patients With Operable Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT03698019",
                 "title": "A Study to Compare the Administration of Pembrolizumab After Surgery Versus Administration Both Before and After Surgery for High-Risk Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"pembrolizumab\""
               }
             ]
           },
@@ -968,19 +968,19 @@
                 "nct_id": "NCT04557956",
                 "title": "Testing the Addition of the Anti-cancer Drug, Tazemetostat, to (Dabrafenib and Trametinib) for Metastatic Melanoma That Has Progressed on the Usual Treatment",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT04439292",
                 "title": "Testing Trametinib and Dabrafenib as a Potential Targeted Treatment in Cancers With BRAF Genetic Changes (MATCH-Subprotocol H)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"trametinib\""
               },
               {
                 "nct_id": "NCT02224781",
                 "title": "Dabrafenib and Trametinib Followed by Ipilimumab and Nivolumab or Ipilimumab and Nivolumab Followed by Dabrafenib and Trametinib in Treating Patients With Stage III-IV BRAFV600 Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"trametinib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"trametinib\""
               }
             ]
           },
@@ -994,19 +994,19 @@
                 "nct_id": "NCT06295159",
                 "title": "Neoadjuvant and Adjuvant Anti-PD1 or Combinations for Locoregionally Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT05704933",
                 "title": "Pilot Study of Nivolumab w/Ipilimumab or Relatlimab in Surgically Resectable Melanoma Brain Metastases",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"ipilimumab\""
               },
               {
                 "nct_id": "NCT05358938",
                 "title": "Exercise to Boost Response to Checkpoint Blockade Immunotherapy",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"ipilimumab\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"ipilimumab\""
               }
             ]
           },
@@ -1020,19 +1020,19 @@
                 "nct_id": "NCT06545682",
                 "title": "Phase Ib Study of AlpeliSib With PEmbroLizumab in Patients With mEtastatic Breast caNcer or melanomA (SELENA)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT04902040",
                 "title": "Plinabulin in Combination With Radiation/Immunotherapy in Patients With Select Advanced Cancers After Progression on PD-1 or PD-L1 Targeted Antibodies",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"pembrolizumab\""
               },
               {
                 "nct_id": "NCT03873818",
                 "title": "Low Dose Ipilimumab With Pembrolizumab in Treating Patients With Melanoma That Has Spread to the Brain",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"pembrolizumab\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"pembrolizumab\""
               }
             ]
           },
@@ -1046,19 +1046,19 @@
                 "nct_id": "NCT05717140",
                 "title": "Aerosolized Sargramostim Added to Immunotherapy for the Treatment of Patients With Metastatic Melanoma to the Lung",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Mayo Clinic\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"Mayo Clinic\"; meshes[].term \"specimen handling\""
               },
               {
                 "nct_id": "NCT05653661",
                 "title": "Nab-Paclitaxel/STI-3031 Complex (AP160-Complex) for the Treatment of Advanced or Metastatic Solid Tumors",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Mayo Clinic\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"Mayo Clinic\"; meshes[].term \"specimen handling\""
               },
               {
                 "nct_id": "NCT05388877",
                 "title": "E6201 and Dabrafenib for the Treatment of Central Nervous System Metastases From BRAF V600 Mutated Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Mayo Clinic\" · meshes[].term: \"specimen handling\""
+                "excerpt": "leadSponsor.name \"Mayo Clinic\"; meshes[].term \"specimen handling\""
               }
             ]
           },
@@ -1072,19 +1072,19 @@
                 "nct_id": "NCT04557956",
                 "title": "Testing the Addition of the Anti-cancer Drug, Tazemetostat, to (Dabrafenib and Trametinib) for Metastatic Melanoma That Has Progressed on the Usual Treatment",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT04439292",
                 "title": "Testing Trametinib and Dabrafenib as a Potential Targeted Treatment in Cancers With BRAF Genetic Changes (MATCH-Subprotocol H)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"dabrafenib\""
               },
               {
                 "nct_id": "NCT02224781",
                 "title": "Dabrafenib and Trametinib Followed by Ipilimumab and Nivolumab or Ipilimumab and Nivolumab Followed by Dabrafenib and Trametinib in Treating Patients With Stage III-IV BRAFV600 Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"dabrafenib\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"dabrafenib\""
               }
             ]
           },
@@ -1098,19 +1098,19 @@
                 "nct_id": "NCT05926960",
                 "title": "A Study Comparing 3 Study Medicines (Encorafenib, Binimetinib, Pembrolizumab) to 2 Study Medicines (Ipilimumab and Nivolumab) in Patients With Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"encorafenib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"encorafenib\""
               },
               {
                 "nct_id": "NCT05260684",
                 "title": "Comparative Effectiveness of Targeted Therapies in BRAF Positive Metastatic Melanoma in the US",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"encorafenib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"encorafenib\""
               },
               {
                 "nct_id": "NCT04657991",
                 "title": "A Clinical Trial of Three Study Medicines (Encorafenib, Binimetinib, and Pembrolizumab) in Patients With Advanced or Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Pfizer\" · meshes[].term: \"encorafenib\""
+                "excerpt": "leadSponsor.name \"Pfizer\"; meshes[].term \"encorafenib\""
               }
             ]
           },
@@ -1124,19 +1124,19 @@
                 "nct_id": "NCT07808515",
                 "title": "A Study Comparing Cemiplimab-based Treatments for Adult Participants With Locally Advanced Basal Cell Skin Cancer (laBCC)",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Regeneron Pharmaceuticals\" · meshes[].term: \"cemiplimab\""
+                "excerpt": "leadSponsor.name \"Regeneron Pharmaceuticals\"; meshes[].term \"cemiplimab\""
               },
               {
                 "nct_id": "NCT06848088",
                 "title": "A Study to Learn About the Long-Term Health of Adult Participants From a Previous Study of a New Melanoma Treatment",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Regeneron Pharmaceuticals\" · meshes[].term: \"cemiplimab\""
+                "excerpt": "leadSponsor.name \"Regeneron Pharmaceuticals\"; meshes[].term \"cemiplimab\""
               },
               {
                 "nct_id": "NCT06585410",
                 "title": "Study of Intralesional Cemiplimab in Adult Patients With Early Stage Cutaneous Squamous Cell Carcinoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Regeneron Pharmaceuticals\" · meshes[].term: \"cemiplimab\""
+                "excerpt": "leadSponsor.name \"Regeneron Pharmaceuticals\"; meshes[].term \"cemiplimab\""
               }
             ]
           },
@@ -1150,19 +1150,19 @@
                 "nct_id": "NCT03625141",
                 "title": "A Study Evaluating the Safety and Efficacy of Cobimetinib Plus Atezolizumab in BRAFV600 Wild-type Melanoma With Central Nervous System Metastases and Cobimetinib Plus Atezolizumab and Vemurafenib in BRAFV600 Mutation-positive Melanoma With Central Nervous System Metastases",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"cobimetinib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"cobimetinib\""
               },
               {
                 "nct_id": "NCT03273153",
                 "title": "A Study of Cobimetinib Plus Atezolizumab Versus Pembrolizumab in Participants With Previously Untreated Advanced BRAFv600 Wild-Type Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"cobimetinib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"cobimetinib\""
               },
               {
                 "nct_id": "NCT03178851",
                 "title": "Cobimetinib (Targeted Therapy) Plus Atezolizumab (Immunotherapy) in Participants With Advanced Melanoma Whose Cancer Has Worsened During or After Treatment With Previous Immunotherapy and Atezolizumab Monotherapy in Participants With Previously Untreated Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Hoffmann-La Roche\" · meshes[].term: \"cobimetinib\""
+                "excerpt": "leadSponsor.name \"Hoffmann-La Roche\"; meshes[].term \"cobimetinib\""
               }
             ]
           },
@@ -1176,19 +1176,19 @@
                 "nct_id": "NCT04940299",
                 "title": "Tocilizumab, Ipilimumab, and Nivolumab for the Treatment of Advanced Melanoma, Non-Small Cell Lung Cancer, or Urothelial Carcinoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ctla-4 antigen\""
               },
               {
                 "nct_id": "NCT03873818",
                 "title": "Low Dose Ipilimumab With Pembrolizumab in Treating Patients With Melanoma That Has Spread to the Brain",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ctla-4 antigen\""
               },
               {
                 "nct_id": "NCT03068624",
                 "title": "Autologous CD8+ SLC45A2-Specific T Lymphocytes With Cyclophosphamide, Aldesleukin, and Ipilimumab in Treating Patients With Metastatic Uveal Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"ctla-4 antigen\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"ctla-4 antigen\""
               }
             ]
           },
@@ -1202,19 +1202,19 @@
                 "nct_id": "NCT02153905",
                 "title": "T Cell Receptor Immunotherapy Targeting MAGE-A3 for Patients With Metastatic Cancer Who Are HLA-A*01 Positive",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"interleukin-2\""
               },
               {
                 "nct_id": "NCT01814046",
                 "title": "Immunotherapy Using Tumor Infiltrating Lymphocytes for Patients With Metastatic Ocular Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"interleukin-2\""
               },
               {
                 "nct_id": "NCT01369875",
                 "title": "Modified Tumor Infiltrating Lymphocytes for Metastatic Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"National Cancer Institute (NCI)\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"National Cancer Institute (NCI)\"; meshes[].term \"interleukin-2\""
               }
             ]
           },
@@ -1228,19 +1228,19 @@
                 "nct_id": "NCT04068181",
                 "title": "Talimogene Laherparepvec With Pembrolizumab in Melanoma Following Progression on Prior Anti-PD-1 Based Therapy (MASTERKEY-115) (Mk-3475-A07/KEYNOTE-A07).",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Amgen\" · meshes[].term: \"talimogene laherparepvec\""
+                "excerpt": "leadSponsor.name \"Amgen\"; meshes[].term \"talimogene laherparepvec\""
               },
               {
                 "nct_id": "NCT03064763",
                 "title": "Study to Evaluate the Safety/ Efficacy of T-VEC in Japanese Subjects With Unresectable Stage IIIB-IV Malignant Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Amgen\" · meshes[].term: \"talimogene laherparepvec\""
+                "excerpt": "leadSponsor.name \"Amgen\"; meshes[].term \"talimogene laherparepvec\""
               },
               {
                 "nct_id": "NCT02366195",
                 "title": "Single-arm Trial to Evaluate the Role of the Immune Response to Talimogene Laherparepvec in Unresected Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Amgen\" · meshes[].term: \"talimogene laherparepvec\""
+                "excerpt": "leadSponsor.name \"Amgen\"; meshes[].term \"talimogene laherparepvec\""
               }
             ]
           },
@@ -1254,19 +1254,19 @@
                 "nct_id": "NCT07459543",
                 "title": "A Study to Assess the Safety, and Tolerability of Nivolumab + Relatlimab Fixed-Dose Combination (FDC) In Unresectable or Metastatic Melanoma Participants In India",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"relatlimab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"relatlimab\""
               },
               {
                 "nct_id": "NCT07091695",
                 "title": "Real-world Outcomes Among Patients With Melanoma Treated With Neoadjuvant Nivolumab+Relatlimab or Nivolumab+Ipilimumab",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"relatlimab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"relatlimab\""
               },
               {
                 "nct_id": "NCT07079644",
                 "title": "Outcomes of Nivolumab in Combination With Relatlimab in Patients With Advanced Melanoma in the Flatiron Database",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"Bristol-Myers Squibb\" · meshes[].term: \"relatlimab\""
+                "excerpt": "leadSponsor.name \"Bristol-Myers Squibb\"; meshes[].term \"relatlimab\""
               }
             ]
           },
@@ -1280,19 +1280,19 @@
                 "nct_id": "NCT06961357",
                 "title": "Clinical Trial of CD40L-augmented TIL for Patients With Advanced Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"interleukin-2\""
               },
               {
                 "nct_id": "NCT05628883",
                 "title": "Proof of Concept of TBio-4101, Lymphodepleting Chemo, IL-2 for Relapsed/Refractory Melanoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"interleukin-2\""
               },
               {
                 "nct_id": "NCT04562129",
                 "title": "IL2 With Ipilimumab Followed by Nivolumab in Stage 3 or 4 Melanoma Patients",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"H. Lee Moffitt Cancer Center and Research Institute\" · meshes[].term: \"interleukin-2\""
+                "excerpt": "leadSponsor.name \"H. Lee Moffitt Cancer Center and Research Institute\"; meshes[].term \"interleukin-2\""
               }
             ]
           },
@@ -1306,19 +1306,19 @@
                 "nct_id": "NCT05039801",
                 "title": "IACS-6274 With or Without Bevacizumab and Paclitaxel for the Treatment of Advanced Solid Tumors",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"disulfides\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"disulfides\""
               },
               {
                 "nct_id": "NCT04940299",
                 "title": "Tocilizumab, Ipilimumab, and Nivolumab for the Treatment of Advanced Melanoma, Non-Small Cell Lung Cancer, or Urothelial Carcinoma",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"disulfides\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"disulfides\""
               },
               {
                 "nct_id": "NCT04902040",
                 "title": "Plinabulin in Combination With Radiation/Immunotherapy in Patients With Select Advanced Cancers After Progression on PD-1 or PD-L1 Targeted Antibodies",
                 "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.name | derivedSection.interventionBrowseModule.meshes[].term",
-                "excerpt": "leadSponsor.name: \"M.D. Anderson Cancer Center\" · meshes[].term: \"disulfides\""
+                "excerpt": "leadSponsor.name \"M.D. Anderson Cancer Center\"; meshes[].term \"disulfides\""
               }
             ]
           }
@@ -1415,12 +1415,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 223,
-        "extract_ms": 746,
-        "fetch_ms": 0,
-        "title_ms": 612,
-        "aggregate_ms": 24,
-        "total_ms": 1361
+        "jev_ms": 296,
+        "judged_ms": 297,
+        "extract_ms": 924,
+        "fetch_ms": 1,
+        "title_ms": 748,
+        "aggregate_ms": 30,
+        "total_ms": 1675
       },
       "notes": [
         "Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur."

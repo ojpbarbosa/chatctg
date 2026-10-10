@@ -21,8 +21,8 @@ export interface SpecContext {
 
 export const METRIC_LABEL: Record<Metric, string> = { trial_count: "Trials", enrollment_total: "Participants enrolled", enrollment_median: "Median enrollment" };
 export const METRIC_UNIT: Record<Metric, "trials" | "participants"> = { trial_count: "trials", enrollment_total: "participants", enrollment_median: "participants" };
-export const EDGE_LABEL: Record<EdgeKind, string> = { sponsor_drug: "Sponsor–drug", drug_drug: "Drug–drug", condition_drug: "Condition–drug", sponsor_condition: "Sponsor–condition", sponsor_collaborator: "Sponsor–collaborator" };
-/** A relationship in words, for the titler: "which sponsors test which drugs" titles better than "sponsor–drug pairs". */
+export const EDGE_LABEL: Record<EdgeKind, string> = { sponsor_drug: "Sponsor to drug", drug_drug: "Drug with drug", condition_drug: "Condition to drug", sponsor_condition: "Sponsor to condition", sponsor_collaborator: "Sponsor to collaborator" };
+/** A relationship in words, for the titler: "which sponsors test which drugs" titles better than "sponsor to drug pairs". */
 const EDGE_PHRASE: Record<EdgeKind, string> = {
   sponsor_drug: "which sponsors test which drugs", drug_drug: "which drugs are tested together in the same trials", condition_drug: "which drugs are tested for which conditions",
   sponsor_condition: "which sponsors study which conditions", sponsor_collaborator: "which lead sponsors work with which collaborators",
@@ -31,6 +31,8 @@ const METRIC_PHRASE: Record<Metric, string> = { trial_count: "the number of tria
 const fmt = (n: number) => n.toLocaleString("en-US");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const trials = (n: number) => `${fmt(n)} ${n === 1 ? "trial" : "trials"}`;
+/** "a", "a and b", "a, b and c". */
+const listed = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}` : (xs[0] ?? ""));
 /** What a study lacks when it has no value for a dimension: "1 trial without a phase". */
 const WITHOUT: Record<Dimension, string> = {
   phase: "a phase", status: "a status", sponsor_class: "a sponsor class", sponsor: "a lead sponsor", intervention_type: "an intervention",
@@ -95,8 +97,8 @@ export function planSummary(p: Plan): string {
   return `A ${chart} chart of ${parts.join(", ")}.`;
 }
 
-/** The trials left out for lack of a value, as a note ("1 trial without a phase is not shown.") and a subtitle part; null when none were. */
-export function notShown(p: Plan, agg: Aggregate): { note: string; subtitle: string } | null {
+/** The trials left out for lack of a value ("1 trial without a phase is not shown."), for the notes and the subtitle; null when none were. */
+export function notShown(p: Plan, agg: Aggregate): string | null {
   const parts: { n: number; what: string }[] = [];
   if (agg.kind === "buckets") {
     const m = agg.result.missing;
@@ -109,24 +111,34 @@ export function notShown(p: Plan, agg: Aggregate): { note: string; subtitle: str
   if (!parts.length) return null;
   const phrase = parts.map((x) => `${trials(x.n)} without ${x.what}`).join(" and ");
   const one = parts.length === 1 && parts[0]!.n === 1;
-  return { note: `${phrase} ${one ? "is" : "are"} not shown.`, subtitle: `${phrase} not shown` };
+  return `${phrase} ${one ? "is" : "are"} not shown.`;
 }
 
+/** "The 25 most recently started are shown.", or the one trial or link when there is one. */
+const shownCut = (n: number, one: string, many: string) => (n === 1 ? `The ${one} is shown.` : `The ${fmt(n)} ${many} are shown.`);
+
+/**
+ * The counts and caveats as sentences: the registry's total (per arm for a comparison) and how much of it was read, the filters, the
+ * counting rule, what is left out, and the data date. Never generated.
+ */
 export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
-  const perArm = ctx.arm_totals.length > 1 ? ctx.arm_totals.map((a) => `${cap(a.label)} ${fmt(a.total)}`).join(" · ") : null;
-  const parts = [`${perArm ?? fmt(ctx.total_count)} trials on ClinicalTrials.gov`];
-  if (ctx.truncated) parts.push(`based on the ${fmt(ctx.fetched)} most recently started`);
-  if (p.recruiting_only) parts.push("recruiting only");
-  if (p.phase) parts.push(`${PHASE_PHRASE[p.phase]} only`);
-  if (agg.kind === "buckets" && agg.result.multiValued && p.dimension) parts.push(`counted once per ${singular(DIMENSION_LABEL_PLURAL[p.dimension])}`);
-  if (agg.kind === "buckets" && agg.result.omitted > 0 && p.dimension) parts.push(`${fmt(agg.result.omitted)} more ${DIMENSION_LABEL_PLURAL[p.dimension]} not shown`);
+  const perArm = ctx.arm_totals.length > 1 ? listed(ctx.arm_totals.map((a) => `${cap(a.label)} ${fmt(a.total)}`)) : null;
+  const read = ctx.truncated ? `; the ${fmt(ctx.fetched)} most recently started were read` : "";
+  const sentences = [`${perArm ?? fmt(ctx.total_count)} trials on ClinicalTrials.gov${read}.`];
+  const only = [p.recruiting_only ? "recruiting" : "", p.phase ? PHASE_PHRASE[p.phase] : ""].filter(Boolean).join(" ");
+  if (only) sentences.push(`${cap(only)} trials only.`);
+  if (agg.kind === "buckets" && p.dimension) {
+    const r = agg.result; const plural = DIMENSION_LABEL_PLURAL[p.dimension];
+    if (r.multiValued) sentences.push(`Each trial is counted once per ${singular(plural)}.`);
+    if (r.omitted > 0) sentences.push(r.omitted === 1 ? `1 more ${singular(plural)} is not shown.` : `${fmt(r.omitted)} more ${plural} are not shown.`);
+  }
   const missing = notShown(p, agg);
-  if (missing) parts.push(missing.subtitle);
-  if (agg.kind === "points" && agg.dropped > 0) parts.push(`${fmt(agg.points.length)} most recent trials shown`);
-  if (agg.kind === "rows" && agg.studies.length < ctx.total_count) parts.push(`${fmt(agg.studies.length)} most recently started shown`);
-  if (agg.kind === "graph" && agg.prunedEdges > 0) parts.push(`${fmt(agg.edges.length)} strongest links shown`);
-  parts.push(`data as of ${ctx.data_timestamp.slice(0, 10)}`);
-  return parts.join(" · ");
+  if (missing) sentences.push(missing);
+  if (agg.kind === "points" && agg.dropped > 0) sentences.push(shownCut(agg.points.length, "most recent trial", "most recent trials"));
+  if (agg.kind === "rows" && agg.studies.length < ctx.total_count) sentences.push(shownCut(agg.studies.length, "most recently started trial", "most recently started"));
+  if (agg.kind === "graph" && agg.prunedEdges > 0) sentences.push(shownCut(agg.edges.length, "strongest link", "strongest links"));
+  sentences.push(`Data as of ${ctx.data_timestamp.slice(0, 10)}.`);
+  return sentences.join(" ");
 }
 
 const yAxis = (m: Metric) => ({ field: m, type: "quantitative" as const, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] });
