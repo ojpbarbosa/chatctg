@@ -54,12 +54,6 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     ...(request.trial_phase !== undefined ? { trial_phase: request.trial_phase } : {}), ...(request.trial_status !== undefined ? { trial_status: request.trial_status } : {}),
     ...(request.start_year !== undefined ? { start_year: request.start_year } : {}), ...(request.end_year !== undefined ? { end_year: request.end_year } : {}),
   };
-    // TODO: use chart_named as a suggestion. if they named a type that also happens to match
-    // with jev's suggestion, show a little banner highlighting that they have a great taste
-    // for visualizations and then show a suggested graphic with jev's 2nd option for chart. 
-    // if the answer diverges, then show de suggestion with a little banner saying that's the 
-    // best way we think that information can be shown.
-    // havent named, then behave normally and show just the highest rated one.
   const [judged, extracted] = await Promise.all([
     deps.judge.ask({ state: interpretationState(request.query, provided), questions: interpretationQuestions(), signal }),
     deps.extract(request.query, today(), signal),

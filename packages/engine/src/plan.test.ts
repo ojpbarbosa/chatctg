@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { QueryRequest } from "@chatctg/contracts";
+import { CHART_TYPES, QueryRequest, type ChartType } from "@chatctg/contracts";
 import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@chatctg/judgment";
 import { allowedCharts, armFilters, defaultChart, plan, type Entities } from "./plan";
 
@@ -13,6 +13,15 @@ async function answers(script: Record<string, Scripted>): Promise<Interpretation
   return r.answers;
 }
 const req = (extra: Record<string, unknown> = {}) => QueryRequest.parse({ query: "q", ...extra });
+/** Jev's chart distribution: the named masses, the rest spread evenly over the other charts. */
+const chartMass = (mass: Partial<Record<ChartType, number>>): Record<ChartType, number> => {
+  const named = Object.values(mass).reduce((x, y) => x + y, 0); const others = CHART_TYPES.filter((c) => !(c in mass));
+  return Object.fromEntries(CHART_TYPES.map((c) => [c, mass[c] ?? (1 - named) / others.length])) as Record<ChartType, number>;
+};
+async function withChartMass(script: Record<string, Scripted>, mass: Partial<Record<ChartType, number>>): Promise<InterpretationAnswers> {
+  const a = await answers(script);
+  return { ...a, chart: { ...a.chart, probabilities: chartMass(mass) } };
+}
 const okPlan = (r: ReturnType<typeof plan>) => { if (!r.ok) throw new Error(r.message); return r.plan; };
 
 describe("plan: scope and intent", () => {
@@ -176,7 +185,7 @@ describe("chart matrix", () => {
     const named = okPlan(plan({ answers: await answers({ chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models }));
     expect(named.chart).toBe("scatter"); expect(named.interpretation.chart.explicit).toBe(true);
     const ranking = okPlan(plan({ answers: await answers({ intent: { choice: "ranking" }, dimension: { choice: "sponsor" }, chart: { choice: "scatter" }, chart_named: { noul: 0.2 } }), entities: none, request: req(), models }));
-    expect(ranking.interpretation.chart.reason).toBe("scatter cannot render a ranking over sponsor; using bar");
+    expect(ranking.interpretation.chart.reason).toBe("scatter cannot render a ranking over sponsor; the next most likely chart that can, bar, is used");
   });
   it("a lookup is a table unless a scatter is asked for", async () => {
     const asked = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }), entities: none, request: req(), models }));
@@ -187,6 +196,32 @@ describe("chart matrix", () => {
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "table" } }), entities: none, request: req(), models })).chart).toBe("table");
     expect(allowedCharts("lookup", null, null, false)).toEqual(["table"]);
     expect(allowedCharts("lookup", null, null, true).sort()).toEqual(["scatter", "table"]);
+  });
+  it("falls back to the allowed chart Jev rates next most likely", async () => {
+    // A distribution over enrollment defaults to a histogram and may be a bar; a line cannot render it.
+    const a = await withChartMass({ dimension: { choice: "enrollment" }, chart: { choice: "line" } }, { line: 0.6, bar: 0.25, histogram: 0.1 });
+    const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
+    expect(p.chart).toBe("bar");
+    expect(p.interpretation.chart).toEqual({ chosen: "line", applied: "bar", explicit: false, reason: "line cannot render a distribution over enrollment; the next most likely chart that can, bar, is used" });
+  });
+  it("falls back to the default when the allowed charts tie or have no mass", async () => {
+    const reason = "line cannot render a distribution over enrollment; using histogram";
+    const flat = okPlan(plan({ answers: await answers({ dimension: { choice: "enrollment" }, chart: { choice: "line", confidence: 0 } }), entities: none, request: req(), models }));
+    expect(flat.chart).toBe("histogram"); expect(flat.interpretation.chart.reason).toBe(reason);
+    const tie = okPlan(plan({ answers: await withChartMass({ dimension: { choice: "enrollment" }, chart: { choice: "line" } }, { line: 0.6, bar: 0.2, histogram: 0.2 }), entities: none, request: req(), models }));
+    expect(tie.chart).toBe("histogram"); expect(tie.interpretation.chart.reason).toBe(reason);
+    const zero = okPlan(plan({ answers: await withChartMass({ dimension: { choice: "enrollment" }, chart: { choice: "line" } }, { line: 1, bar: 0, histogram: 0 }), entities: none, request: req(), models }));
+    expect(zero.chart).toBe("histogram"); expect(zero.interpretation.chart.reason).toBe(reason);
+  });
+  it("never falls back to a chart that needs an explicit ask", async () => {
+    // A line was named, so the question is explicit, but it asked for a line, not a scatter.
+    const named = okPlan(plan({ answers: await withChartMass({ chart: { choice: "line" }, chart_named: { noul: 0.9 } }, { line: 0.6, scatter: 0.3, bar: 0.05 }), entities: none, request: req(), models }));
+    expect(named.chart).toBe("bar");
+    const geo = okPlan(plan({ answers: await withChartMass({ intent: { choice: "geographic" }, chart: { choice: "line" } }, { line: 0.6, bar: 0.3, map: 0.05 }), entities: none, request: req(), models }));
+    expect(geo.chart).toBe("map");
+    // An unasked scatter falls back the same way, keeping its own reason.
+    const split = okPlan(plan({ answers: await withChartMass({ dimension: { choice: "phase" }, secondary_dimension: { choice: "sponsor_class" }, chart: { choice: "scatter" } }, { scatter: 0.5, grouped_bar: 0.3, stacked_bar: 0.1 }), entities: none, request: req(), models }));
+    expect(split.interpretation.chart).toEqual({ chosen: "scatter", applied: "grouped_bar", explicit: false, reason: "scatter plots one point per trial and is only used when asked for; using grouped_bar" });
   });
   it("a request chart counts as explicit", async () => {
     expect(okPlan(plan({ answers: await answers({}), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");

@@ -68,6 +68,33 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
   return [...set];
 }
 
+/** The allowed chart Jev gave the most probability to; null on a tie for the top, or when none of them has any. */
+export function likeliestAllowed(allowed: ChartType[], probabilities: Partial<Record<ChartType, number>>): ChartType | null {
+  const ranked = allowed.map((chart) => ({ chart, p: probabilities[chart] ?? 0 })).sort((x, y) => y.p - x.p);
+  const [first, second] = ranked;
+  if (!first || first.p <= 0 || (second && second.p === first.p)) return null;
+  return first.chart;
+}
+
+/**
+ * Jev's chart (or the request's) when the shape can draw it. Otherwise the allowed chart Jev rates most likely, else the intent's
+ * default. The fallback is drawn from the charts allowed without an explicit ask, so it is never a scatter or a geographic bar: the
+ * question asked for the chart it named, not for those.
+ */
+export function chooseChart(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>): { applied: ChartType; reason: string | null } {
+  const drawable = allowedCharts(intent, dimension, secondary, true).includes(chosen);
+  const unasked = allowedCharts(intent, dimension, secondary, false);
+  if (drawable && (explicit || unasked.includes(chosen))) return { applied: chosen, reason: null };
+  const likeliest = likeliestAllowed(unasked, probabilities);
+  const applied = likeliest ?? defaultChart(intent, dimension, secondary);
+  const question = intent.replace("_", " ");
+  if (drawable) {
+    return { applied, reason: chosen === "scatter" ? `scatter plots one point per trial and is only used when asked for; using ${applied}` : `${chosen} is only used for a ${question} question when asked for; using ${applied}` };
+  }
+  const what = `${question}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}`;
+  return { applied, reason: likeliest ? `${chosen} cannot render a ${what}; the next most likely chart that can, ${applied}, is used` : `${chosen} cannot render a ${what}; using ${applied}` };
+}
+
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export function plan(input: PlanInput): PlanResult {
@@ -133,19 +160,10 @@ export function plan(input: PlanInput): PlanResult {
     else if ((intent === "distribution" || intent === "comparison") && dimension && OPEN_DIMENSIONS.includes(dimension)) limit = DEFAULT_LIMITS.open_distribution;
   }
 
-  // 5. Chart: Jev's choice, validated against the shape. The shape is checked as if the chart were explicit, so a chart the shape
-  // could draw but that is only used when asked for (a scatter, a geographic bar) gets its own reason.
+  // 5. Chart: Jev's choice, validated against the shape, with Jev's next most likely allowed chart as the fallback.
   const chosen: ChartType = request.chart ?? a.chart.choice;
   const explicit = request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
-  let applied = chosen; let reason: string | null = null;
-  if (!allowedCharts(intent, dimension, secondary, true).includes(chosen)) {
-    applied = defaultChart(intent, dimension, secondary);
-    reason = `${chosen} cannot render a ${intent.replace("_", " ")}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}; using ${applied}`;
-  } else if (!explicit && !allowedCharts(intent, dimension, secondary, false).includes(chosen)) {
-    applied = defaultChart(intent, dimension, secondary);
-    reason = chosen === "scatter" ? "scatter plots one point per trial and is only used when asked for; using " + applied
-      : `${chosen} is only used for a ${intent.replace("_", " ")} question when asked for; using ${applied}`;
-  }
+  let { applied, reason } = chooseChart(intent, dimension, secondary, chosen, explicit, a.chart.probabilities);
   // A bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes.
   if (secondary && applied === "bar") {
     applied = "stacked_bar";

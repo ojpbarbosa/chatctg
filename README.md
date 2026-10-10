@@ -311,7 +311,7 @@ Before the chart is chosen, the planner makes the answers consistent with each o
 
 ### Chart compatibility
 
-Jev's chart (or the request's) is applied when the matrix allows it for the intent and dimensions. Otherwise the default applies, and `meta.interpretation.chart` records `chosen`, `applied`, `explicit` and `reason`.
+Jev's chart (or the request's) is applied when the matrix allows it for the intent and dimensions. Otherwise the allowed chart Jev rates next most likely applies (the default on a tie or when none has any probability), and `meta.interpretation.chart` records `chosen`, `applied`, `explicit` and `reason`.
 
 | Intent | Data shape | Default | Also allowed |
 |---|---|---|---|
