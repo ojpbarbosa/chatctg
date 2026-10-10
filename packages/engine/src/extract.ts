@@ -20,7 +20,7 @@ export const EXTRACTION_INSTRUCTIONS = `You extract the entities a question abou
 - conditions: diseases or conditions exactly as written.
 - sponsors: companies, institutions or agencies named as sponsors or collaborators.
 - countries: countries or regions named as trial locations.
-- start_year and end_year: a calendar window if the question gives one. "since 2015" means start_year 2015. "last five years" means start_year = this year minus 5. "before 2020" means end_year 2019. "in 2021" means both 2021. Otherwise null.
+- start_year and end_year: a calendar window if the question gives one. "since 2015" means start_year 2015 and end_year null; never set end_year to today's year unless the question names an end. "last five years" means start_year = this year minus 5. "before 2020" means end_year 2019. "in 2021" means both 2021. Otherwise null.
 - limit: the N in "top N", "N most", "first N"; otherwise null.
 Never infer a condition from a drug or a drug from a condition. Empty lists are correct when nothing is named.
 Return the name alone: 'melanoma', not 'melanoma trials'.

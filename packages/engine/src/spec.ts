@@ -39,7 +39,12 @@ const WITHOUT: Record<Dimension, string> = {
   drug: "a drug", condition: "a condition", country: "a location country", start_year: "a start date", enrollment: "an enrollment count",
   study_type: "a study type", sex: "a sex", age_group: "an age group", none: "a value",
 };
-const singular = (plural: string) => plural.replace(/ies$/, "y").replace(/uses$/, "us").replace(/s$/, "");
+const SINGULAR_ENDINGS: [string, string][] = [["ies", "y"], ["uses", "us"], ["sses", "ss"], ["xes", "x"], ["s", ""]];
+/** "countries" to "country", "statuses" to "status", "sponsor classes" to "sponsor class", "sexes" to "sex", "phases" to "phase": the first ending that matches. */
+export const singular = (plural: string): string => {
+  const hit = SINGULAR_ENDINGS.find(([end]) => plural.endsWith(end));
+  return hit ? plural.slice(0, -hit[0].length) + hit[1] : plural;
+};
 /** The one place a row is assembled: cells plus the two fields every row carries (the contract's index signature cannot express the mix). */
 const row = (cells: Record<string, string | number | null>, study_count: number, citations: Citation[]): DataRow => ({ ...cells, study_count, citations }) as DataRow;
 

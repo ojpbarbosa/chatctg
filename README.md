@@ -230,7 +230,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
     "query": "How are melanoma trials distributed across phases?",
     "interpretation": {
       "intent": { "value": "distribution", "p": 1, "confidence": 1, "alternatives": [] },
-      "dimension": { "value": "phase", "p": 1 },
+      "dimension": { "value": "phase", "p": 0.99 },
       "secondary_dimension": null,
       "chart": { "chosen": "bar", "applied": "bar", "explicit": false, "reason": null },
       "metric": "trial_count", "granularity": null, "edge_kind": null,
@@ -252,7 +252,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
                   "studies_without_value": 531, "omitted_categories": 0 },
     "units": { "y": "trials" },
     "granularity": null,
-    "timing": { "jev_ms": 216, "judged_ms": 216, "extract_ms": 858, "fetch_ms": 2268, "title_ms": 1016, "aggregate_ms": 13, "total_ms": 3142 },
+    "timing": { "jev_ms": 423, "judged_ms": 423, "extract_ms": 1013, "fetch_ms": 2459, "title_ms": 821, "aggregate_ms": 10, "total_ms": 3484 },
     "notes": ["A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
               "531 trials without a phase are not shown."],
     "warnings": ["Only the 3,000 most recently started of 3,775 trials were read; counts are over that sample, the total is exact."],
@@ -436,7 +436,7 @@ Both missed "Show me a table of phase 2 trials for migraine started in 2023": th
 | `apps/api` | 9 | the routes, the snake_case `/health` body, 400 with issues, 422, the SSE event order on success and on failure, and the SSE headers flushed on open |
 | `apps/web` | 23 | each chart renders from a spec in jsdom (the scatter on a log axis with decade ticks, the network inside its frame with only its larger nodes labelled), a table row click picks its citations, the palette, the stream parser (including events split across chunks, and a stream that closes without a result), the history cap |
 
-Two first pages (50 studies each) recorded from the live registry on 2026-10-09 are kept in `packages/ctgov/fixtures/`, each with the URL that produced it (`npm run fixtures:record`). `packages/engine/src/fixtures.test.ts` normalizes both and runs `runQuery` over them with the fake clients: a phase distribution, a sponsor–drug network and a country map, each validated against the contract with non-empty, cited data, plus a drug distribution that exercises the fallback to registered names for the trials the registry mapped to no MeSH term. `packages/ctgov/src/countries.test.ts` checks that every country spelling in the two pages maps to an ISO code (they include "Turkey (Türkiye)" and "Moldova").
+Two first pages (50 studies each) recorded from the live registry on 2026-10-09 are kept in `packages/ctgov/fixtures/`, each with the URL that produced it (`npm run fixtures:record`). `packages/engine/src/fixtures.test.ts` normalizes both and runs `runQuery` over them with the fake clients: a phase distribution, a sponsor to drug network and a country map, each validated against the contract with non-empty, cited data, plus a drug distribution that exercises the fallback to registered names for the trials the registry mapped to no MeSH term. `packages/ctgov/src/countries.test.ts` checks that every country spelling in the two pages maps to an ISO code (they include "Turkey (Türkiye)" and "Moldova").
 
 Cases pinned by tests:
 

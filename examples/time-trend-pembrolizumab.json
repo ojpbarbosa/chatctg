@@ -7,8 +7,8 @@
   "response": {
     "visualization": {
       "type": "line",
-      "title": "Pembrolizumab trials per year since 2015 to 2026",
-      "subtitle": "2,902 trials on ClinicalTrials.gov. Data as of 2026-10-09.",
+      "title": "Pembrolizumab trials per year since 2015",
+      "subtitle": "2,909 trials on ClinicalTrials.gov. Data as of 2026-10-09.",
       "encoding": {
         "x": {
           "field": "period",
@@ -467,6 +467,43 @@
           ],
           "period": "2026",
           "trial_count": 223
+        },
+        {
+          "study_count": 7,
+          "citations": [
+            {
+              "nct_id": "NCT07691645",
+              "title": "Shuganhuazhuo Formula for Advanced Hepatocellular Carcinoma With Damp-Heat Syndrome",
+              "field": "protocolSection.statusModule.startDateStruct.date",
+              "excerpt": "2027-09-01"
+            },
+            {
+              "nct_id": "NCT06093425",
+              "title": "Combination of Osemitamab (TST001), Pembrolizumab and Chemotherapy as First-line Therapy in Advanced or Metastatic GC/GEJ Adenocarcinoma",
+              "field": "protocolSection.statusModule.startDateStruct.date",
+              "excerpt": "2027-06-30"
+            },
+            {
+              "nct_id": "NCT04266730",
+              "title": "Trial of a Personalized and Adaptive Neoantigen Dose-Adjusted Vaccine Concurrently With Pembrolizumab",
+              "field": "protocolSection.statusModule.startDateStruct.date",
+              "excerpt": "2027-05-20"
+            },
+            {
+              "nct_id": "NCT07843550",
+              "title": "A Phase 1/2 Trial Of Larotrectinib And Pembrolizumab In Patients With Solid Tumors Previously Treated With Immune Checkpoint Inhibitor Monotherapy",
+              "field": "protocolSection.statusModule.startDateStruct.date",
+              "excerpt": "2027-03-01"
+            },
+            {
+              "nct_id": "NCT07689240",
+              "title": "Testing the Investigational Medication Pembrolizumab After Kidney Removal for Patients With Non-Clear Cell Renal Cell Carcinoma",
+              "field": "protocolSection.statusModule.startDateStruct.date",
+              "excerpt": "2027-02-10"
+            }
+          ],
+          "period": "2027",
+          "trial_count": 7
         }
       ]
     },
@@ -503,7 +540,7 @@
         },
         "time_window": {
           "start_year": 2015,
-          "end_year": 2026
+          "end_year": null
         },
         "limit": null,
         "recruiting_only": false,
@@ -527,7 +564,7 @@
           "label": "Pembrolizumab",
           "filters": {
             "query.intr": "\"Pembrolizumab\"",
-            "filter.advanced": "AREA[StartDate]RANGE[2015-01-01,2026-12-31]"
+            "filter.advanced": "AREA[StartDate]RANGE[2015-01-01,MAX]"
           }
         }
       ],
@@ -537,25 +574,25 @@
         "data_timestamp": "2026-10-09T09:00:05",
         "requests": [
           {
-            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2C2026-12-31%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&countTotal=true&sort=StartDate%3Adesc",
-            "total_count": 2902,
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2CMAX%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&countTotal=true&sort=StartDate%3Adesc",
+            "total_count": 2909,
             "fetched": 1000
           },
           {
-            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2C2026-12-31%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuY_an3fwfmj6SuP08FCfCFPXQ9NVL0CI&sort=StartDate%3Adesc",
-            "total_count": 2902,
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2CMAX%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuY_an1fIZnj6SuP08FCfCFfTS9dFL0yI&sort=StartDate%3Adesc",
+            "total_count": 2909,
             "fetched": 1000
           },
           {
-            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2C2026-12-31%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuYPSm2vAelD6SuP08FCfCF_TR8NFM0yI&sort=StartDate%3Adesc",
-            "total_count": 2902,
-            "fetched": 902
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.intr=%22Pembrolizumab%22&filter.advanced=AREA%5BStartDate%5DRANGE%5B2015-01-01%2CMAX%5D&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuYPSh2PYYmD6SuP08FCfCFPPX9dtK0yI&sort=StartDate%3Adesc",
+            "total_count": 2909,
+            "fetched": 909
           }
         ]
       },
       "coverage": {
-        "total_count": 2902,
-        "fetched_count": 2902,
+        "total_count": 2909,
+        "fetched_count": 2909,
         "truncated": false,
         "sorted_by": "StartDate:desc",
         "studies_without_value": 0,
@@ -566,13 +603,13 @@
       },
       "granularity": "year",
       "timing": {
-        "jev_ms": 420,
-        "judged_ms": 420,
-        "extract_ms": 988,
-        "fetch_ms": 3106,
-        "title_ms": 832,
-        "aggregate_ms": 6,
-        "total_ms": 4274
+        "jev_ms": 618,
+        "judged_ms": 619,
+        "extract_ms": 1575,
+        "fetch_ms": 3101,
+        "title_ms": 870,
+        "aggregate_ms": 7,
+        "total_ms": 4850
       },
       "notes": [],
       "warnings": [],

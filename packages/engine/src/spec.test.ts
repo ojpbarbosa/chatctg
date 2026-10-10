@@ -3,7 +3,7 @@ import { Visualization } from "@chatctg/contracts";
 import { bucketize, mergeArms } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";
-import { buildVisualization, notShown, planSummary, subtitle, templateTitle, type Aggregate } from "./spec";
+import { buildVisualization, notShown, planSummary, singular, subtitle, templateTitle, type Aggregate } from "./spec";
 import type { Plan } from "./plan";
 import { SAMPLE } from "./test-studies";
 
@@ -52,6 +52,10 @@ describe("titles", () => {
     expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Recruiting trials only. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
     const bySponsor: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor_class", metric: "trial_count" }) };
     expect(subtitle(base({ dimension: "sponsor_class", phase: "PHASE3" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov. Phase 3 trials only. Data as of 2026-10-08.");
+  });
+  it("makes a dimension's plural label singular", () => {
+    expect(["phases", "statuses", "sponsor classes", "countries", "sexes", "age groups", "enrollment sizes"].map(singular))
+      .toEqual(["phase", "status", "sponsor class", "country", "sex", "age group", "enrollment size"]);
   });
   it("states the other cuts as sentences", () => {
     const bySponsor: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor", metric: "trial_count", limit: 1 }) };

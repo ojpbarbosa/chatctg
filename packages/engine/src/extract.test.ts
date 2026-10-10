@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { openAiExtractor, parseEntities } from "./extract";
+import { EXTRACTION_INSTRUCTIONS, openAiExtractor, parseEntities } from "./extract";
 import { openAiTitler } from "./title";
 
 const responsesBody = (text: string) => JSON.stringify({ id: "resp_1", status: "completed", output: [{ type: "message", content: [{ type: "output_text", text }] }], usage: { input_tokens: 10, output_tokens: 5 } });
@@ -19,6 +19,12 @@ describe("parseEntities", () => {
     expect(parseEntities(JSON.stringify({ drugs: "x" }))).toBeNull();
     expect(parseEntities(JSON.stringify({ drugs: [], conditions: [], sponsors: [], countries: [], start_year: 1200, end_year: null, limit: null }))).toBeNull();
     expect(parseEntities(JSON.stringify({ drugs: [], conditions: [], sponsors: [], countries: [], start_year: null, end_year: null, limit: 0 }))).toBeNull();
+  });
+});
+
+describe("extraction instructions", () => {
+  it("leave the end of an open window empty", () => {
+    expect(EXTRACTION_INSTRUCTIONS).toContain(`"since 2015" means start_year 2015 and end_year null; never set end_year to today's year unless the question names an end.`);
   });
 });
 
@@ -50,6 +56,12 @@ describe("openAiExtractor", () => {
 describe("openAiTitler", () => {
   it("returns a trimmed title without quotes or a final period", async () => {
     expect(await openAiTitler({ OPENAI_API_KEY: "k" }, async () => ok('"Pembrolizumab trials per year since 2015."'))("summary")).toMatchObject({ title: "Pembrolizumab trials per year since 2015" });
+  });
+  it("turns a dash or a middot into a comma, and asks for none", async () => {
+    let body: Record<string, unknown> = {};
+    const titler = openAiTitler({ OPENAI_API_KEY: "k" }, async (_u, init) => { body = JSON.parse(init!.body as string); return ok("Pembrolizumab trials \u2014 per year since 2015 \u00b7 by phase \u2013 2026"); });
+    expect((await titler("summary")).title).toBe("Pembrolizumab trials, per year since 2015, by phase, 2026");
+    expect(JSON.stringify(body.input)).toContain("No dashes, middots or colons.");
   });
   it("leaves room for reasoning tokens in its output cap", async () => {
     let body: Record<string, unknown> = {};
