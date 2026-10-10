@@ -74,7 +74,7 @@ export function plan(input: PlanInput): PlanResult {
   const { answers: a, request, models } = input;
   const notes: string[] = [];
   // Request fields are decisions already taken: they replace what was extracted, field by field.
-  const provided_fields = (["drug_name", "condition", "sponsor", "country", "trial_phase", "status", "start_year", "end_year", "intent", "chart"] as const).filter((k) => request[k] !== undefined) as string[];
+  const provided_fields = (["drug_name", "condition", "sponsor", "country", "trial_phase", "trial_status", "start_year", "end_year", "intent", "chart"] as const).filter((k) => request[k] !== undefined) as string[];
   const entities: Entities = {
     ...input.entities,
     ...(request.drug_name !== undefined ? { drugs: asList(request.drug_name) } : {}),
@@ -104,7 +104,7 @@ export function plan(input: PlanInput): PlanResult {
   const metric: Metric = intent === "network" || intent === "lookup" || intent === "count" ? "trial_count" : a.metric.choice;
   const granularity: Granularity | null = dimension === "start_year" ? a.granularity.choice : null;
   const edge_kind: EdgeKind | null = intent === "network" ? a.edge_kind.choice : null;
-  const recruiting_only = request.status === "RECRUITING" || (request.status === undefined && a.recruiting_only.noul >= THRESHOLDS.recruiting_only);
+  const recruiting_only = request.trial_status === "RECRUITING" || (request.trial_status === undefined && a.recruiting_only.noul >= THRESHOLDS.recruiting_only);
   const combination: boolean | null = entities.drugs.length >= 2 && intent !== "comparison" ? a.combination.noul >= THRESHOLDS.combination : null;
 
   // 3. Arms: who each arm is about. Their registry queries are built in step 6, once the phase filter is known.
@@ -175,7 +175,7 @@ export function plan(input: PlanInput): PlanResult {
     if (e.conditions.length) q.cond = essieTerms(e.conditions, "OR");
     if (e.sponsors.length) q.spons = essieTerms(e.sponsors, "OR");
     if (e.countries.length) q.locn = essieTerms(e.countries, "OR");
-    const status = request.status ?? (recruiting_only ? "RECRUITING" : undefined);
+    const status = request.trial_status ?? (recruiting_only ? "RECRUITING" : undefined);
     if (status) q.overallStatus = status;
     const advanced = essieAdvanced({ ...(phase ? { phase } : {}), ...(e.start_year !== null ? { startYear: e.start_year } : {}), ...(e.end_year !== null ? { endYear: e.end_year } : {}) });
     if (advanced) q.advanced = advanced;

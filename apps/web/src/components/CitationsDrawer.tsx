@@ -7,7 +7,7 @@ export function CitationsDrawer({ label, citations, onClose }: { label: string; 
         <h3>{label} · {citations.length} cited trial{citations.length === 1 ? "" : "s"}</h3>
         <button className="btn btn-ghost" onClick={onClose}>Close</button>
       </div>
-      {citations.length === 0 && <p className="sub">No citations were requested for this datum.</p>}
+      {citations.length === 0 && <p className="sub">No citations were requested for this data point.</p>}
       {citations.map((c) => (
         <div className="cite" key={c.nct_id + c.excerpt}>
           <a href={`https://clinicaltrials.gov/study/${c.nct_id}`} target="_blank" rel="noreferrer" className="num">{c.nct_id}</a>

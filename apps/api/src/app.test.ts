@@ -23,6 +23,15 @@ describe("API", () => {
     const r = await app().inject({ method: "POST", url: "/query", payload: { query: "", nope: 1 } });
     expect(r.statusCode).toBe(400); expect(r.json().error.code).toBe("invalid_request"); expect(Array.isArray(r.json().error.details)).toBe(true);
   });
+  it("POST /query takes trial_status and citations_per_point, and rejects the old names", async () => {
+    const r = await app().inject({ method: "POST", url: "/query", payload: { query: "q", trial_status: "RECRUITING", citations_per_point: 1 } });
+    expect(r.statusCode).toBe(200); expect(r.json().meta.arms[0].filters["filter.overallStatus"]).toBe("RECRUITING");
+    expect(r.json().visualization.data.every((d: { citations: unknown[] }) => d.citations.length <= 1)).toBe(true);
+    for (const old of [{ status: "RECRUITING" }, { citations_per_datum: 1 }]) {
+      const bad = await app().inject({ method: "POST", url: "/query", payload: { query: "q", ...old } });
+      expect(bad.statusCode).toBe(400);
+    }
+  });
   it("POST /query maps not answerable to 422", async () => {
     const r = await buildApp(fakeDeps({ in_scope: { noul: 0.1 } }, {})).inject({ method: "POST", url: "/query", payload: { query: "weather" } });
     expect(r.statusCode).toBe(422); expect(r.json().error.code).toBe("not_answerable");

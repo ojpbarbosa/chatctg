@@ -85,9 +85,9 @@ describe("plan: arms and filters", () => {
     expect(p.intent).toBe("distribution"); expect(p.arms).toHaveLength(1);
   });
   it("request fields become filters", async () => {
-    const p = okPlan(plan({ answers: await answers({}), entities: none, request: req({ trial_phase: "PHASE3", status: "COMPLETED", end_year: 2020 }), models }));
+    const p = okPlan(plan({ answers: await answers({}), entities: none, request: req({ trial_phase: "PHASE3", trial_status: "COMPLETED", end_year: 2020 }), models }));
     expect(p.arms[0]!.query).toEqual({ overallStatus: "COMPLETED", advanced: "AREA[Phase]PHASE3 AND AREA[StartDate]RANGE[MIN,2020-12-31]" });
-    expect(p.interpretation.provided_fields).toEqual(["trial_phase", "status", "end_year"]);
+    expect(p.interpretation.provided_fields).toEqual(["trial_phase", "trial_status", "end_year"]);
   });
   it("a phase Jev found named becomes an AREA[Phase] filter on every arm", async () => {
     const p = okPlan(plan({ answers: await answers({ intent: { choice: "count" }, phase_filter: { choice: "PHASE3" }, recruiting_only: { noul: 0.9 } }), entities: { ...none, conditions: ["psoriasis"] }, request: req(), models }));

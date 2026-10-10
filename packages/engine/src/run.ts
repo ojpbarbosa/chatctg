@@ -51,7 +51,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const provided: ProvidedFields = {
     ...(request.drug_name !== undefined ? { drugs: asList(request.drug_name) } : {}), ...(request.condition !== undefined ? { conditions: asList(request.condition) } : {}),
     ...(request.sponsor !== undefined ? { sponsors: asList(request.sponsor) } : {}), ...(request.country !== undefined ? { countries: asList(request.country) } : {}),
-    ...(request.trial_phase !== undefined ? { trial_phase: request.trial_phase } : {}), ...(request.status !== undefined ? { status: request.status } : {}),
+    ...(request.trial_phase !== undefined ? { trial_phase: request.trial_phase } : {}), ...(request.trial_status !== undefined ? { trial_status: request.trial_status } : {}),
     ...(request.start_year !== undefined ? { start_year: request.start_year } : {}), ...(request.end_year !== undefined ? { end_year: request.end_year } : {}),
   };
     // TODO: use chart_named as a suggestion. if they named a type that also happens to match
@@ -92,7 +92,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const overTime = p.dimension === "start_year" && p.chart !== "scatter";
   let yearly: YearCounts | null = null;
   if (overTime && anyTruncated && p.granularity === "year" && p.secondary === null && p.metric === "trial_count") {
-    const counted = await countPerYear(p, deps.ctgov, request.citations_per_datum, Number(today().slice(0, 4)), signal);
+    const counted = await countPerYear(p, deps.ctgov, request.citations_per_point, Number(today().slice(0, 4)), signal);
     if (signal.aborted) return error(504, "timeout", "The request timed out while fetching from ClinicalTrials.gov");
     if (!counted.ok) return upstream("ctgov", counted.reason, counted.detail);
     yearly = counted;
@@ -132,7 +132,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const isCount = p.chart === "single_value"; const isTable = p.chart === "table";
   const truncated = !isCount && !isTable && !yearly && anyTruncated;
   const arm_totals = results.map((r, i) => ({ label: p.arms[i]!.label, total: r.totalCount }));
-  const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_datum: request.citations_per_datum, arm_totals };
+  const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_point: request.citations_per_point, arm_totals };
   const visualization = buildVisualization(p, agg, ctx, title.title);
   const notes = [...p.notes];
   const warnings: string[] = [];
@@ -157,7 +157,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   if (truncated) warnings.push(`Only the ${fmt(fetched_count)} most recently started of ${fmt(total_count)} trials were read; counts are over that sample, the total is exact.`);
   if (incomplete) warnings.push(`Periods before ${incomplete.from} are incomplete because only the ${fmt(incomplete.read)} most recently started trials were read; they are not shown.`);
   if (yearly) {
-    notes.push(`Counts per year are exact (one registry count per year); citations show the ${fmt(request.citations_per_datum)} most recent trials of each year.`);
+    notes.push(`Counts per year are exact (one registry count per year); citations show the ${fmt(request.citations_per_point)} most recent trials of each year.`);
     if (yearly.cutBefore !== null) warnings.push(`Years before ${yearly.cutBefore} are not shown.`);
   }
   if (p.interpretation.chart.reason) notes.push(p.interpretation.chart.reason);

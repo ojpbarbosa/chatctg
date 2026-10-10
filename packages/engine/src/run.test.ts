@@ -3,7 +3,7 @@ import { QueryRequest, QueryResponse } from "@chatctg/contracts";
 import { fakeDeps, runQuery, type QueryEvent } from "./run";
 import { SAMPLE, study } from "./test-studies";
 
-const req = (q: string, extra: Record<string, unknown> = {}) => QueryRequest.parse({ query: q, citations_per_datum: 2, ...extra });
+const req = (q: string, extra: Record<string, unknown> = {}) => QueryRequest.parse({ query: q, citations_per_point: 2, ...extra });
 const okBody = (r: Awaited<ReturnType<typeof runQuery>>) => { if (!r.ok) throw new Error(JSON.stringify(r.body)); const v = QueryResponse.safeParse(r.body); if (!v.success) throw new Error(JSON.stringify(v.error.issues)); return v.data; };
 
 describe("runQuery", () => {
@@ -34,7 +34,7 @@ describe("runQuery", () => {
     // SAMPLE's eleven dated studies stand for 3,000 trials, 250 each: 2018 1, 2019 2, 2020 1, 2021 2, 2022 2, 2023 2, 2024 1.
     const trend = { intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "line" } };
     const deps = fakeDeps(trend, { conditions: ["melanoma"] }, SAMPLE, 3000);
-    const body = okBody(await runQuery(req("Melanoma trials per year", { citations_per_datum: 1 }), deps));
+    const body = okBody(await runQuery(req("Melanoma trials per year", { citations_per_point: 1 }), deps));
     if (body.visualization?.type !== "line") throw new Error(body.visualization?.type);
     expect(body.visualization.data.map((r) => [r.period, r.trial_count, r.study_count, r.citations.length])).toEqual([
       ["2018", 250, 250, 1], ["2019", 500, 500, 1], ["2020", 250, 250, 1], ["2021", 500, 500, 1], ["2022", 500, 500, 1], ["2023", 500, 500, 1], ["2024", 250, 250, 1],
@@ -167,10 +167,11 @@ describe("runQuery", () => {
   });
   it("request fields override extraction and show in provided_fields", async () => {
     const deps = fakeDeps({}, { drugs: ["extracted"] });
-    const body = okBody(await runQuery(req("q", { drug_name: "given", start_year: 2015 }), deps));
+    const body = okBody(await runQuery(req("q", { drug_name: "given", start_year: 2015, trial_status: "COMPLETED" }), deps));
     expect(body.meta.interpretation.entities.drugs).toEqual(["given"]);
-    expect(body.meta.interpretation.provided_fields).toEqual(["drug_name", "start_year"]);
-    expect(deps.ctgov.calls[0]).toEqual({ intr: '"given"', advanced: "AREA[StartDate]RANGE[2015-01-01,MAX]" });
+    expect(body.meta.interpretation.provided_fields).toEqual(["drug_name", "trial_status", "start_year"]);
+    expect(deps.ctgov.calls[0]).toEqual({ intr: '"given"', overallStatus: "COMPLETED", advanced: "AREA[StartDate]RANGE[2015-01-01,MAX]" });
+    expect(deps.judge.requests[0]!.state).toEqual({ question: "q", provided: { drugs: ["given"], trial_status: "COMPLETED", start_year: 2015 } });
   });
   it("a phase named in the question filters the fetch and shows in meta", async () => {
     const deps = fakeDeps({ intent: { choice: "count" }, chart: { choice: "single_value" }, recruiting_only: { noul: 0.95 }, phase_filter: { choice: "PHASE3" } }, { conditions: ["psoriasis"] }, SAMPLE, 41);

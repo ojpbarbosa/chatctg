@@ -6,8 +6,8 @@ import { fmt, Frame } from "./common";
 import type { Size } from "./common";
 
 type Pt = { citations: Citation[]; t: number; [k: string]: unknown };
-/** Recharts 3 passes the point geometry with the original datum on `payload`. */
-const datum = (d: unknown): Pt => ((d as { payload?: Pt }).payload ?? d) as Pt;
+/** Recharts 3 passes the point geometry with the original data point on `payload`. */
+const pointOf = (d: unknown): Pt => ((d as { payload?: Pt }).payload ?? d) as Pt;
 /** 1, 10, 100, 1k, 10k, 1M: enrollment spans six orders of magnitude, so ticks are short. */
 export const compact = (v: number): string => (v >= 1e6 ? `${+(v / 1e6).toFixed(1)}M` : v >= 1e3 ? `${+(v / 1e3).toFixed(1)}k` : String(v));
 /** Powers of ten from 1 up to the largest value: the ticks of a log axis whose domain ends at that value. */
@@ -30,7 +30,7 @@ export function ScatterView({ viz, onPick, width, height }: { viz: ScatterViz; o
         <ZAxis range={[36, 36]} />
         <Tooltip cursor={{ strokeDasharray: "3 3" }} content={({ payload }) => { const p = payload?.[0]?.payload as Record<string, unknown> | undefined; return p ? <div style={{ background: "var(--bg)", border: "1px solid var(--line)", borderRadius: 8, padding: "8px 10px", fontSize: 13, maxWidth: 320 }}><div className="num">{String(p.nct_id)}</div><div>{String(p.title)}</div><div style={{ color: "var(--muted)" }}>{String(p.start_date)} · {fmt(p[y])} participants{field ? ` · ${String(p[field])}` : ""}</div></div> : null; }} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        {groups.map((g, i) => <Scatter key={g} name={g} data={field ? points.filter((p) => p[field] === g) : points} fill={colorFor(i)} fillOpacity={0.75} onClick={(d) => { const p = datum(d); onPick(p.citations, String(p.nct_id)); }} cursor="pointer" isAnimationActive={false} />)}
+        {groups.map((g, i) => <Scatter key={g} name={g} data={field ? points.filter((p) => p[field] === g) : points} fill={colorFor(i)} fillOpacity={0.75} onClick={(d) => { const p = pointOf(d); onPick(p.citations, String(p.nct_id)); }} cursor="pointer" isAnimationActive={false} />)}
       </ScatterChart>
     </Frame>
   );

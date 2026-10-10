@@ -5,6 +5,12 @@ const term = z.string().trim().min(1).max(200);
 const oneOrMany = z.union([term, z.array(term).min(1).max(10)]);
 const year = z.number().int().min(1900).max(2100);
 
+/**
+ * The question plus optional fields that pin down what it would otherwise leave to interpretation. Without them, the closed fields
+ * (intent, chart, phase, recruitment) are answered by the judge, which is fast, and the free-text names (drugs, conditions, sponsors,
+ * countries, years) by the extractor. A faster extractor would be the judge selecting spans from the question's own n-grams
+ * (TypeSafe's pre-parsed value extraction pattern), listed in the README's next steps.
+ */
 export const QueryRequest = z
   .object({
     query: z.string().trim().min(1).max(500),
@@ -13,18 +19,15 @@ export const QueryRequest = z
     sponsor: oneOrMany.optional(),
     country: oneOrMany.optional(),
     trial_phase: z.enum(PHASES).optional(),
-    status: z.enum(OVERALL_STATUSES).optional(), // i suppose this is trial status
+    /** Restricts to one recruitment status; overrides the recruiting-only judgment. */
+    trial_status: z.enum(OVERALL_STATUSES).optional(),
     start_year: year.optional(),
     end_year: year.optional(),
-    intent: z.enum(INTENTS).optional(), // what is this?
-    // TODO: what other fields might be relevant?
-    // TODO: how are we breaking down the prompt into the 
-    // isolated fields? is there a faster analyzer that breaks it?
+    /** Replaces the judge's intent; what a "Did you mean" chip sends. */
+    intent: z.enum(INTENTS).optional(),
     chart: z.enum(CHART_TYPES).optional(),
-    // TODO: add time series chart and sankey
-    // TODO: add 5 more types, and have jev pick the fallback one as well 
     max_studies: z.number().int().min(100).max(10_000).default(3000),
-    citations_per_datum: z.number().int().min(0).max(25).default(5),
+    citations_per_point: z.number().int().min(0).max(25).default(5),
   })
   .strict()
   .refine((r) => r.start_year === undefined || r.end_year === undefined || r.end_year >= r.start_year, {

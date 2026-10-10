@@ -9,7 +9,7 @@ const EXAMPLES: { slug: string; request: QueryRequestInput }[] = [
   { slug: "comparison-pembrolizumab-nivolumab", request: { query: "Compare phases for trials involving pembrolizumab vs nivolumab" } },
   // The request names the chart, so this run always draws the map and shows the request-level chart override.
   { slug: "geographic-lupus-recruiting", request: { query: "Which countries have the most recruiting trials for lupus?", chart: "map" } },
-  { slug: "network-sponsors-drugs-melanoma", request: { query: "Show a network of sponsors and drugs for melanoma trials", citations_per_datum: 3 } },
+  { slug: "network-sponsors-drugs-melanoma", request: { query: "Show a network of sponsors and drugs for melanoma trials", citations_per_point: 3 } },
 ];
 
 const deps = depsFromEnv();

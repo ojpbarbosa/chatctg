@@ -14,7 +14,7 @@ export type Aggregate =
   | { kind: "rows"; studies: Study[] }
   | { kind: "value"; total: number; studies: Study[] };
 export interface SpecContext {
-  total_count: number; fetched: number; truncated: boolean; data_timestamp: string; citations_per_datum: number;
+  total_count: number; fetched: number; truncated: boolean; data_timestamp: string; citations_per_point: number;
   /** The registry's total per arm; a comparison states each, since the arms can share trials. */
   arm_totals: { label: string; total: number }[];
 }
@@ -149,7 +149,7 @@ function byValue(r: Bucketized): string[] {
 
 export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, title: string | null): Visualization {
   const head = { title: title?.trim() || templateTitle(p), subtitle: subtitle(p, ctx, agg) };
-  const k = ctx.citations_per_datum;
+  const k = ctx.citations_per_point;
 
   if (agg.kind === "buckets") {
     const r = agg.result; const dim = p.dimension ?? "phase"; const m = p.metric;

@@ -4,7 +4,7 @@ import { QueryRequest, asList } from "./request";
 describe("QueryRequest", () => {
   it("applies defaults", () => {
     const r = QueryRequest.parse({ query: "  trials by phase " });
-    expect(r).toEqual({ query: "trials by phase", max_studies: 3000, citations_per_datum: 5 });
+    expect(r).toEqual({ query: "trials by phase", max_studies: 3000, citations_per_point: 5 });
   });
 
   it("rejects unknown fields", () => {
@@ -23,7 +23,13 @@ describe("QueryRequest", () => {
 
   it("bounds the caps", () => {
     expect(QueryRequest.safeParse({ query: "x", max_studies: 50 }).success).toBe(false);
-    expect(QueryRequest.safeParse({ query: "x", citations_per_datum: 26 }).success).toBe(false);
+    expect(QueryRequest.safeParse({ query: "x", citations_per_point: 26 }).success).toBe(false);
+  });
+
+  it("names the recruitment status trial_status, and rejects the old names", () => {
+    expect(QueryRequest.parse({ query: "x", trial_status: "COMPLETED" }).trial_status).toBe("COMPLETED");
+    expect(QueryRequest.safeParse({ query: "x", status: "COMPLETED" }).success).toBe(false);
+    expect(QueryRequest.safeParse({ query: "x", citations_per_datum: 3 }).success).toBe(false);
   });
 });
 

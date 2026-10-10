@@ -46,7 +46,7 @@ Version 2 of the question set adds a twelfth question, `phase_filter`, a choice 
 
 ## Extractor benchmark
 
-`npm run eval:extract` on 2026-10-10 sent the 24 questions with labelled entities to each model:
+`npm run eval:extract` on 2026-10-09 sent the 24 questions with labelled entities to each model:
 
 - `gpt-5.4-nano`: 23/24 correct · p50 770 ms · p90 935 ms. The miss: "Show me a table of phase 2 trials for migraine started in 2023" returned `start_year` 2023 with `end_year` null.
 - `gpt-4.1-nano`: 22/24 correct · p50 795 ms · p90 1582 ms. The same miss, plus "Which sponsors test the most drugs for rare diseases, as a network?" returned no condition.

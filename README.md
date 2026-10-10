@@ -2,7 +2,7 @@
 
 ChatCTG (short for ChatClinicalTrials.gov) answers a natural-language question about clinical trials with a visualization spec built from live ClinicalTrials.gov data. You send `POST /query` with a question such as "How are melanoma trials distributed across phases?". It returns in a typesafe contract (chart type, encoding, data rows) that a frontend can render while being fault tolerant, and metadata that explains each decision and cites the registry records behind each number. A small Vite + React app renders the visualizations for the sake of the demo.
 
-The approach is a judged pipeline. Every closed decision about the question (its intent, the attribute to group by, the chart, the granularity, the metric, the relationship) is answered by a SystemOne model (in this case, TypeSafe's Jev), which returns a probability distribution over fixed options. One generative call extracts the strings the question names, under a strict JSON schema, and another writes a title from the finished plan. Everything else is deterministic code: plan the registry requests, fetch, aggregate, cite, and emit a spec that is validated against a zod contract. Numbers are computed from records, never generated.
+The approach is a judged pipeline. Every closed decision about the question (its intent, the attribute to group by, the chart, the granularity, the metric, the relationship) is answered by a System One model (in this case, TypeSafe's Jev), which returns a probability distribution over fixed options. One generative call extracts the strings the question names, under a strict JSON schema, and another writes a title from the finished plan. Everything else is deterministic code: plan the registry requests, fetch, aggregate, cite, and emit a spec that is validated against a zod contract. Numbers are computed from records, never generated.
 
 ## Run it
 
@@ -63,13 +63,13 @@ curl localhost:3001/health
 | `sponsor` | string or string[] | no | same; replaces the extracted sponsors |
 | `country` | string or string[] | no | same; replaces the extracted countries |
 | `trial_phase` | enum | no | `EARLY_PHASE1`, `PHASE1`, `PHASE2`, `PHASE3`, `PHASE4`, `NA`; becomes `AREA[Phase]` in `filter.advanced` and replaces Jev's `phase_filter` |
-| `status` | enum | no | the registry's overall status: `RECRUITING`, `NOT_YET_RECRUITING`, `ENROLLING_BY_INVITATION`, `ACTIVE_NOT_RECRUITING`, `COMPLETED`, `SUSPENDED`, `TERMINATED`, `WITHDRAWN`, `AVAILABLE`, `NO_LONGER_AVAILABLE`, `TEMPORARILY_NOT_AVAILABLE`, `APPROVED_FOR_MARKETING`, `WITHHELD`, `UNKNOWN`; becomes `filter.overallStatus` and replaces Jev's `recruiting_only` |
+| `trial_status` | enum | no | the registry's overall status: `RECRUITING`, `NOT_YET_RECRUITING`, `ENROLLING_BY_INVITATION`, `ACTIVE_NOT_RECRUITING`, `COMPLETED`, `SUSPENDED`, `TERMINATED`, `WITHDRAWN`, `AVAILABLE`, `NO_LONGER_AVAILABLE`, `TEMPORARILY_NOT_AVAILABLE`, `APPROVED_FOR_MARKETING`, `WITHHELD`, `UNKNOWN`; becomes `filter.overallStatus` and replaces Jev's `recruiting_only` |
 | `start_year` | integer | no | 1900–2100; replaces the extracted start year |
 | `end_year` | integer | no | 1900–2100, and not before `start_year` when both are given |
 | `intent` | enum | no | one of the nine intents; replaces Jev's intent and skips the scope check (a "did you mean" chip sends this) |
 | `chart` | enum | no | one of the ten chart types; treated as an explicit ask and validated by the compatibility matrix |
 | `max_studies` | integer | no | 100–10,000; default 3,000; the most studies read per arm (a count reads 50 and a table only its rows) |
-| `citations_per_datum` | integer | no | 0–25; default 5; 0 turns citations off |
+| `citations_per_point` | integer | no | 0–25; default 5; 0 turns citations off |
 
 Example request:
 
@@ -79,7 +79,7 @@ curl -s localhost:3001/query -H 'content-type: application/json' -d '{
   "drug_name": "Pembrolizumab",
   "start_year": 2015,
   "max_studies": 3000,
-  "citations_per_datum": 5
+  "citations_per_point": 5
 }'
 ```
 
@@ -179,7 +179,7 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 | `interpretation.entities` | `{ drugs, conditions, sponsors, countries }` | after request overrides |
 | `interpretation.time_window` | `{ start_year, end_year }` | each a year or null |
 | `interpretation.limit` | number or null | the N the question named; null when a default applied |
-| `interpretation.recruiting_only` | boolean | from the 0.7 threshold, or from the request's `status` |
+| `interpretation.recruiting_only` | boolean | from the 0.7 threshold, or from the request's `trial_status` |
 | `interpretation.combination` | boolean or null | null unless two or more drugs were named outside a comparison |
 | `interpretation.phase_filter` | enum or null | the phase every arm is restricted to: the request's `trial_phase`, else the phase Jev found named with a probability of 0.5 or more. Null when no phase applied, including a named phase below 0.5 and one skipped because the chart splits by phase |
 | `interpretation.provided_fields` | string[] | request fields that replaced extraction or Jev |
@@ -341,14 +341,14 @@ An in-memory LRU (TODO: expand LRY) cache (200 entries, one-hour TTL) keyed by t
 
 ## Citations
 
-A citation is one registry record that supports a datum, with the exact value that put it there:
+A citation is one registry record that supports a data point, with the exact value that put it there:
 
 ```json
 { "nct_id": "NCT00000002", "title": "Study NCT00000002",
   "field": "protocolSection.designModule.phases", "excerpt": "PHASE1" }
 ```
 
-`field` is the JSON path in the ClinicalTrials.gov study record. `excerpt` is the value at that path. Each datum cites up to `citations_per_datum` studies (default 5, at most 25, 0 for none): the most recently started of the studies that contributed to it, with undated studies last and the NCT ID as the tie-break. `study_count` always gives the full number, so a reader knows how many studies the citations sample.
+`field` is the JSON path in the ClinicalTrials.gov study record. `excerpt` is the value at that path. Each data point cites up to `citations_per_point` studies (default 5, at most 25, 0 for none): the most recently started of the studies that contributed to it, with undated studies last and the NCT ID as the tie-break. `study_count` always gives the full number, so a reader knows how many studies the citations sample.
 
 A network edge cites the studies where both ends co-occur. Its `field` joins the two paths with ` | `, and its excerpt names both values, such as `leadSponsor.name: "Merck" · meshes[].term: "pembrolizumab"`.
 
@@ -499,7 +499,7 @@ Designed deliberately by the author:
 - the Jev question set: the twelve questions, their options and criteria;
 - the thresholds and the chart compatibility matrix;
 - the request and response contract;
-- the citation rules: what a datum cites, the field path and excerpt per dimension, the two-ended edge citation, `meta.source.requests`;
+- the citation rules: what a data point cites, the field path and excerpt per dimension, the two-ended edge citation, `meta.source.requests`;
 - the evaluation set: the 25 questions and their labels.
 
 Generated with Claude Code and adapted: the workspace boilerplate, the Recharts and D3 chart components, the CSS, and the test scaffolding. The four wording clarifications after the first evaluation run were made during implementation and checked against the unchanged labels. The twelfth question, `phase_filter`, was specified by the author after the first evaluation and scored on five new labels. The Jev client is adapted from the author's own earlier client (fetch over `POST /v1/systemone`, timeouts, retries with jitter, strict validation of every answer, never throwing).

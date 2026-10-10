@@ -15,7 +15,7 @@ const melanoma = load("melanoma-p1.json");
 const pembrolizumab = load("pembrolizumab-p1.json");
 const studies = [...new Map([...melanoma, ...pembrolizumab].map((s) => [s.nct_id, s])).values()];
 
-const req = (query: string) => QueryRequest.parse({ query, citations_per_datum: 3 });
+const req = (query: string) => QueryRequest.parse({ query, citations_per_point: 3 });
 const okBody = (r: Awaited<ReturnType<typeof runQuery>>) => {
   if (!r.ok) throw new Error(JSON.stringify(r.body));
   const v = QueryResponse.safeParse(r.body);

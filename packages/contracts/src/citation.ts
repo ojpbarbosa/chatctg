@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-/** One registry record that supports a datum, with the exact value that put it there. */
+/** One registry record that supports a data point, with the exact value that put it there. */
 export const Citation = z.object({
   nct_id: z.string().regex(/^NCT\d{8}$/),
   title: z.string(),

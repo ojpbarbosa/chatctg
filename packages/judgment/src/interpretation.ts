@@ -6,7 +6,7 @@ export const QUESTION_SET = { id: "query-interpretation", version: 2 } as const;
 
 export interface ProvidedFields {
   drugs?: string[]; conditions?: string[]; sponsors?: string[]; countries?: string[];
-  trial_phase?: string; status?: string; start_year?: number; end_year?: number;
+  trial_phase?: string; trial_status?: string; start_year?: number; end_year?: number;
 }
 
 /** The state is deliberately tiny: the question, and what the caller already pinned down. */

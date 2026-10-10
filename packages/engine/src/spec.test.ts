@@ -7,7 +7,7 @@ import { buildVisualization, notShown, planSummary, subtitle, templateTitle, typ
 import type { Plan } from "./plan";
 import { SAMPLE } from "./test-studies";
 
-const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_datum: 2, arm_totals: [{ label: "Pembrolizumab", total: 12 }] };
+const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_point: 2, arm_totals: [{ label: "Pembrolizumab", total: 12 }] };
 const base = (over: Partial<Plan>): Plan => ({
   intent: "distribution", chart: "bar", dimension: "phase", secondary: null, metric: "trial_count", granularity: null, edge_kind: null,
   arms: [{ label: "Pembrolizumab", query: { intr: '"pembrolizumab"' } }], limit: null, recruiting_only: false, phase: null, notes: [],
