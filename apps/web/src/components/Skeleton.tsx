@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
 
 /** The ghost each chart type draws. */
-function shapeOf(type: string): "bars" | "bubble" | "heatmap" | "timeline" | "block" {
+function shapeOf(type: string): "bars" | "bubble" | "heatmap" | "timeline" | "sankey" | "block" {
   if (type.includes("bar") || type === "histogram") return "bars";
-  if (type === "bubble" || type === "heatmap" || type === "timeline") return type;
+  if (type === "bubble" || type === "heatmap" || type === "timeline" || type === "sankey") return type;
   return "block";
 }
 
@@ -25,6 +25,15 @@ export function ChartSkeleton({ type }: { type: string }) {
       {shape === "timeline" && (
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%", alignSelf: "stretch" }}>
           {[[0.05, 0.4], [0.12, 0.35], [0.2, 0.5], [0.3, 0.3], [0.42, 0.4], [0.55, 0.35]].map(([from, length], i) => <div key={i} className="skeleton" style={{ height: 12, marginLeft: `${from! * 100}%`, width: `${length! * 100}%` }} />)}
+        </div>
+      )}
+      {shape === "sankey" && (
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", alignSelf: "stretch", padding: "0 18%" }}>
+          {[[0.45, 0.2, 0.25], [0.2, 0.3, 0.15, 0.25]].map((column, c) => (
+            <div key={c} style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 14 }}>
+              {column.map((h, i) => <div key={i} className="skeleton" style={{ height: `${h * 90}%` }} />)}
+            </div>
+          ))}
         </div>
       )}
       {shape === "block" && <div className="skeleton" style={{ width: "100%", height: "100%", borderRadius: type === "network_graph" ? "50%" : undefined }} />}

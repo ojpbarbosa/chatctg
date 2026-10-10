@@ -152,6 +152,16 @@ describe("runQuery", () => {
     expect(body.visualization.data).toHaveLength(5 * 2);
     expect(body.visualization.subtitle).toMatch(/^Pembrolizumab 12 and Nivolumab 12 trials on ClinicalTrials\.gov\. /);
   });
+  it("sankey: melanoma trials flowing from sponsor class to phase, the trials without a phase left out", async () => {
+    const deps = fakeDeps({ dimension: { choice: "sponsor_class" }, secondary_dimension: { choice: "phase" }, chart: { choice: "sankey" }, chart_named: { noul: 0.9 } }, { conditions: ["melanoma"] });
+    const body = okBody(await runQuery(req("Show how melanoma trials flow from sponsor class to phase as a sankey"), deps));
+    if (body.visualization?.type !== "sankey") throw new Error(body.visualization?.type);
+    expect(body.visualization.data.nodes).toHaveLength(3 + 5);
+    expect(body.visualization.data.links).toHaveLength(6);
+    expect(body.meta.interpretation.chart).toMatchObject({ chosen: "sankey", applied: "sankey", reason: null });
+    expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
+    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+  });
   it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));

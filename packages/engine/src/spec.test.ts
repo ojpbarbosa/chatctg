@@ -207,6 +207,27 @@ describe("buildVisualization", () => {
     expect(planSummary(base({ intent: "lookup", chart: "timeline", dimension: null, recruiting_only: true, phase: "PHASE3", entities: { drugs: [], conditions: ["lupus"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null } })))
       .toBe("A timeline chart of each trial from its start date to its primary completion date, for recruiting phase 3 lupus trials.");
   });
+  it("sankey: a node per category on each side, a link per non-empty pair, each link citing both values", () => {
+    const r = bucketize(SAMPLE, { dimension: "sponsor_class", secondary: "phase", metric: "trial_count" });
+    const v = valid(buildVisualization(base({ chart: "sankey", dimension: "sponsor_class", secondary: "phase" }), { kind: "buckets", result: r }, ctx, null));
+    if (v.type !== "sankey") throw new Error(v.type);
+    expect(v.encoding).toEqual({
+      nodes: { id_field: "id", label_field: "label", side_field: "side" }, links: { source_field: "source", target_field: "target", value_field: "value", unit: "trials" },
+      left: { field: "sponsor_class", label: "Sponsor class" }, right: { field: "phase", label: "Phase" },
+    });
+    expect(v.data.nodes.map((n) => [n.id, n.label, n.side, n.study_count])).toEqual([
+      ["left:INDUSTRY", "Industry", "left", 9], ["left:NIH", "NIH", "left", 1], ["left:OTHER", "Other (academic, hospital)", "left", 1],
+      ["right:EARLY_PHASE1", "Early Phase 1", "right", 1], ["right:PHASE1", "Phase 1", "right", 2], ["right:PHASE2", "Phase 2", "right", 4], ["right:PHASE3", "Phase 3", "right", 4], ["right:NA", "Not applicable", "right", 1],
+    ]);
+    expect(v.data.links.map((l) => [l.source, l.target, l.value, l.study_count])).toEqual([
+      ["left:INDUSTRY", "right:PHASE1", 2, 2], ["left:INDUSTRY", "right:PHASE2", 3, 3], ["left:INDUSTRY", "right:PHASE3", 4, 4], ["left:INDUSTRY", "right:NA", 1, 1],
+      ["left:NIH", "right:PHASE2", 1, 1], ["left:OTHER", "right:EARLY_PHASE1", 1, 1],
+    ]);
+    expect(v.data.links[2]!.citations[0]).toEqual({ nct_id: "NCT00000012", title: "Study NCT00000012", field: "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases", excerpt: 'leadSponsor.class "INDUSTRY"; designModule.phases "PHASE3"' });
+    expect(v.title).toBe("Pembrolizumab trials by sponsor class and phase");
+    expect(planSummary(base({ chart: "sankey", dimension: "sponsor_class", secondary: "phase", entities: { drugs: [], conditions: ["melanoma"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null } })))
+      .toBe("A sankey chart of the number of trials flowing from sponsor class to phase, for melanoma trials.");
+  });
   it("histogram over enrollment bins", () => {
     const v = valid(buildVisualization(base({ chart: "histogram", dimension: "enrollment" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" }) }, ctx, null));
     if (v.type !== "histogram") throw new Error(v.type);

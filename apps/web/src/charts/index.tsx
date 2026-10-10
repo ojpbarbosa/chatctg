@@ -6,6 +6,7 @@ import { HeatmapView } from "./Heatmap";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { NetworkView } from "./Network";
+import { SankeyView } from "./Sankey";
 import { ScatterView } from "./Scatter";
 import { SingleValueView } from "./SingleValue";
 import { TableView } from "./Table";
@@ -27,6 +28,7 @@ export function renderChart(viz: Visualization, onPick: OnPick): ReactNode {
     case "bubble": return <BubbleView viz={viz} onPick={onPick} />;
     case "heatmap": return <HeatmapView viz={viz} onPick={onPick} />;
     case "timeline": return <TimelineView viz={viz} onPick={onPick} />;
+    case "sankey": return <SankeyView viz={viz} onPick={onPick} />;
     default: return <pre className="json">{JSON.stringify(viz, null, 2)}</pre>;
   }
 }

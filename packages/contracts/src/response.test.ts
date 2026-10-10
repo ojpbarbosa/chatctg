@@ -50,7 +50,7 @@ describe("Visualization", () => {
   });
 
   it("lists the ten first chart types, then the grid, timeline and flow types", () => {
-    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble", "heatmap", "timeline"]);
+    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble", "heatmap", "timeline", "sankey"]);
   });
 
   it("accepts a bubble spec over two categorical axes, and requires its size channel", () => {
@@ -86,6 +86,23 @@ describe("Visualization", () => {
     };
     expect(Visualization.safeParse(v).success).toBe(true);
     expect(Visualization.safeParse({ ...v, encoding: { ...v.encoding, point_id: "title" } }).success).toBe(false);
+  });
+
+  it("accepts a sankey spec of left and right nodes with cited links, and rejects a node on neither side", () => {
+    const v = {
+      type: "sankey", title: "t", subtitle: "s",
+      encoding: {
+        nodes: { id_field: "id", label_field: "label", side_field: "side" }, links: { source_field: "source", target_field: "target", value_field: "value", unit: "trials" },
+        left: { field: "sponsor_class", label: "Sponsor class" }, right: { field: "phase", label: "Phase" },
+      },
+      data: {
+        nodes: [{ id: "left:INDUSTRY", label: "Industry", side: "left", study_count: 3 }, { id: "right:PHASE3", label: "Phase 3", side: "right", study_count: 3 }],
+        links: [{ source: "left:INDUSTRY", target: "right:PHASE3", value: 3, study_count: 3, citations: [citation] }],
+      },
+    };
+    expect(Visualization.safeParse(v).success).toBe(true);
+    const middle = { ...v.data.nodes[0], side: "middle" };
+    expect(Visualization.safeParse({ ...v, data: { ...v.data, nodes: [middle] } }).success).toBe(false);
   });
 
   it("rejects a single_value with two rows", () => {

@@ -157,7 +157,7 @@ describe("chart matrix", () => {
 
   it("allows only what the shape can render", () => {
     expect(allowedCharts("distribution", "phase", null, false)).toEqual(["bar"]);
-    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "bubble", "grouped_bar", "heatmap", "stacked_bar"]);
+    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "bubble", "grouped_bar", "heatmap", "sankey", "stacked_bar"]);
     expect(allowedCharts("distribution", "enrollment", null, false).sort()).toEqual(["bar", "histogram"]);
     expect(allowedCharts("time_trend", "start_year", null, false).sort()).toEqual(["bar", "line"]);
     expect(allowedCharts("time_trend", "start_year", null, true)).toContain("scatter");
@@ -314,6 +314,29 @@ describe("chart matrix: timeline", () => {
     expect(p.interpretation.chart).toEqual({ chosen: "timeline", applied: "line", explicit: false, reason: "timeline cannot render a time trend over start date; the next most likely chart that can, line, is used" });
     expect(provisionalChart(a)).toBe("line");
     expect(provisionalChart(await answers({ intent: { choice: "lookup" }, chart: { choice: "timeline" } }))).toBe("timeline");
+  });
+});
+
+describe("chart matrix: sankey", () => {
+  it("a sankey flows from the dimension into a secondary dimension, so only a distribution with one draws it", () => {
+    expect(allowedCharts("distribution", "sponsor_class", "phase", false)).toContain("sankey");
+    expect(allowedCharts("distribution", "phase", null, true)).not.toContain("sankey");
+    expect(allowedCharts("comparison", "phase", null, true)).not.toContain("sankey");
+    for (const intent of ["time_trend", "ranking", "geographic", "network", "count", "lookup"] as const) expect(allowedCharts(intent, "phase", "status", true), intent).not.toContain("sankey");
+    expect(defaultChart("distribution", "sponsor_class", "phase")).toBe("stacked_bar");
+  });
+  it("applies the sankey Jev chose for melanoma trials from sponsor class to phase", async () => {
+    const p = okPlan(plan({ answers: await answers({ dimension: { choice: "sponsor_class" }, secondary_dimension: { choice: "phase" }, chart: { choice: "sankey" } }), entities: { ...none, conditions: ["melanoma"] }, request: req(), models }));
+    expect(p.chart).toBe("sankey"); expect(p.dimension).toBe("sponsor_class"); expect(p.secondary).toBe("phase");
+    expect(p.interpretation.chart).toEqual({ chosen: "sankey", applied: "sankey", explicit: false, reason: null });
+  });
+  it("a sankey over one attribute or two compared drugs falls back, and the provisional chart agrees", async () => {
+    const one = await withChartMass({ dimension: { choice: "sponsor_class" }, chart: { choice: "sankey" } }, { sankey: 0.7, bar: 0.2 });
+    expect(okPlan(plan({ answers: one, entities: none, request: req(), models })).interpretation.chart.reason).toBe("sankey cannot render a distribution over sponsor class; the next most likely chart that can, bar, is used");
+    expect(provisionalChart(one)).toBe("bar");
+    const compared = await withChartMass({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "sankey" } }, { sankey: 0.5, heatmap: 0.3, grouped_bar: 0.1 });
+    expect(okPlan(plan({ answers: compared, entities: { ...none, drugs: ["a", "b"] }, request: req(), models })).chart).toBe("heatmap");
+    expect(provisionalChart(compared)).toBe("heatmap");
   });
 });
 

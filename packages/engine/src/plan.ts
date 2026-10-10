@@ -49,6 +49,8 @@ const GRIDS: ChartType[] = ["bubble", "heatmap"];
  * only when the chart was asked for explicitly.
  * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
  * A grid needs two categorical attributes: a distribution with a secondary dimension, or a comparison over anything but start dates.
+ * A sankey flows from the dimension into the secondary dimension, so it needs a distribution with one; a comparison's arms can share
+ * trials, so they do not split the trials into flows.
  * A timeline draws a lookup's trials, one bar each, so it is the lookup's other unasked chart.
  */
 export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
@@ -61,7 +63,7 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
       set.add("bar");
       if (dimension === "enrollment" || dimension === "start_year") set.add("histogram");
       if (dimension === "start_year") set.add("line");
-      if (secondary) add(["stacked_bar", "grouped_bar", ...GRIDS]);
+      if (secondary) add(["stacked_bar", "grouped_bar", ...GRIDS, "sankey"]);
       if (explicit) set.add("scatter"); break;
     case "comparison":
       set.add("grouped_bar"); set.add("stacked_bar");

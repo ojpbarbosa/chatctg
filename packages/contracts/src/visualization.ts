@@ -88,9 +88,27 @@ export const TimelineViz = z.object({
   data: z.array(DataRow),
 });
 
+/**
+ * Flows from the categories of one attribute (left) into those of another (right). Node ids are `left:<key>` and `right:<key>`; a link's
+ * `value` is the metric, its `study_count` the trials in it, and it carries the citations.
+ */
+export const SankeyViz = z.object({
+  type: z.literal("sankey"), ...head,
+  encoding: z.object({
+    nodes: z.object({ id_field: z.literal("id"), label_field: z.literal("label"), side_field: z.literal("side") }),
+    links: z.object({ source_field: z.literal("source"), target_field: z.literal("target"), value_field: z.literal("value"), unit }),
+    left: z.object({ field: z.string(), label: z.string() }),
+    right: z.object({ field: z.string(), label: z.string() }),
+  }),
+  data: z.object({
+    nodes: z.array(z.object({ id: z.string(), label: z.string(), side: z.enum(["left", "right"]), study_count: z.number().int() })),
+    links: z.array(z.object({ source: z.string(), target: z.string(), value: z.number(), study_count: z.number().int(), citations: z.array(Citation) })),
+  }),
+});
+
 export const Visualization = z.discriminatedUnion("type", [
   BarViz, GroupedBarViz, StackedBarViz, LineViz, HistogramViz, ScatterViz, NetworkViz, MapViz, TableViz, SingleValueViz,
-  BubbleViz, HeatmapViz, TimelineViz,
+  BubbleViz, HeatmapViz, TimelineViz, SankeyViz,
 ]);
 export type Visualization = z.infer<typeof Visualization>;
 export type BarViz = z.infer<typeof BarViz>;
@@ -106,3 +124,4 @@ export type SingleValueViz = z.infer<typeof SingleValueViz>;
 export type BubbleViz = z.infer<typeof BubbleViz>;
 export type HeatmapViz = z.infer<typeof HeatmapViz>;
 export type TimelineViz = z.infer<typeof TimelineViz>;
+export type SankeyViz = z.infer<typeof SankeyViz>;

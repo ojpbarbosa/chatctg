@@ -75,6 +75,11 @@ export function interpretationQuestions() {
         not_for: "The number of trials per year or period (line), or a list of trial details (table).",
         examples: ["timeline of recruiting phase 3 lupus trials", "the schedule of these trials", "when did they start and end", "when do these trials run"],
       },
+      sankey: {
+        what: "Flows between the categories of two attributes: how the trials in each category of one split into the categories of another, such as sponsor class into phase.",
+        not_for: "A single attribute (bar), or links between named entities such as sponsors and the drugs they test (network_graph).",
+        examples: ["how do melanoma trials flow from sponsor class to phase", "how do these trials split from intervention type into phase", "a flow diagram of status by phase"],
+      },
     }),
     chart_named: noul("Does the user explicitly name the kind of visual they want?", {
       true: "The question contains a word for a visual form: chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie.",

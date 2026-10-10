@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { Visualization } from "@chatctg/contracts";
-import type { BarViz, BubbleViz, GroupedBarViz, HeatmapViz, TimelineViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
+import type { BarViz, BubbleViz, GroupedBarViz, HeatmapViz, SankeyViz, TimelineViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarView, widen } from "./Bar";
 import { BubbleView } from "./Bubble";
 import { HeatmapView, ZERO } from "./Heatmap";
+import { SankeyView } from "./Sankey";
 import { TimelineView } from "./Timeline";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
@@ -337,6 +338,46 @@ describe("timeline", () => {
   });
 });
 
+const sankey = parse<SankeyViz>({
+  type: "sankey", title: "T", subtitle: "S",
+  encoding: {
+    nodes: { id_field: "id", label_field: "label", side_field: "side" }, links: { source_field: "source", target_field: "target", value_field: "value", unit: "trials" },
+    left: { field: "sponsor_class", label: "Sponsor class" }, right: { field: "phase", label: "Phase" },
+  },
+  data: {
+    nodes: [
+      { id: "left:INDUSTRY", label: "Industry", side: "left", study_count: 7 }, { id: "left:NIH", label: "NIH", side: "left", study_count: 1 },
+      { id: "right:PHASE2", label: "Phase 2", side: "right", study_count: 4 }, { id: "right:PHASE3", label: "Phase 3", side: "right", study_count: 4 },
+    ],
+    links: [
+      { source: "left:INDUSTRY", target: "right:PHASE2", value: 3, study_count: 3, citations: cite(1) },
+      { source: "left:INDUSTRY", target: "right:PHASE3", value: 4, study_count: 4, citations: cite(2) },
+      { source: "left:NIH", target: "right:PHASE2", value: 1, study_count: 1, citations: cite(3) },
+    ],
+  },
+});
+
+describe("sankey", () => {
+  it("left and right node columns, a ribbon per link as wide as its value, coloured by its left node", async () => {
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<SankeyView viz={sankey} onPick={(c, l) => picked.push({ c, l })} />, async () => {});
+    const ribbons = [...el.querySelectorAll("path.ribbon")];
+    expect(ribbons).toHaveLength(3);
+    expect(el.querySelectorAll("rect.node")).toHaveLength(4);
+    const titled = (t: string) => ribbons.find((r) => r.querySelector("title")?.textContent === t)!;
+    const width = (t: string) => Number(titled(t).getAttribute("stroke-width"));
+    expect(width("Industry to Phase 3, 4 trials") / width("NIH to Phase 2, 1 trial")).toBeCloseTo(4, 5);
+    expect(titled("Industry to Phase 3, 4 trials").getAttribute("stroke")).toBe(colorFor(0));
+    expect(titled("NIH to Phase 2, 1 trial").getAttribute("stroke")).toBe(colorFor(1));
+    const x = (label: string) => Number([...el.querySelectorAll("g.node")].find((g) => g.querySelector("title")?.textContent?.startsWith(`${label},`))!.querySelector("rect")!.getAttribute("x"));
+    expect(x("Industry")).toBeLessThan(x("Phase 3"));
+    for (const text of ["Sponsor class", "Phase", "Industry", "NIH", "Phase 2", "Phase 3"]) expect(el.textContent).toContain(text);
+    act(() => { titled("Industry to Phase 3, 4 trials").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: sankey.data.links[1]!.citations, l: "Industry to Phase 3" }]);
+    done();
+  });
+});
+
 describe("labels", () => {
   it("name what was clicked with commas, not separator characters", () => {
     expect(pickLabel("Phase 3", "nivolumab")).toBe("Phase 3, nivolumab");
@@ -349,7 +390,7 @@ describe("labels", () => {
 
 describe("renderChart", () => {
   it("routes the non-cartesian types to their renderers", () => {
-    for (const [viz, mark] of [[bubble, 'class="bubble"'], [heatmap, 'class="heat"'], [timeline, 'class="span"']] as const) {
+    for (const [viz, mark] of [[bubble, 'class="bubble"'], [heatmap, 'class="heat"'], [timeline, 'class="span"'], [sankey, 'class="ribbon"']] as const) {
       const html = renderToStaticMarkup(<>{renderChart(viz, noop)}</>);
       expect(html, viz.type).toContain(mark); expect(html, viz.type).not.toContain("<pre");
     }

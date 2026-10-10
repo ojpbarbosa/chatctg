@@ -1,4 +1,4 @@
-import type { BubbleViz, Citation, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@chatctg/contracts";
+import type { BubbleViz, Citation, SankeyViz, DataRow, Dimension, EdgeKind, Metric, Visualization } from "@chatctg/contracts";
 import { iso3, type Study } from "@chatctg/ctgov";
 import type { Bucketized } from "./aggregate/buckets";
 import { KIND_FIELD, type GraphEdge, type GraphNode } from "./aggregate/graph";
@@ -95,8 +95,9 @@ export function planSummary(p: Plan): string {
   else if (p.intent === "time_trend") parts.push(`${measure} per ${p.granularity ?? "year"}`);
   else if (p.intent === "network") parts.push(p.edge_kind ? EDGE_PHRASE[p.edge_kind] : "which entities appear together in trials");
   else if (p.intent === "lookup") parts.push("a list of trials");
+  else if (p.chart === "sankey" && p.dimension && p.secondary) parts.push(`${measure} flowing from ${DIMENSION_LABEL[p.dimension].toLowerCase()} to ${DIMENSION_LABEL[p.secondary].toLowerCase()}`);
   else parts.push(`${measure} by ${p.dimension ? DIMENSION_LABEL[p.dimension].toLowerCase() : "category"}`);
-  if (p.secondary) parts.push(`split by ${DIMENSION_LABEL[p.secondary].toLowerCase()}`);
+  if (p.secondary && p.chart !== "sankey") parts.push(`split by ${DIMENSION_LABEL[p.secondary].toLowerCase()}`);
   // A comparison's arms are its named things, so only the filters are added; elsewhere the trials are named in full.
   const covered = trialsPhrase(p, p.intent !== "comparison");
   if (p.intent === "comparison") parts.push(`comparing ${p.arms.map((a) => a.label).join(" and ")}`, ...(covered !== "trials" ? [`counting only ${covered}`] : []));
@@ -183,6 +184,28 @@ function grid(p: Plan, r: Bucketized, k: number): { x: CatAxis; y: CatAxis; data
 }
 const measure = (m: Metric) => ({ field: m, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] });
 
+/**
+ * Flows from the dimension (left) into the secondary dimension (right): a link per non-empty cell, citing both values, and a node per
+ * category that has a link, with the number of distinct trials in it.
+ */
+function flows(p: Plan, r: Bucketized, k: number): SankeyViz["data"] {
+  const dim = p.dimension ?? "phase"; const sec = p.secondary!;
+  const filled = r.buckets.filter((b) => b.series !== null && b.value > 0);
+  const trialsIn = new Map<string, Set<string>>();
+  for (const b of filled) for (const id of [`left:${b.key}`, `right:${b.series}`]) {
+    const ids = trialsIn.get(id) ?? new Set<string>(); for (const s of b.studies) ids.add(s.nct_id); trialsIn.set(id, ids);
+  }
+  const side = (which: "left" | "right", d: Dimension, keys: string[]) => keys.filter((key) => trialsIn.has(`${which}:${key}`))
+    .map((key) => ({ id: `${which}:${key}`, label: bucketLabel(d, key), side: which, study_count: trialsIn.get(`${which}:${key}`)!.size }));
+  return {
+    nodes: [...side("left", dim, r.order), ...side("right", sec, r.seriesValues)],
+    links: filled.map((b) => ({
+      source: `left:${b.key}`, target: `right:${b.series}`, value: b.value, study_count: b.count ?? b.studies.length,
+      citations: citeCell(b.studies, { dimension: dim, key: b.key }, { dimension: sec, key: b.series! }, k),
+    })),
+  };
+}
+
 /** Category keys by their value summed over series, highest first; ties keep the given order. */
 function byValue(r: Bucketized): string[] {
   const total = new Map<string, number>();
@@ -212,6 +235,16 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
     if ((p.chart === "bubble" || p.chart === "heatmap") && series) {
       const { x, y, data } = grid(p, r, k);
       return p.chart === "bubble" ? { type: "bubble", ...head, encoding: { x, y, size: measure(m) }, data } : { type: "heatmap", ...head, encoding: { x, y, color: measure(m) }, data };
+    }
+    if (p.chart === "sankey" && series && p.secondary) {
+      return {
+        type: "sankey", ...head,
+        encoding: {
+          nodes: { id_field: "id", label_field: "label", side_field: "side" }, links: { source_field: "source", target_field: "target", value_field: "value", unit: METRIC_UNIT[m] },
+          left: { field: dim, label: DIMENSION_LABEL[dim] }, right: { field: p.secondary, label: DIMENSION_LABEL[p.secondary] },
+        },
+        data: flows(p, r, k),
+      };
     }
     const xField = dim === "start_year" ? "period" : dim;
     const ordinal = dim === "start_year" || fixedOrder(dim) !== null;

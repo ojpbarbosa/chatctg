@@ -71,6 +71,18 @@ describe("the engine over recorded registry pages", () => {
     for (const r of data) { expect(r.citations[0]!.nct_id).toBe(r.nct_id); if (r.end_date !== null) expect(String(r.end_date).slice(0, 7) >= String(r.start_date).slice(0, 7)).toBe(true); }
     expect(body.meta.notes).toContain("The timeline shows the 25 most recently started of 2,909 trials.");
   });
+  it("melanoma trials flowing from sponsor class to phase: every link joins two nodes and cites both values", async () => {
+    const body = okBody(await runQuery(req("Show how melanoma trials flow from sponsor class to phase as a sankey"), fakeDeps({ dimension: { choice: "sponsor_class" }, secondary_dimension: { choice: "phase" }, chart: { choice: "sankey" } }, { conditions: ["melanoma"] }, melanoma, 3773)));
+    if (body.visualization?.type !== "sankey") throw new Error(body.visualization?.type);
+    const { nodes, links } = body.visualization.data;
+    cited(links);
+    const ids = new Set(nodes.map((n) => n.id));
+    expect(links.every((l) => ids.has(l.source) && ids.has(l.target) && l.source.startsWith("left:") && l.target.startsWith("right:") && l.value > 0)).toBe(true);
+    for (const n of nodes) expect(links.some((l) => l.source === n.id || l.target === n.id), n.id).toBe(true);
+    for (const l of links) for (const c of l.citations) expect(c.excerpt).toBe(`leadSponsor.class "${l.source.slice(5)}"; designModule.phases "${l.target.slice(6)}"`);
+    // A trial with several phases flows into each, so a left node's links carry at least its trials.
+    for (const n of nodes.filter((x) => x.side === "left")) expect(links.filter((l) => l.source === n.id).reduce((s, l) => s + l.study_count, 0)).toBeGreaterThanOrEqual(n.study_count);
+  });
   it("sponsor to drug network", async () => {
     const body = okBody(await runQuery(req("Show a network of sponsors and drugs for pembrolizumab trials"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, { drugs: ["pembrolizumab"] }, pembrolizumab)));
     if (body.visualization?.type !== "network_graph") throw new Error(body.visualization?.type);

@@ -49,6 +49,13 @@ describe("interpretation questions", () => {
     expect((q.intent.criteria.lookup as { what: string }).what).toMatch(/timeline/);
   });
 
+  it("says a sankey is for flows between two attributes, not for one attribute or for links between named entities", () => {
+    const sankey = q.chart.criteria.sankey as { what: string; not_for: string; examples: string[] };
+    expect(sankey.what).toMatch(/[Ff]lows between the categories of two attributes/);
+    expect(sankey.not_for).toMatch(/single attribute/); expect(sankey.not_for).toMatch(/network_graph/);
+    expect(sankey.examples.join(" ")).toMatch(/flow from/); expect(sankey.examples.join(" ")).toMatch(/split from .* into/);
+  });
+
   it("builds a small state with only the provided fields", () => {
     expect(interpretationState("q", {})).toEqual({ question: "q", provided: {} });
     expect(interpretationState("q", { drugs: ["a"], start_year: 2015 })).toEqual({ question: "q", provided: { drugs: ["a"], start_year: 2015 } });
