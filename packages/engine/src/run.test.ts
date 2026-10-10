@@ -160,7 +160,12 @@ describe("runQuery", () => {
     expect(body.visualization.data.links).toHaveLength(6);
     expect(body.meta.interpretation.chart).toMatchObject({ chosen: "sankey", applied: "sankey", reason: null });
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
-    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. 1 trial without a phase is not shown. Data as of October 8, 2026.");
+    // NCT00000002 is Phase 1/2, so it flows from Industry into both phases: the subtitle and the notes say so.
+    expect(body.meta.notes).toContain("Each trial is counted once per phase.");
+    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of October 8, 2026.");
+    const industry = body.visualization.data.nodes.find((n) => n.id === "left:INDUSTRY")!;
+    expect(industry.study_count).toBe(9);
+    expect(body.visualization.data.links.filter((l) => l.source === industry.id).reduce((n, l) => n + l.study_count, 0)).toBe(10);
   });
   it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });

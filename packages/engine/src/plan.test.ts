@@ -361,6 +361,17 @@ describe("chart matrix: sankey", () => {
     expect(p.chart).toBe("sankey"); expect(p.dimension).toBe("sponsor_class"); expect(p.secondary).toBe("phase");
     expect(p.interpretation.chart).toEqual({ chosen: "sankey", applied: "sankey", explicit: false, reason: null });
   });
+  it("no sankey of a median: its node heights would add medians up", async () => {
+    expect(allowedCharts("distribution", "sponsor_class", "phase", true, "enrollment_median")).not.toContain("sankey");
+    expect(allowedCharts("distribution", "sponsor_class", "phase", true, "enrollment_total")).toContain("sankey");
+    expect(allowedCharts("distribution", "sponsor_class", "phase", true, "enrollment_median")).toContain("heatmap");
+    const a = await withChartMass({ dimension: { choice: "sponsor_class" }, secondary_dimension: { choice: "phase" }, metric: { choice: "enrollment_median" }, chart: { choice: "sankey" }, chart_named: { noul: 0.9 } }, { sankey: 0.6, heatmap: 0.3 });
+    const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
+    expect(p.interpretation.chart).toEqual({ chosen: "sankey", applied: "heatmap", explicit: true, reason: "a sankey adds its flows up and medians do not add up; the next most likely chart that can, heatmap, is used" });
+    expect(provisionalChart(a)).toBe("heatmap");
+    const total = await withChartMass({ dimension: { choice: "sponsor_class" }, secondary_dimension: { choice: "phase" }, metric: { choice: "enrollment_total" }, chart: { choice: "sankey" } }, { sankey: 0.6, heatmap: 0.3 });
+    expect(okPlan(plan({ answers: total, entities: none, request: req(), models })).chart).toBe("sankey");
+  });
   it("a sankey over one attribute or two compared drugs falls back, and the provisional chart agrees", async () => {
     const one = await withChartMass({ dimension: { choice: "sponsor_class" }, chart: { choice: "sankey" } }, { sankey: 0.7, bar: 0.2 });
     expect(okPlan(plan({ answers: one, entities: none, request: req(), models })).interpretation.chart.reason).toBe("sankey cannot render a distribution over sponsor class; the next most likely chart that can, bar, is used");

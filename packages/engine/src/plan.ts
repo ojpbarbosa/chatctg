@@ -50,10 +50,10 @@ const GRIDS: ChartType[] = ["bubble", "heatmap"];
  * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
  * A grid needs two categorical attributes: a distribution with a secondary dimension, or a comparison over anything but start dates.
  * A sankey flows from the dimension into the secondary dimension, so it needs a distribution with one; a comparison's arms can share
- * trials, so they do not split the trials into flows.
+ * trials, so they do not split the trials into flows. It adds its flows up into its nodes, so it is never drawn for a median.
  * A timeline draws a lookup's trials, one bar each, so it is the lookup's other unasked chart.
  */
-export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
+export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean, metric: Metric = "trial_count"): ChartType[] {
   const set = new Set<ChartType>([defaultChart(intent, dimension, secondary)]);
   const add = (charts: ChartType[]) => { for (const c of charts) set.add(c); };
   switch (intent) {
@@ -63,7 +63,7 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
       set.add("bar");
       if (dimension === "enrollment" || dimension === "start_year") set.add("histogram");
       if (dimension === "start_year") set.add("line");
-      if (secondary) add(["stacked_bar", "grouped_bar", ...GRIDS, "sankey"]);
+      if (secondary) add(["stacked_bar", "grouped_bar", ...GRIDS, ...(metric === "enrollment_median" ? [] : ["sankey" as const])]);
       if (explicit) set.add("scatter"); break;
     case "comparison":
       set.add("grouped_bar"); set.add("stacked_bar");
@@ -93,9 +93,9 @@ export function likeliestAllowed(allowed: ChartType[], probabilities: Partial<Re
  * default. The fallback is drawn from the charts allowed without an explicit ask, so it is never a scatter or a geographic bar: the
  * question asked for the chart it named, not for those.
  */
-export function chooseChart(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>): { applied: ChartType; reason: string | null } {
-  const drawable = allowedCharts(intent, dimension, secondary, true).includes(chosen);
-  const unasked = allowedCharts(intent, dimension, secondary, false);
+export function chooseChart(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>, metric: Metric = "trial_count"): { applied: ChartType; reason: string | null } {
+  const drawable = allowedCharts(intent, dimension, secondary, true, metric).includes(chosen);
+  const unasked = allowedCharts(intent, dimension, secondary, false, metric);
   if (drawable && (explicit || unasked.includes(chosen))) return { applied: chosen, reason: null };
   const likeliest = likeliestAllowed(unasked, probabilities);
   const applied = likeliest ?? defaultChart(intent, dimension, secondary);
@@ -103,6 +103,8 @@ export function chooseChart(intent: Intent, dimension: Dimension | null, seconda
   if (drawable) {
     return { applied, reason: chosen === "scatter" ? `scatter plots one point per trial and is only used when asked for; using ${applied}` : `${chosen} is only used for a ${question} question when asked for; using ${applied}` };
   }
+  const next = likeliest ? `the next most likely chart that can, ${applied}, is used` : `using ${applied}`;
+  if (chosen === "sankey" && metric === "enrollment_median" && allowedCharts(intent, dimension, secondary, true).includes(chosen)) return { applied, reason: `a sankey adds its flows up and medians do not add up; ${next}` };
   const what = `${question}${dimension ? ` over ${DIMENSION_LABEL[dimension].toLowerCase()}` : ""}`;
   return { applied, reason: likeliest ? `${chosen} cannot render a ${what}; the next most likely chart that can, ${applied}, is used` : `${chosen} cannot render a ${what}; using ${applied}` };
 }
@@ -118,6 +120,9 @@ export function judgedIntent(a: InterpretationAnswers, request: Pick<QueryReques
   if (request.intent) return { value: request.intent, p: 1, confidence: 1 };
   return { value: a.intent.choice, p: a.intent.probabilities[a.intent.choice] ?? 0, confidence: a.intent.confidence };
 }
+
+/** What is measured: a network, a list and a count measure trials; elsewhere Jev's metric. */
+export const judgedMetric = (intent: Intent, a: InterpretationAnswers): Metric => (intent === "network" || intent === "lookup" || intent === "count" ? "trial_count" : a.metric.choice);
 
 export const inScope = (a: InterpretationAnswers, request: Pick<QueryRequest, "intent">): boolean => request.intent !== undefined || a.in_scope.noul >= THRESHOLDS.in_scope;
 export const chartNamed = (a: InterpretationAnswers, request: Pick<QueryRequest, "chart">): boolean => request.chart !== undefined || a.chart_named.noul >= THRESHOLDS.chart_named;
@@ -177,8 +182,8 @@ export function dropForeignSecondary(shape: Shape): { shape: Shape; note: string
 }
 
 /** The chart for a shape, and the shape it is drawn with: a bar holds one value per category, so a second grouping is stacked; a histogram has no series, so the second grouping goes. */
-export function applyChart(shape: Shape, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>): { applied: ChartType; reason: string | null; shape: Shape; note: string | null } {
-  const { applied, reason } = chooseChart(shape.intent, shape.dimension, shape.secondary, chosen, explicit, probabilities);
+export function applyChart(shape: Shape, chosen: ChartType, explicit: boolean, probabilities: Partial<Record<ChartType, number>>, metric: Metric = "trial_count"): { applied: ChartType; reason: string | null; shape: Shape; note: string | null } {
+  const { applied, reason } = chooseChart(shape.intent, shape.dimension, shape.secondary, chosen, explicit, probabilities, metric);
   const { secondary } = shape;
   if (secondary && applied === "bar") {
     return { applied: "stacked_bar", reason: `a bar chart has one bar per category, so the split by ${DIMENSION_LABEL[secondary].toLowerCase()} is stacked; using stacked_bar`, shape, note: null };
@@ -208,7 +213,7 @@ export function phaseFilter(a: InterpretationAnswers, request: Pick<QueryRequest
 export function provisionalPlan(a: InterpretationAnswers, request: Pick<QueryRequest, "intent" | "chart" | "trial_phase"> = {}): { shape: Shape; chosen: ChartType; chart: ChartType; phase: Phase | null } {
   const chosen = request.chart ?? a.chart.choice;
   const shape = dropForeignSecondary(normalizeShape(judgedIntent(a, request).value, a, chosen).shape).shape;
-  const drawn = applyChart(shape, chosen, chartNamed(a, request), a.chart.probabilities);
+  const drawn = applyChart(shape, chosen, chartNamed(a, request), a.chart.probabilities, judgedMetric(shape.intent, a));
   return { shape: drawn.shape, chosen, chart: drawn.applied, phase: phaseFilter(a, request, drawn.shape).phase };
 }
 
@@ -237,7 +242,7 @@ export function plan(input: PlanInput): PlanResult {
   const { dimension } = normalized.shape;
   let { intent, secondary } = normalized.shape;
 
-  const metric: Metric = intent === "network" || intent === "lookup" || intent === "count" ? "trial_count" : a.metric.choice;
+  const metric = judgedMetric(intent, a);
   const granularity: Granularity | null = dimension === "start_year" ? a.granularity.choice : null;
   const edge_kind: EdgeKind | null = intent === "network" ? a.edge_kind.choice : null;
   const recruiting_only = recruitingOnly(a, request);
@@ -269,7 +274,7 @@ export function plan(input: PlanInput): PlanResult {
 
   // 5. Chart: Jev's choice, validated against the shape, with Jev's next most likely allowed chart as the fallback.
   const explicit = chartNamed(a, request);
-  const drawn = applyChart({ intent, dimension, secondary }, chosen, explicit, a.chart.probabilities);
+  const drawn = applyChart({ intent, dimension, secondary }, chosen, explicit, a.chart.probabilities, metric);
   const { applied, reason } = drawn;
   secondary = drawn.shape.secondary;
   if (drawn.note) notes.push(drawn.note);

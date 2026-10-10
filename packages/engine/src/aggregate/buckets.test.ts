@@ -36,6 +36,16 @@ describe("bucketize", () => {
     const t = bucketize(SAMPLE, { dimension: "sponsor_class", secondary: "phase", metric: "trial_count" });
     expect(t.missing).toEqual({ enrollment: 0, dimension: 0, secondary: 1 });   // NCT04 has a class but no phase
   });
+  it("says when the second grouping held several values for a trial, which then counts in several cells", () => {
+    const byClass = bucketize(SAMPLE, { dimension: "sponsor_class", secondary: "phase", metric: "trial_count" });
+    expect(byClass.multiValued).toBe(false); expect(byClass.multiValuedSecondary).toBe(true);   // NCT02 is Phase 1/2
+    expect(byKey(byClass, "INDUSTRY", "PHASE1")?.value).toBe(2); expect(byKey(byClass, "INDUSTRY", "PHASE2")?.value).toBe(3);
+    expect(bucketize(SAMPLE, { dimension: "phase", secondary: "sponsor_class", metric: "trial_count" }).multiValuedSecondary).toBe(false);
+    expect(bucketize(SAMPLE.filter((s) => s.phases.length < 2), { dimension: "sponsor_class", secondary: "phase", metric: "trial_count" }).multiValuedSecondary).toBe(false);
+    expect(bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }).multiValuedSecondary).toBe(false);
+    const arms = mergeArms([{ label: "a", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) }], { dimension: "phase", metric: "trial_count" });
+    expect(arms.multiValuedSecondary).toBe(false);
+  });
   it("sums and medians enrollment, skipping studies without it", () => {
     const sum = bucketize(SAMPLE, { dimension: "sponsor_class", metric: "enrollment_total" });
     expect(byKey(sum, "NIH")).toBeUndefined(); expect(sum.withoutValue).toBe(1); expect(sum.missing).toEqual({ enrollment: 1, dimension: 0, secondary: 0 });

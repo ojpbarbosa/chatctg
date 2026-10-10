@@ -11,7 +11,7 @@ import { fakeExtractor, type Extractor } from "./extract";
 import { judgedEvent } from "./judged";
 import { DIMENSION_LABEL_PLURAL } from "./dimensions";
 import { armFilters, DEFAULT_LIMITS, plan, type Entities, type Plan } from "./plan";
-import { buildVisualization, METRIC_UNIT, notShown, planSummary, type Aggregate } from "./spec";
+import { buildVisualization, countedPerSecondary, METRIC_UNIT, notShown, planSummary, type Aggregate } from "./spec";
 import { fakeTitler, type Titler } from "./title";
 import { SAMPLE } from "./test-studies";
 
@@ -143,6 +143,8 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   if (agg.kind === "buckets") {
     studies_without_value = agg.result.withoutValue; omitted_categories = agg.result.omitted;
     if (agg.result.multiValued && p.dimension) notes.push(p.dimension === "phase" ? "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial)." : `A trial with several ${DIMENSION_LABEL_PLURAL[p.dimension]} is counted once per value.`);
+    const second = countedPerSecondary(p, agg.result);
+    if (second) notes.push(second);
     if (p.dimension === "drug" || p.dimension === "condition") notes.push("Drugs and conditions are identified by their MeSH terms when the registry mapped any, else by the names as registered.");
     if (p.chart === "map" && visualization.type === "map") { const unmapped = visualization.data.filter((r) => r.iso3 === null).length; if (unmapped) warnings.push(`${unmapped} countries could not be mapped to an ISO code and are listed without a location.`); }
   }

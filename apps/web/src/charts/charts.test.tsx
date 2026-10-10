@@ -347,7 +347,7 @@ const sankey = parse<SankeyViz>({
   },
   data: {
     nodes: [
-      { id: "left:INDUSTRY", label: "Industry", side: "left", study_count: 7 }, { id: "left:NIH", label: "NIH", side: "left", study_count: 1 },
+      { id: "left:INDUSTRY", label: "Industry", side: "left", study_count: 6 }, { id: "left:NIH", label: "NIH", side: "left", study_count: 1 },
       { id: "right:PHASE2", label: "Phase 2", side: "right", study_count: 4 }, { id: "right:PHASE3", label: "Phase 3", side: "right", study_count: 4 },
     ],
     links: [
@@ -373,8 +373,20 @@ describe("sankey", () => {
     const x = (label: string) => Number([...el.querySelectorAll("g.node")].find((g) => g.querySelector("title")?.textContent?.startsWith(`${label},`))!.querySelector("rect")!.getAttribute("x"));
     expect(x("Industry")).toBeLessThan(x("Phase 3"));
     for (const text of ["Sponsor class", "Phase", "Industry", "NIH", "Phase 2", "Phase 3"]) expect(el.textContent).toContain(text);
+    // One Industry trial is both Phase 2 and Phase 3, so its node holds 6 trials in ribbons that add up to 7; the title says both.
+    expect([...el.querySelectorAll("g.node > title")].map((t) => t.textContent)).toEqual(["Industry, 6 trials in 7 flows", "NIH, 1 trial", "Phase 2, 4 trials", "Phase 3, 4 trials"]);
     act(() => { titled("Industry to Phase 3, 4 trials").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
     expect(picked).toEqual([{ c: sankey.data.links[1]!.citations, l: "Industry to Phase 3" }]);
+    done();
+  });
+});
+
+describe("sankey with nothing to draw", () => {
+  it("says so instead of laying out an empty graph", async () => {
+    const empty: SankeyViz = { ...sankey, data: { nodes: [], links: [] } };
+    const { el, done } = await mount(<SankeyView viz={empty} onPick={noop} />, async () => {});
+    expect(el.textContent).toBe("No flows to draw");
+    expect(el.querySelectorAll("path.ribbon, rect.node")).toHaveLength(0);
     done();
   });
 });

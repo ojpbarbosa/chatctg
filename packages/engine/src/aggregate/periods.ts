@@ -28,7 +28,7 @@ export function yearBuckets(counts: YearCount[]): Bucketized {
   const nonEmpty = sorted.flatMap((c, i) => (c.total > 0 ? [i] : []));
   const kept = nonEmpty.length ? sorted.slice(nonEmpty[0], nonEmpty[nonEmpty.length - 1]! + 1) : [];
   const buckets: Bucket[] = kept.map((c) => ({ key: String(c.year), label: String(c.year), series: null, value: c.total, count: c.total, studies: c.studies }));
-  return { buckets, order: buckets.map((b) => b.key), seriesValues: [], omitted: 0, withoutValue: 0, missing: { enrollment: 0, dimension: 0, secondary: 0 }, multiValued: false };
+  return { buckets, order: buckets.map((b) => b.key), seriesValues: [], omitted: 0, withoutValue: 0, missing: { enrollment: 0, dimension: 0, secondary: 0 }, multiValued: false, multiValuedSecondary: false };
 }
 
 /**

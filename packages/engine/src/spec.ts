@@ -131,6 +131,14 @@ export function notShown(p: Plan, agg: Aggregate): string | null {
   return `${phrase} ${one ? "is" : "are"} not shown.`;
 }
 
+/**
+ * "Each trial is counted once per phase." when the second grouping held several values for some trial, which then counts in several
+ * cells, ribbons or segments of its category; null otherwise. For the subtitle and the notes.
+ */
+export function countedPerSecondary(p: Plan, r: Bucketized): string | null {
+  return r.multiValuedSecondary && p.secondary ? `Each trial is counted once per ${singular(DIMENSION_LABEL_PLURAL[p.secondary])}.` : null;
+}
+
 /** "The 25 most recently started are shown.", or the one trial or link when there is one. */
 const shownCut = (n: number, one: string, many: string) => (n === 1 ? `The ${one} is shown.` : `The ${fmt(n)} ${many} are shown.`);
 
@@ -147,6 +155,8 @@ export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
   if (agg.kind === "buckets" && p.dimension) {
     const r = agg.result; const plural = DIMENSION_LABEL_PLURAL[p.dimension];
     if (r.multiValued) sentences.push(`Each trial is counted once per ${singular(plural)}.`);
+    const second = countedPerSecondary(p, r);
+    if (second) sentences.push(second);
     if (r.omitted > 0) sentences.push(r.omitted === 1 ? `1 more ${singular(plural)} is not shown.` : `${fmt(r.omitted)} more ${plural} are not shown.`);
   }
   const missing = notShown(p, agg);
@@ -188,6 +198,9 @@ function grid(p: Plan, r: Bucketized, k: number): { x: CatAxis; y: CatAxis; data
   });
   return { x, y, data };
 }
+const PHASE_RANK = fixedOrder("phase")!.filter((ph) => ph !== "NA");
+/** A trial's furthest phase, so a Phase 2/3 trial is a Phase 3 trial; NA when it has none. */
+const highestPhase = (s: Study): string => s.phases.filter((ph) => PHASE_RANK.includes(ph)).sort((a, b) => PHASE_RANK.indexOf(b) - PHASE_RANK.indexOf(a))[0] ?? "NA";
 const measure = (m: Metric) => ({ field: m, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] });
 
 /**
@@ -313,7 +326,7 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
   if (agg.kind === "spans") {
     // Oldest start first, so the bars cascade down and to the right.
     const studies = [...agg.studies].sort((a, b) => (a.start_date ?? "").localeCompare(b.start_date ?? "") || a.nct_id.localeCompare(b.nct_id));
-    const phases = fixedOrder("phase")!.filter((ph) => studies.some((s) => (s.phases[0] ?? "NA") === ph)).map((ph) => bucketLabel("phase", ph));
+    const phases = fixedOrder("phase")!.filter((ph) => studies.some((s) => highestPhase(s) === ph)).map((ph) => bucketLabel("phase", ph));
     return {
       type: "timeline", ...head,
       encoding: {
@@ -322,7 +335,7 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
       },
       data: studies.map((s) => row({
         nct_id: s.nct_id, title: s.title || s.nct_id, start_date: s.start_date, end_date: s.primary_completion_date,
-        phase: bucketLabel("phase", s.phases[0] ?? "NA"), status: bucketLabel("status", s.status),
+        phase: bucketLabel("phase", highestPhase(s)), status: bucketLabel("status", s.status),
       }, 1, [citeSelf(s)])),
     };
   }

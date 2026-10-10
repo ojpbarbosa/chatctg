@@ -12,6 +12,7 @@ export const EXAMPLES = [
   "Compare phases for trials involving pembrolizumab vs nivolumab",
   "Which countries have the most recruiting trials for lupus?",
   "Show a network of sponsors and drugs for melanoma trials",
+  "Show how melanoma trials flow from sponsor class to phase",
 ];
 
 export function App() {

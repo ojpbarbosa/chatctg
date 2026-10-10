@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { SankeyViz } from "@chatctg/contracts";
 import { sankey, sankeyLinkHorizontal, type SankeyLink, type SankeyNode } from "d3-sankey";
 import type { OnPick } from "./index";
-import { countLabel } from "./common";
+import { countLabel, fmt, quantity } from "./common";
 import { clip, textWidth, VIEW_W } from "./grid";
 import { BRAND, CATEGORICAL, colorFor } from "./palette";
 
@@ -16,19 +16,29 @@ const margin = (labels: string[]) => Math.min(200, Math.max(48, textWidth("x".re
 const end = (n: LaidNode | string | number): LaidNode => n as LaidNode;
 
 /**
+ * A node's hover title. A trial with several values of the second grouping flows into each, so a node's ribbons can carry more trials
+ * than it holds; the title then gives both: "Industry, 6 trials in 7 flows".
+ */
+function nodeTitle(n: Node, links: SankeyViz["data"]["links"]): string {
+  const flows = links.filter((l) => l.source === n.id || l.target === n.id).reduce((sum, l) => sum + l.study_count, 0);
+  return flows === n.study_count ? countLabel(n.label, n.study_count, "trials") : `${n.label}, ${quantity(n.study_count, "trials")} in ${fmt(flows)} flows`;
+}
+
+/**
  * Two node columns, the dimension's categories on the left and the secondary dimension's on the right, joined by ribbons as wide as their
  * value. A ribbon takes its left node's colour while the left side fits the eight categorical hues, else the one brand blue. The ribbon is
- * the hover and click target.
+ * the hover and click target. With no links there is nothing to lay out, and it says so.
  */
 export function SankeyView({ viz, onPick }: { viz: SankeyViz; onPick: OnPick }) {
   const { left: leftAxis, right: rightAxis } = viz.encoding;
   const lefts = viz.data.nodes.filter((n) => n.side === "left"), rights = viz.data.nodes.filter((n) => n.side === "right");
   const height = TOP + Math.max(260, Math.max(lefts.length, rights.length) * 34) + BOTTOM;
   const x0 = margin(lefts.map((n) => n.label)), x1 = VIEW_W - margin(rights.map((n) => n.label));
-  const { nodes, links } = useMemo(() => sankey<Node, Link>()
+  const { nodes, links } = useMemo(() => viz.data.links.length === 0 ? { nodes: [] as LaidNode[], links: [] as LaidLink[] } : sankey<Node, Link>()
     .nodeId((n) => n.id).nodeWidth(NODE_W).nodePadding(14).nodeSort(null)
     .extent([[x0, TOP], [x1, height - BOTTOM]])({ nodes: viz.data.nodes.map((n) => ({ ...n })), links: viz.data.links.map((l, idx) => ({ source: l.source, target: l.target, value: l.value, idx })) }),
   [viz, x0, x1, height]);
+  if (links.length === 0) return <div className="chart" style={{ minHeight: 0 }}><p className="sub">No flows to draw</p></div>;
   const hue = (n: LaidNode) => (lefts.length > CATEGORICAL.length ? BRAND : colorFor(lefts.findIndex((l) => l.id === n.id)));
   const path = sankeyLinkHorizontal<Node, Link>();
   return (
@@ -50,7 +60,7 @@ export function SankeyView({ viz, onPick }: { viz: SankeyViz; onPick: OnPick }) 
           const isLeft = n.side === "left"; const y = ((n.y0 ?? 0) + (n.y1 ?? 0)) / 2;
           return (
             <g key={n.id} className="node">
-              <title>{countLabel(n.label, n.study_count, "trials")}</title>
+              <title>{nodeTitle(n, viz.data.links)}</title>
               <rect className="node" x={n.x0} y={n.y0} width={(n.x1 ?? 0) - (n.x0 ?? 0)} height={Math.max(1, (n.y1 ?? 0) - (n.y0 ?? 0))} rx={2} fill={isLeft ? hue(n) : "var(--muted)"} />
               <text x={isLeft ? (n.x0 ?? 0) - GAP : (n.x1 ?? 0) + GAP} y={y} textAnchor={isLeft ? "end" : "start"} dominantBaseline="central" fontSize={12} fill="var(--muted)">{clip(n.label)}</text>
             </g>
