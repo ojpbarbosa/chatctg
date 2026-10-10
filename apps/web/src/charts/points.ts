@@ -13,10 +13,19 @@ const byId = (r: DataRow): DataPoint => ({ label: String(r.nct_id), citations: r
 
 /**
  * Every data point a click on the chart can pick, labelled exactly as that click labels it, so a click can be found in the list. Rows keep
- * the spec's order; a grid lists only its non-empty cells, which are the clickable ones. The drawer opens on the first point, except on a
- * network's heaviest edge and a sankey's largest link.
+ * the spec's order; a grid lists only its non-empty cells, which are the clickable ones. The drawer opens on the first point that cites a
+ * trial, or on a network's heaviest edge and a sankey's largest link when that one does; only when no point cites anything does it open on
+ * a point without citations.
  */
 export function dataPoints(viz: Visualization): DataPoints {
+  const { points, initial } = listed(viz);
+  if (points[initial]?.citations.length) return { points, initial };
+  const cited = points.findIndex((p) => p.citations.length > 0);
+  return { points, initial: cited >= 0 ? cited : initial };
+}
+
+/** The points in order, and the one a chart type opens on before citations are considered. */
+function listed(viz: Visualization): DataPoints {
   switch (viz.type) {
     case "bar": case "histogram": {
       const x = viz.encoding.x.field;

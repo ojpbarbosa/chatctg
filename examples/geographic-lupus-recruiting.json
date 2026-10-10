@@ -2038,16 +2038,33 @@
     },
     "meta": {
       "query": "Which countries have the most recruiting trials for lupus?",
+      "request": {
+        "query": "Which countries have the most recruiting trials for lupus?",
+        "chart": "map",
+        "max_studies": 3000,
+        "citations_per_point": 5
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [
+          "lupus"
+        ],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "geographic",
-          "p": 0.89,
-          "confidence": 0.88,
+          "p": 0.83,
+          "confidence": 0.81,
           "alternatives": []
         },
         "dimension": {
           "value": "country",
-          "p": 0.47000000000000003
+          "p": 0.6
         },
         "secondary_dimension": null,
         "chart": {
@@ -2122,13 +2139,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 249,
-        "judged_ms": 249,
-        "extract_ms": 1609,
-        "fetch_ms": 388,
-        "title_ms": 696,
-        "aggregate_ms": 2,
-        "total_ms": 2311
+        "jev_ms": 228,
+        "judged_ms": 228,
+        "extract_ms": 816,
+        "fetch_ms": 763,
+        "title_ms": 771,
+        "aggregate_ms": 1,
+        "total_ms": 1590
       },
       "notes": [
         "A trial with several countries is counted once per value."

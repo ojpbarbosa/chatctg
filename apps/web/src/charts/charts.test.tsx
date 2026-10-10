@@ -449,4 +449,13 @@ describe("dataPoints", () => {
     expect(dataPoints(sankey).initial).toBe(1);
     expect(dataPoints(sankey).points[1]!.citations).toBe(sankey.data.links[1]!.citations);
   });
+  it("opens on the first cited point when the default cites nothing, and keeps the default when nothing is cited", () => {
+    const quiet = parse<NetworkViz>({ ...network, data: { ...network.data, edges: [{ ...network.data.edges[0]!, citations: [] }, network.data.edges[1]!] } });
+    expect(dataPoints(quiet).initial).toBe(1);
+    const links = sankey.data.links.map((l, i) => (i === 1 ? { ...l, citations: [] } : l));
+    expect(dataPoints(parse<SankeyViz>({ ...sankey, data: { ...sankey.data, links } })).initial).toBe(0);
+    expect(dataPoints(parse<BarViz>({ ...bar, data: bar.data.map((r, i) => (i < 2 ? { ...r, citations: [] } : r)) })).initial).toBe(2);
+    expect(dataPoints(parse<BarViz>({ ...bar, data: bar.data.map((r) => ({ ...r, citations: [] })) })).initial).toBe(0);
+    expect(dataPoints(parse<SankeyViz>({ ...sankey, data: { ...sankey.data, links: sankey.data.links.map((l) => ({ ...l, citations: [] })) } })).initial).toBe(1);
+  });
 });

@@ -245,9 +245,13 @@ describe("runQuery", () => {
     expect(okBody(await runQuery(req("q"), deps)).visualization?.title).toBe("All trials by phase");
   });
   it("request fields override extraction and show in provided_fields", async () => {
-    const deps = fakeDeps({}, { drugs: ["extracted"] });
+    const deps = fakeDeps({}, { drugs: ["extracted"], start_year: 2010 });
     const body = okBody(await runQuery(req("q", { drug_name: "given", start_year: 2015, trial_status: "COMPLETED" }), deps));
     expect(body.meta.interpretation.entities.drugs).toEqual(["given"]);
+    // meta keeps the request as the engine ran it, defaults applied, and what the extractor read before the request overrode it.
+    expect(body.meta.request.query).toBe("q");
+    expect(body.meta.request).toEqual({ query: "q", drug_name: "given", start_year: 2015, trial_status: "COMPLETED", max_studies: 3000, citations_per_point: 2 });
+    expect(body.meta.extraction).toEqual({ drugs: ["extracted"], conditions: [], sponsors: [], countries: [], start_year: 2010, end_year: null, limit: null });
     expect(body.meta.interpretation.provided_fields).toEqual(["drug_name", "trial_status", "start_year"]);
     expect(deps.ctgov.calls[0]).toEqual({ intr: '"given"', overallStatus: "COMPLETED", advanced: "AREA[StartDate]RANGE[2015-01-01,MAX]" });
     expect(deps.judge.requests[0]!.state).toEqual({ question: "q", provided: { drugs: ["given"], trial_status: "COMPLETED", start_year: 2015 } });

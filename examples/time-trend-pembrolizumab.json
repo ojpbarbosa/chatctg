@@ -509,6 +509,21 @@
     },
     "meta": {
       "query": "How has the number of trials for this drug changed per year since 2015?",
+      "request": {
+        "query": "How has the number of trials for this drug changed per year since 2015?",
+        "drug_name": "Pembrolizumab",
+        "max_studies": 3000,
+        "citations_per_point": 5
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [],
+        "sponsors": [],
+        "countries": [],
+        "start_year": 2015,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "time_trend",
@@ -603,13 +618,13 @@
       },
       "granularity": "year",
       "timing": {
-        "jev_ms": 472,
-        "judged_ms": 472,
-        "extract_ms": 1361,
-        "fetch_ms": 3182,
-        "title_ms": 641,
-        "aggregate_ms": 6,
-        "total_ms": 4700
+        "jev_ms": 497,
+        "judged_ms": 497,
+        "extract_ms": 1533,
+        "fetch_ms": 3245,
+        "title_ms": 790,
+        "aggregate_ms": 4,
+        "total_ms": 5010
       },
       "notes": [],
       "warnings": [],

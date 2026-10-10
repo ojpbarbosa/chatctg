@@ -264,6 +264,22 @@
     },
     "meta": {
       "query": "How are melanoma trials distributed across phases?",
+      "request": {
+        "query": "How are melanoma trials distributed across phases?",
+        "max_studies": 3000,
+        "citations_per_point": 5
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [
+          "melanoma"
+        ],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "distribution",
@@ -355,13 +371,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 388,
-        "judged_ms": 388,
-        "extract_ms": 935,
-        "fetch_ms": 2201,
-        "title_ms": 889,
-        "aggregate_ms": 11,
-        "total_ms": 3152
+        "jev_ms": 364,
+        "judged_ms": 364,
+        "extract_ms": 1318,
+        "fetch_ms": 2360,
+        "title_ms": 566,
+        "aggregate_ms": 9,
+        "total_ms": 3692
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

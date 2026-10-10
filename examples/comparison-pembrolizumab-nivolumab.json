@@ -512,6 +512,23 @@
     },
     "meta": {
       "query": "Compare phases for trials involving pembrolizumab vs nivolumab",
+      "request": {
+        "query": "Compare phases for trials involving pembrolizumab vs nivolumab",
+        "max_studies": 3000,
+        "citations_per_point": 5
+      },
+      "extraction": {
+        "drugs": [
+          "pembrolizumab",
+          "nivolumab"
+        ],
+        "conditions": [],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "comparison",
@@ -521,7 +538,7 @@
         },
         "dimension": {
           "value": "phase",
-          "p": 0.81
+          "p": 0.78
         },
         "secondary_dimension": null,
         "chart": {
@@ -625,13 +642,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 206,
-        "judged_ms": 206,
-        "extract_ms": 921,
-        "fetch_ms": 2615,
-        "title_ms": 692,
-        "aggregate_ms": 21,
-        "total_ms": 3561
+        "jev_ms": 205,
+        "judged_ms": 205,
+        "extract_ms": 859,
+        "fetch_ms": 2648,
+        "title_ms": 844,
+        "aggregate_ms": 17,
+        "total_ms": 3528
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

@@ -9,6 +9,8 @@ const row = (extra: Record<string, unknown>) => ({ study_count: 1, citations: [c
 
 const meta = {
   query: "q",
+  request: { query: "q", drug_name: "Pembrolizumab", max_studies: 3000, citations_per_point: 5 },
+  extraction: { drugs: ["keytruda"], conditions: [], sponsors: [], countries: [], start_year: 2015, end_year: null, limit: null },
   interpretation: {
     intent: { value: "distribution", p: 0.8, confidence: 0.7, alternatives: [{ value: "distribution", p: 0.8 }] },
     dimension: { value: "phase", p: 0.9 },
@@ -128,6 +130,14 @@ describe("QueryResponse", () => {
     const s = jsonSchemas();
     expect(s.request).toHaveProperty("properties.query");
     expect(s.response).toHaveProperty("properties.visualization");
+  });
+  it("carries the request as run and the extractor's own reading", () => {
+    const { request: _r, ...withoutRequest } = meta;
+    const { extraction: _e, ...withoutExtraction } = meta;
+    expect(QueryResponse.safeParse({ visualization: null, meta: withoutRequest }).success).toBe(false);
+    expect(QueryResponse.safeParse({ visualization: null, meta: withoutExtraction }).success).toBe(false);
+    expect(QueryResponse.safeParse({ visualization: null, meta: { ...meta, request: { query: "q" } } }).data?.meta.request).toEqual({ query: "q", max_studies: 3000, citations_per_point: 5 });
+    expect(QueryResponse.safeParse({ visualization: null, meta: { ...meta, extraction: { ...meta.extraction, limit: "ten" } } }).success).toBe(false);
   });
   it("requires the moment the judgment landed in the timing", () => {
     const { judged_ms: _, ...timing } = meta.timing;

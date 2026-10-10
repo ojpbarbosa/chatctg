@@ -172,6 +172,8 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
 
   const meta: Meta = {
     query: request.query,
+    request,
+    extraction: extracted.entities,
     interpretation: p.interpretation,
     arms: p.arms.map((a) => ({ label: a.label, filters: armFilters(a) })),
     source: { name: "clinicaltrials.gov", api_version: version.apiVersion, data_timestamp: version.dataTimestamp, requests: [...results.flatMap((r) => r.requests), ...(yearly?.requests ?? [])] },

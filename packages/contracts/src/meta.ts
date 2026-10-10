@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CHART_TYPES, DIMENSIONS, EDGE_KINDS, GRANULARITIES, INTENTS, METRICS, PHASES } from "./enums";
+import { QueryRequest } from "./request";
 
 const judged = <T extends readonly [string, ...string[]]>(values: T) => z.object({ value: z.enum(values), p: z.number().min(0).max(1) });
 
@@ -24,8 +25,18 @@ export const Interpretation = z.object({
 });
 export type Interpretation = z.infer<typeof Interpretation>;
 
+/** What the extractor read from the question: the names, the years and the limit, before any request field overrides them. */
+export const ExtractedEntities = z.object({
+  drugs: z.array(z.string()), conditions: z.array(z.string()), sponsors: z.array(z.string()), countries: z.array(z.string()),
+  start_year: z.number().int().nullable(), end_year: z.number().int().nullable(), limit: z.number().int().nullable(),
+});
+export type ExtractedEntities = z.infer<typeof ExtractedEntities>;
+
 export const Meta = z.object({
   query: z.string(),
+  /** The request the engine ran: validated, with the defaults applied. */
+  request: QueryRequest,
+  extraction: ExtractedEntities,
   interpretation: Interpretation,
   arms: z.array(z.object({ label: z.string(), filters: z.record(z.string(), z.string()) })),
   source: z.object({

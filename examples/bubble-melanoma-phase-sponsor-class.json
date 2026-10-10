@@ -736,6 +736,22 @@
     },
     "meta": {
       "query": "Show phase by sponsor class for melanoma trials as bubbles",
+      "request": {
+        "query": "Show phase by sponsor class for melanoma trials as bubbles",
+        "max_studies": 3000,
+        "citations_per_point": 3
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [
+          "melanoma"
+        ],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "distribution",
@@ -749,7 +765,7 @@
         },
         "secondary_dimension": {
           "value": "phase",
-          "p": 0.55
+          "p": 0.51
         },
         "chart": {
           "chosen": "bubble",
@@ -830,13 +846,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 209,
-        "judged_ms": 209,
-        "extract_ms": 882,
+        "jev_ms": 230,
+        "judged_ms": 230,
+        "extract_ms": 857,
         "fetch_ms": 0,
-        "title_ms": 991,
-        "aggregate_ms": 11,
-        "total_ms": 1880
+        "title_ms": 630,
+        "aggregate_ms": 5,
+        "total_ms": 1491
       },
       "notes": [
         "Each trial is counted once per phase.",

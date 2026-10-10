@@ -7,7 +7,7 @@
   "response": {
     "visualization": {
       "type": "heatmap",
-      "title": "Asthma trials by phase by status",
+      "title": "Asthma trials by phase and status",
       "subtitle": "5,298 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 923 trials without a phase are not shown. Data as of October 9, 2026.",
       "encoding": {
         "x": {
@@ -1363,6 +1363,22 @@
     },
     "meta": {
       "query": "Heatmap of trial status by phase for asthma",
+      "request": {
+        "query": "Heatmap of trial status by phase for asthma",
+        "max_studies": 3000,
+        "citations_per_point": 3
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [
+          "asthma"
+        ],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "distribution",
@@ -1372,11 +1388,11 @@
         },
         "dimension": {
           "value": "phase",
-          "p": 0.82
+          "p": 0.8
         },
         "secondary_dimension": {
           "value": "status",
-          "p": 0.04
+          "p": 0.03
         },
         "chart": {
           "chosen": "heatmap",
@@ -1457,16 +1473,16 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 207,
-        "judged_ms": 207,
-        "extract_ms": 910,
-        "fetch_ms": 2843,
-        "title_ms": 544,
-        "aggregate_ms": 4,
-        "total_ms": 3760
+        "jev_ms": 194,
+        "judged_ms": 194,
+        "extract_ms": 1264,
+        "fetch_ms": 3239,
+        "title_ms": 536,
+        "aggregate_ms": 5,
+        "total_ms": 4511
       },
       "notes": [
-        "Phase was judged both groupings; the second is status, the next most likely attribute (p=0.17).",
+        "Phase was judged both groupings; the second is status, the next most likely attribute (p=0.19).",
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
         "923 trials without a phase are not shown."
       ],

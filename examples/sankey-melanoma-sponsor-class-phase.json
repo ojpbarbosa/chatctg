@@ -693,20 +693,36 @@
     },
     "meta": {
       "query": "Show how melanoma trials flow from sponsor class to phase as a sankey",
+      "request": {
+        "query": "Show how melanoma trials flow from sponsor class to phase as a sankey",
+        "max_studies": 3000,
+        "citations_per_point": 3
+      },
+      "extraction": {
+        "drugs": [],
+        "conditions": [
+          "melanoma"
+        ],
+        "sponsors": [],
+        "countries": [],
+        "start_year": null,
+        "end_year": null,
+        "limit": null
+      },
       "interpretation": {
         "intent": {
           "value": "distribution",
-          "p": 0.96,
-          "confidence": 0.95,
+          "p": 0.97,
+          "confidence": 0.97,
           "alternatives": []
         },
         "dimension": {
           "value": "sponsor_class",
-          "p": 0.9400000000000001
+          "p": 0.95
         },
         "secondary_dimension": {
           "value": "phase",
-          "p": 0.89
+          "p": 0.86
         },
         "chart": {
           "chosen": "sankey",
@@ -787,13 +803,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 195,
-        "judged_ms": 195,
-        "extract_ms": 1003,
-        "fetch_ms": 1,
-        "title_ms": 637,
-        "aggregate_ms": 10,
-        "total_ms": 1644
+        "jev_ms": 268,
+        "judged_ms": 268,
+        "extract_ms": 978,
+        "fetch_ms": 0,
+        "title_ms": 588,
+        "aggregate_ms": 6,
+        "total_ms": 1572
       },
       "notes": [
         "Each trial is counted once per phase.",

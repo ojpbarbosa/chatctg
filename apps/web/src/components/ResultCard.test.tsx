@@ -66,7 +66,10 @@ const trials = Visualization.parse({
   data: [1, 2].map((n) => ({ nct_id: `NCT0000000${n}`, title: `Trial ${n}`, study_count: 1, citations: [cite(n)] })),
 });
 const meta: Meta = {
-  query: "How are melanoma trials distributed across phases?", interpretation, arms: [{ label: "Melanoma", filters: { "query.cond": '"melanoma"' } }],
+  query: "How are melanoma trials distributed across phases?",
+  request: { query: "How are melanoma trials distributed across phases?", max_studies: 3000, citations_per_point: 2 },
+  extraction: { drugs: [], conditions: ["melanoma"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null },
+  interpretation, arms: [{ label: "Melanoma", filters: { "query.cond": '"melanoma"' } }],
   source: { name: "clinicaltrials.gov", api_version: "2.0.5", data_timestamp: "2026-10-09T09:00:05", requests: [] },
   coverage: { total_count: 2909, fetched_count: 2909, truncated: false, sorted_by: "StartDate:desc", studies_without_value: 0, omitted_categories: 0 },
   units: { y: "trials" }, granularity: null,
@@ -108,6 +111,20 @@ describe("ResultCard with an answer", () => {
     click(button("Previous"));
     expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 2 (point 2 of 3)");
     done();
+  });
+
+  it("opens on the first point that cites a trial, and on the first point with the empty message only when none does", () => {
+    const uncited = (rows: number[]) => Visualization.parse({ ...phases, data: phases.type === "bar" ? phases.data.map((r, k) => (rows.includes(k) ? { ...r, citations: [] } : r)) : [] });
+    const first = setup(answered(uncited([0])));
+    expect(first.drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 2 (point 2 of 3)");
+    expect(first.cited()).toEqual(["NCT00000003"]);
+    first.click(first.button("Previous"));
+    expect(first.drawer()!.textContent).toContain("No citations were requested for this data point.");
+    first.done();
+    const none = setup(answered(uncited([0, 1, 2])));
+    expect(none.drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 1 (point 1 of 3)");
+    expect(none.drawer()!.textContent).toContain("No citations were requested for this data point.");
+    none.done();
   });
 
   it("still selects the point a click on the chart picks", () => {
