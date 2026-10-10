@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { Visualization } from "@chatctg/contracts";
-import type { BarViz, BubbleViz, GroupedBarViz, HeatmapViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
+import type { BarViz, BubbleViz, GroupedBarViz, HeatmapViz, TimelineViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarView, widen } from "./Bar";
 import { BubbleView } from "./Bubble";
 import { HeatmapView, ZERO } from "./Heatmap";
+import { TimelineView } from "./Timeline";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { CATEGORICAL, colorFor, sequential } from "./palette";
@@ -295,6 +296,47 @@ describe("heatmap", () => {
   });
 });
 
+const timeline = parse<TimelineViz>({
+  type: "timeline", title: "T", subtitle: "S",
+  encoding: {
+    start: { field: "start_date", type: "temporal", label: "Start date" }, end: { field: "end_date", type: "temporal", label: "Primary completion" },
+    label: { field: "title" }, color: { field: "phase", label: "Phase", values: ["Phase 2", "Phase 3"] }, point_id: "nct_id",
+  },
+  data: [
+    row({ nct_id: "NCT00000001", title: "A trial whose title is far too long to fit beside the bars of the chart", start_date: "2018-03", end_date: "2021-06-30", phase: "Phase 3", status: "Completed" }, 1),
+    row({ nct_id: "NCT00000002", title: "Trial 2", start_date: "2020-01-15", end_date: null, phase: "Phase 2", status: "Recruiting" }, 2),
+    row({ nct_id: "NCT00000003", title: "Trial 3", start_date: "2022-05-01", end_date: "2024-12-31", phase: "Phase 2", status: "Active not recruiting" }, 3),
+  ],
+});
+
+describe("timeline", () => {
+  it("a bar per trial from start to primary completion, coloured by phase, open-ended with a dashed cap when the end is unknown", async () => {
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<TimelineView viz={timeline} onPick={(c, l) => picked.push({ c, l })} />, async () => {});
+    const bars = [...el.querySelectorAll("rect.span")];
+    expect(bars).toHaveLength(3);
+    expect(bars.map((b) => b.getAttribute("fill"))).toEqual([colorFor(1), colorFor(0), colorFor(0)]);
+    expect(el.querySelectorAll(".open")).toHaveLength(1);
+    expect(el.querySelector(".open")!.closest("g.row")!.querySelector("title")!.textContent).toMatch(/^NCT00000002, Trial 2, /);
+    const ys = bars.map((b) => Number(b.getAttribute("y")));
+    expect(ys[0]).toBeLessThan(ys[1]!); expect(ys[1]).toBeLessThan(ys[2]!);
+    // The 2018-03 to 2021-06-30 bar is about as long as the 2022-05-01 to 2024-12-31 one plus a year.
+    const w = bars.map((b) => Number(b.getAttribute("width")));
+    expect(w[0]! / w[2]!).toBeCloseTo((2021.5 - 2018.17) / (2025 - 2022.33), 1);
+    expect(el.querySelector('a[href="https://clinicaltrials.gov/study/NCT00000001"]')!.textContent).toBe("NCT00000001");
+    const label = [...el.querySelectorAll("text.trial")][0]!;
+    expect(label.textContent).toMatch(/…/); expect(label.querySelector("title")!.textContent).toBe(timeline.data[0]!.title);
+    expect(el.textContent).toContain("2020");
+    expect(el.querySelector(".legend")!.textContent).toContain("Phase 3");
+    act(() => { bars[1]!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: timeline.data[1]!.citations, l: "NCT00000002" }]);
+    picked.length = 0;
+    act(() => { el.querySelector("a")!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })); });
+    expect(picked).toHaveLength(0);
+    done();
+  });
+});
+
 describe("labels", () => {
   it("name what was clicked with commas, not separator characters", () => {
     expect(pickLabel("Phase 3", "nivolumab")).toBe("Phase 3, nivolumab");
@@ -307,7 +349,7 @@ describe("labels", () => {
 
 describe("renderChart", () => {
   it("routes the non-cartesian types to their renderers", () => {
-    for (const [viz, mark] of [[bubble, 'class="bubble"'], [heatmap, 'class="heat"']] as const) {
+    for (const [viz, mark] of [[bubble, 'class="bubble"'], [heatmap, 'class="heat"'], [timeline, 'class="span"']] as const) {
       const html = renderToStaticMarkup(<>{renderChart(viz, noop)}</>);
       expect(html, viz.type).toContain(mark); expect(html, viz.type).not.toContain("<pre");
     }

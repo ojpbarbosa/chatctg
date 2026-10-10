@@ -12,6 +12,7 @@ export type Aggregate =
   | { kind: "points"; points: Point[]; dropped: number; withoutValue: number }
   | { kind: "graph"; nodes: GraphNode[]; edges: GraphEdge[]; kinds: { kind: string; label: string }[]; prunedEdges: number }
   | { kind: "rows"; studies: Study[] }
+  | { kind: "spans"; studies: Study[]; withoutValue: number }
   | { kind: "value"; total: number; studies: Study[] };
 export interface SpecContext {
   total_count: number; fetched: number; truncated: boolean; data_timestamp: string; citations_per_point: number;
@@ -56,6 +57,7 @@ export function templateTitle(p: Plan): string {
   const sec = p.secondary ? ` and ${DIMENSION_LABEL[p.secondary].toLowerCase()}` : "";
   const measure = p.metric === "trial_count" ? "trials" : METRIC_LABEL[p.metric].toLowerCase();
   if (p.chart === "scatter") return `${e} trials: enrollment by start date`;
+  if (p.chart === "timeline") return `${e} trials from start to primary completion`;
   switch (p.intent) {
     case "time_trend": return `${e} ${measure} per ${p.granularity ?? "year"}${p.secondary ? ` by ${DIMENSION_LABEL[p.secondary].toLowerCase()}` : ""}`;
     case "distribution": return `${e} ${measure} by ${dim}${sec}`;
@@ -89,6 +91,7 @@ export function planSummary(p: Plan): string {
   const measure = METRIC_PHRASE[p.metric];
   const parts: string[] = [];
   if (p.chart === "scatter") parts.push("enrollment against start date, one point per trial");
+  else if (p.chart === "timeline") parts.push("each trial from its start date to its primary completion date");
   else if (p.intent === "time_trend") parts.push(`${measure} per ${p.granularity ?? "year"}`);
   else if (p.intent === "network") parts.push(p.edge_kind ? EDGE_PHRASE[p.edge_kind] : "which entities appear together in trials");
   else if (p.intent === "lookup") parts.push("a list of trials");
@@ -112,6 +115,8 @@ export function notShown(p: Plan, agg: Aggregate): string | null {
     if (m.secondary && p.secondary) parts.push({ n: m.secondary, what: WITHOUT[p.secondary] });
   } else if (agg.kind === "points" && agg.withoutValue) {
     parts.push({ n: agg.withoutValue, what: "a start date or an enrollment count" });
+  } else if (agg.kind === "spans" && agg.withoutValue) {
+    parts.push({ n: agg.withoutValue, what: "a start date" });
   }
   if (!parts.length) return null;
   const phrase = parts.map((x) => `${trials(x.n)} without ${x.what}`).join(" and ");
@@ -140,7 +145,7 @@ export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
   const missing = notShown(p, agg);
   if (missing) sentences.push(missing);
   if (agg.kind === "points" && agg.dropped > 0) sentences.push(shownCut(agg.points.length, "most recent trial", "most recent trials"));
-  if (agg.kind === "rows" && agg.studies.length < ctx.total_count) sentences.push(shownCut(agg.studies.length, "most recently started trial", "most recently started"));
+  if ((agg.kind === "rows" || agg.kind === "spans") && agg.studies.length < ctx.total_count) sentences.push(shownCut(agg.studies.length, "most recently started trial", "most recently started"));
   if (agg.kind === "graph" && agg.prunedEdges > 0) sentences.push(shownCut(agg.edges.length, "strongest link", "strongest links"));
   sentences.push(`Data as of ${ctx.data_timestamp.slice(0, 10)}.`);
   return sentences.join(" ");
@@ -262,6 +267,23 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
       data: agg.studies.map((s) => row({
         nct_id: s.nct_id, title: s.title || s.nct_id, status: bucketLabel("status", s.status), phases: s.phases.map((ph) => bucketLabel("phase", ph)).join(", "),
         start_date: s.start_date, sponsor: s.lead_sponsor.name, conditions: conditionIdentity(s).join(", "), enrollment: s.enrollment,
+      }, 1, [citeSelf(s)])),
+    };
+  }
+
+  if (agg.kind === "spans") {
+    // Oldest start first, so the bars cascade down and to the right.
+    const studies = [...agg.studies].sort((a, b) => (a.start_date ?? "").localeCompare(b.start_date ?? "") || a.nct_id.localeCompare(b.nct_id));
+    const phases = fixedOrder("phase")!.filter((ph) => studies.some((s) => (s.phases[0] ?? "NA") === ph)).map((ph) => bucketLabel("phase", ph));
+    return {
+      type: "timeline", ...head,
+      encoding: {
+        start: { field: "start_date", type: "temporal", label: "Start date" }, end: { field: "end_date", type: "temporal", label: "Primary completion" },
+        label: { field: "title" }, color: { field: "phase", label: "Phase", values: phases }, point_id: "nct_id",
+      },
+      data: studies.map((s) => row({
+        nct_id: s.nct_id, title: s.title || s.nct_id, start_date: s.start_date, end_date: s.primary_completion_date,
+        phase: bucketLabel("phase", s.phases[0] ?? "NA"), status: bucketLabel("status", s.status),
       }, 1, [citeSelf(s)])),
     };
   }

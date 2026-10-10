@@ -9,6 +9,7 @@ import { NetworkView } from "./Network";
 import { ScatterView } from "./Scatter";
 import { SingleValueView } from "./SingleValue";
 import { TableView } from "./Table";
+import { TimelineView } from "./Timeline";
 import { WorldMapView } from "./WorldMap";
 
 export type OnPick = (citations: Citation[], label: string) => void;
@@ -25,6 +26,7 @@ export function renderChart(viz: Visualization, onPick: OnPick): ReactNode {
     case "single_value": return <SingleValueView viz={viz} onPick={onPick} />;
     case "bubble": return <BubbleView viz={viz} onPick={onPick} />;
     case "heatmap": return <HeatmapView viz={viz} onPick={onPick} />;
+    case "timeline": return <TimelineView viz={viz} onPick={onPick} />;
     default: return <pre className="json">{JSON.stringify(viz, null, 2)}</pre>;
   }
 }

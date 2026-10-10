@@ -20,6 +20,8 @@ export interface PlanInput { answers: InterpretationAnswers; entities: Entities;
 
 export const THRESHOLDS = { in_scope: 0.5, intent_alternatives: 0.4, chart_named: 0.6, recruiting_only: 0.7, combination: 0.6, phase_filter: 0.5 } as const;
 export const DEFAULT_LIMITS = { ranking: 10, country_bar: 15, table: 25, network: 40, open_distribution: 10 } as const;
+/** The most trials a timeline draws: one row each, so past this the rows stop being readable. */
+export const TIMELINE_CAP = 60;
 const OPEN_DIMENSIONS: Dimension[] = ["sponsor", "drug", "condition", "country"];
 
 export function defaultChart(intent: Intent, dimension: Dimension | null, secondary: Dimension | null): ChartType {
@@ -47,6 +49,7 @@ const GRIDS: ChartType[] = ["bubble", "heatmap"];
  * only when the chart was asked for explicitly.
  * With a secondary dimension, `bar` stays allowed and the planner draws it as `stacked_bar`, and `histogram` stays allowed and the planner drops the secondary.
  * A grid needs two categorical attributes: a distribution with a secondary dimension, or a comparison over anything but start dates.
+ * A timeline draws a lookup's trials, one bar each, so it is the lookup's other unasked chart.
  */
 export function allowedCharts(intent: Intent, dimension: Dimension | null, secondary: Dimension | null, explicit: boolean): ChartType[] {
   const set = new Set<ChartType>([defaultChart(intent, dimension, secondary)]);
@@ -69,7 +72,7 @@ export function allowedCharts(intent: Intent, dimension: Dimension | null, secon
     case "geographic":
       if (explicit) set.add("bar"); break;
     case "lookup":
-      if (explicit) set.add("scatter"); break;
+      set.add("timeline"); if (explicit) set.add("scatter"); break;
     default: break;
   }
   return [...set];
@@ -243,6 +246,9 @@ export function plan(input: PlanInput): PlanResult {
   secondary = drawn.shape.secondary;
   if (drawn.note) notes.push(drawn.note);
   if (intent === "geographic" && applied === "bar" && limit === null) limit = DEFAULT_LIMITS.country_bar;
+  if (applied === "timeline" && limit !== null && limit > TIMELINE_CAP) {
+    limit = TIMELINE_CAP; notes.push(`A timeline draws at most ${TIMELINE_CAP} trials, so the ${TIMELINE_CAP} most recently started are shown.`);
+  }
 
   // 6. Phase filter and queries.
   const { phase, note: phaseNote } = phaseFilter(a, request, drawn.shape);

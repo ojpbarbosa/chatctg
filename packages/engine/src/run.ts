@@ -6,6 +6,7 @@ import { buildGraph } from "./aggregate/graph";
 import { boundaryPeriod, MAX_YEARS, trimThrough, withinYear, yearBuckets, yearRange, type YearCount } from "./aggregate/periods";
 import { scatterPoints } from "./aggregate/points";
 import { tableRows } from "./aggregate/rows";
+import { timelineRows } from "./aggregate/spans";
 import { fakeExtractor, type Extractor } from "./extract";
 import { judgedEvent } from "./judged";
 import { DIMENSION_LABEL_PLURAL } from "./dimensions";
@@ -78,10 +79,11 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   // 3. Fetch every arm, with the title written meanwhile.
   const titleP = cappedTitle(deps, planSummary(p), signal).then((t) => { if (t.title) emit({ event: "title", data: { title: t.title } }); return t; });
   const fetchStart = now();
-  // A count reads a page for its citations and a table reads only its rows (the registry returns the most recently started first);
-  // every other chart aggregates up to max_studies.
+  // A count reads a page for its citations, and a table or a timeline reads only its rows (the registry returns the most recently
+  // started first); every other chart aggregates up to max_studies.
+  const listsRows = p.chart === "table" || p.chart === "timeline";
   const maxStudies = p.chart === "single_value" ? Math.min(COUNT_FETCH, request.max_studies)
-    : p.chart === "table" ? Math.min(p.limit ?? DEFAULT_LIMITS.table, request.max_studies)
+    : listsRows ? Math.min(p.limit ?? DEFAULT_LIMITS.table, request.max_studies)
     : request.max_studies;
   const fetched = await Promise.all(p.arms.map((arm) => deps.ctgov.fetchStudies(arm.query, { maxStudies, signal, onPage: (f, t) => emit({ event: "progress", data: { arm: arm.label, fetched: f, total: t } }) })));
   if (signal.aborted) return error(504, "timeout", "The request timed out while fetching from ClinicalTrials.gov");
@@ -128,10 +130,10 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   const total_count = results.reduce((n, r) => n + r.totalCount, 0);
   // Exact yearly counts read only the citations of each year.
   const fetched_count = yearly ? yearly.fetched : results.reduce((n, r) => n + r.fetched, 0);
-  // A count is the registry's exact total, a table is exactly the most recently started rows, and exact yearly counts are exact:
-  // none is a sample.
+  // A count is the registry's exact total, a table or a timeline is exactly the most recently started rows, and exact yearly counts
+  // are exact: none is a sample.
   const isCount = p.chart === "single_value"; const isTable = p.chart === "table";
-  const truncated = !isCount && !isTable && !yearly && anyTruncated;
+  const truncated = !isCount && !listsRows && !yearly && anyTruncated;
   const arm_totals = results.map((r, i) => ({ label: p.arms[i]!.label, total: r.totalCount }));
   const ctx = { total_count, fetched: fetched_count, truncated, data_timestamp: version.dataTimestamp, citations_per_point: request.citations_per_point, arm_totals };
   const visualization = buildVisualization(p, agg, ctx, title.title);
@@ -144,6 +146,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
     if (p.dimension === "drug" || p.dimension === "condition") notes.push("Drugs and conditions are identified by their MeSH terms when the registry mapped any, else by the names as registered.");
     if (p.chart === "map" && visualization.type === "map") { const unmapped = visualization.data.filter((r) => r.iso3 === null).length; if (unmapped) warnings.push(`${unmapped} countries could not be mapped to an ISO code and are listed without a location.`); }
   }
+  if (agg.kind === "spans") studies_without_value = agg.withoutValue;
   if (agg.kind === "points") { studies_without_value = agg.withoutValue; if (agg.dropped) warnings.push(`${agg.dropped} trials beyond the 500 most recent are not plotted.`); }
   const missing = notShown(p, agg);
   if (missing) notes.push(missing);
@@ -155,6 +158,7 @@ export async function runQuery(request: QueryRequest, deps: Deps, onEvent?: (e: 
   if (p.arms.length > 1) notes.push("A trial can match more than one arm, so coverage.total_count, the sum of the arms' totals, can count it more than once.");
   if (isCount) notes.push(`The count is the registry's total; the ${fmt(fetched_count)} most recently started trials were read for citations.`);
   if (isTable && agg.kind === "rows" && agg.studies.length < total_count) notes.push(`The table lists the ${fmt(agg.studies.length)} most recently started of ${fmt(total_count)} trials.`);
+  if (agg.kind === "spans" && agg.studies.length < total_count) notes.push(`The timeline shows the ${fmt(agg.studies.length)} most recently started of ${fmt(total_count)} trials.`);
   if (truncated) warnings.push(`Only the ${fmt(fetched_count)} most recently started of ${fmt(total_count)} trials were read; counts are over that sample, the total is exact.`);
   if (incomplete) warnings.push(`Periods before ${incomplete.from} are incomplete because only the ${fmt(incomplete.read)} most recently started trials were read; they are not shown.`);
   if (yearly) {
@@ -227,6 +231,7 @@ function aggregate(p: Plan, arms: { label: string; studies: Study[]; total: numb
       return { kind: "points", points: parts.flatMap((x) => x.points), dropped: parts.reduce((n, x) => n + x.dropped, 0), withoutValue: parts.reduce((n, x) => n + x.withoutValue, 0) };
     }
     case "table": return { kind: "rows", studies: tableRows(all, p.limit ?? 25) };
+    case "timeline": return { kind: "spans", ...timelineRows(all, p.limit ?? 25) };
     case "single_value": return { kind: "value", total: arms.reduce((n, a) => n + a.total, 0), studies: all };
     default: {
       const opts = { dimension: p.dimension ?? "phase", secondary: p.secondary, metric: p.metric, granularity: p.granularity, limit: p.limit };

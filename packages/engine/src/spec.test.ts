@@ -3,9 +3,10 @@ import { Visualization } from "@chatctg/contracts";
 import { bucketize, mergeArms } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";
+import { timelineRows } from "./aggregate/spans";
 import { buildVisualization, notShown, planSummary, singular, subtitle, templateTitle, type Aggregate } from "./spec";
 import type { Plan } from "./plan";
-import { SAMPLE } from "./test-studies";
+import { SAMPLE, study } from "./test-studies";
 
 const ctx = { total_count: 12, fetched: 12, truncated: false, data_timestamp: "2026-10-08T09:00:05", citations_per_point: 2, arm_totals: [{ label: "Pembrolizumab", total: 12 }] };
 const base = (over: Partial<Plan>): Plan => ({
@@ -179,6 +180,32 @@ describe("buildVisualization", () => {
     if (v.type !== "heatmap") throw new Error(v.type);
     expect(v.encoding.color).toEqual({ field: "enrollment_median", label: "Median enrollment", unit: "participants" });
     expect(v.data.find((d) => d.x_key === "COMPLETED" && d.y_key === "PHASE3")).toMatchObject({ enrollment_median: 1050, study_count: 4 });
+  });
+  it("timeline: one row per trial in start order, its primary completion or null, coloured by its first phase", () => {
+    const studies = [
+      study({ nct_id: "NCT00000021", start_date: "2022-05", primary_completion_date: "2024-12-31", phases: ["PHASE2", "PHASE3"], status: "ACTIVE_NOT_RECRUITING" }),
+      study({ nct_id: "NCT00000022", start_date: "2018-03-01", primary_completion_date: "2021-06", phases: ["PHASE3"] }),
+      study({ nct_id: "NCT00000023", start_date: "2020-01-15", primary_completion_date: null, phases: [], status: "RECRUITING", title: "" }),
+      study({ nct_id: "NCT00000024", start_date: null, phases: ["PHASE1"] }),
+    ];
+    const p = base({ intent: "lookup", chart: "timeline", dimension: null, limit: 25 });
+    const v = valid(buildVisualization(p, { kind: "spans", ...timelineRows(studies, 25) }, { ...ctx, total_count: 4 }, null));
+    if (v.type !== "timeline") throw new Error(v.type);
+    expect(v.encoding).toEqual({
+      start: { field: "start_date", type: "temporal", label: "Start date" }, end: { field: "end_date", type: "temporal", label: "Primary completion" },
+      label: { field: "title" }, color: { field: "phase", label: "Phase", values: ["Phase 2", "Phase 3", "Not applicable"] }, point_id: "nct_id",
+    });
+    expect(v.data.map((r) => [r.nct_id, r.start_date, r.end_date, r.phase, r.status])).toEqual([
+      ["NCT00000022", "2018-03-01", "2021-06", "Phase 3", "Completed"],
+      ["NCT00000023", "2020-01-15", null, "Not applicable", "Recruiting"],
+      ["NCT00000021", "2022-05", "2024-12-31", "Phase 2", "Active not recruiting"],
+    ]);
+    expect(v.data[1]).toMatchObject({ title: "NCT00000023", study_count: 1 });
+    expect(v.data[0]!.citations).toEqual([{ nct_id: "NCT00000022", title: "Study NCT00000022", field: "protocolSection.identificationModule.nctId", excerpt: "NCT00000022" }]);
+    expect(v.subtitle).toBe("4 trials on ClinicalTrials.gov. 1 trial without a start date is not shown. The 3 most recently started are shown. Data as of 2026-10-08.");
+    expect(v.title).toBe("Pembrolizumab trials from start to primary completion");
+    expect(planSummary(base({ intent: "lookup", chart: "timeline", dimension: null, recruiting_only: true, phase: "PHASE3", entities: { drugs: [], conditions: ["lupus"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null } })))
+      .toBe("A timeline chart of each trial from its start date to its primary completion date, for recruiting phase 3 lupus trials.");
   });
   it("histogram over enrollment bins", () => {
     const v = valid(buildVisualization(base({ chart: "histogram", dimension: "enrollment" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" }) }, ctx, null));

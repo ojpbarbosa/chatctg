@@ -23,6 +23,7 @@ describe("ChartSkeleton", () => {
     expect(ghost("bar")).toEqual({ shape: "bars", pieces: 6 });
     expect(ghost("bubble")).toEqual({ shape: "bubble", pieces: 18 });
     expect(ghost("heatmap")).toEqual({ shape: "heatmap", pieces: 18 });
+    expect(ghost("timeline")).toEqual({ shape: "timeline", pieces: 6 });
     expect(ghost("map")).toEqual({ shape: "block", pieces: 1 });
   });
 });

@@ -52,7 +52,7 @@ export function interpretationQuestions() {
       geographic: { what: "Where trials happen: countries, regions, a map, locations.", examples: ["Which countries have the most recruiting trials for lupus?", "Where are CAR-T trials run?"] },
       network: { what: "Relationships or co-occurrence between entities: which sponsors test which drugs, which drugs are combined, which drugs are tested for which conditions, who collaborates with whom.", examples: ["Show a network of sponsors and drugs for melanoma trials.", "Which drugs frequently co-occur in combination studies with pembrolizumab?"] },
       count: { what: "A single number: how many trials match.", not_for: "A number per category or per period.", examples: ["How many phase 3 psoriasis trials are recruiting?"] },
-      lookup: { what: "A list of specific trials or their details, or a plot of individual trials (one point per trial), rather than an aggregate.", examples: ["List recruiting trials for pediatric asthma in Canada.", "Which trials test tirzepatide in adolescents?"] },
+      lookup: { what: "A list of specific trials or their details, a plot of individual trials (one point per trial), or a timeline of when individual trials start and end, rather than an aggregate.", examples: ["List recruiting trials for pediatric asthma in Canada.", "Which trials test tirzepatide in adolescents?"] },
       other: { what: "None of the above, or the question cannot be answered with trial counts, lists or relationships." },
     }),
     dimension: choice<Dimension>("Which attribute of the trials should the answer be grouped, split or ranked by? Pick 'none' when the question names no attribute. When trials are compared across named things (conditions, drugs, countries), the attribute is what is measured for each of them, not the named things themselves. For any question about change over time pick 'start_year'.", DIMENSION_CRITERIA),
@@ -70,6 +70,11 @@ export function interpretationQuestions() {
       single_value: { what: "One number, such as a total count." },
       bubble: { what: "A grid of two attributes, one circle per pair of categories sized by its number of trials, such as phase by sponsor class, or the categories of one attribute for each of several named things.", not_for: "A single attribute (bar), or change over time (line)." },
       heatmap: { what: "A grid of two attributes with each cell shaded by its number of trials, such as status by phase, or the categories of one attribute for each of several named things.", not_for: "A single attribute (bar), or change over time (line)." },
+      timeline: {
+        what: "One bar per trial from its start date to its primary completion date: a timeline, schedule or Gantt chart of individual trials.",
+        not_for: "The number of trials per year or period (line), or a list of trial details (table).",
+        examples: ["timeline of recruiting phase 3 lupus trials", "the schedule of these trials", "when did they start and end", "when do these trials run"],
+      },
     }),
     chart_named: noul("Does the user explicitly name the kind of visual they want?", {
       true: "The question contains a word for a visual form: chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie.",

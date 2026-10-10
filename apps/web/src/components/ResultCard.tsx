@@ -33,8 +33,7 @@ export function ResultCard({ item, live, onDidYouMean }: { item: HistoryItem; li
         {r && r.visualization === null && <p className="sub">No chart answers this question.</p>}
         {r && (
           <div className="foot">
-            {typeof r.meta.timing.judged_ms === "number" && <span>judged in {ms(r.meta.timing.judged_ms)}</span>}
-            <span>Jev {ms(r.meta.timing.jev_ms)}</span><span>extraction {ms(r.meta.timing.extract_ms)}</span><span>ClinicalTrials.gov {ms(r.meta.timing.fetch_ms)}</span><span>total {ms(r.meta.timing.total_ms)}</span>
+            {typeof r.meta.timing.judged_ms === "number" && <span>Judged in {ms(r.meta.timing.judged_ms)}</span>}
             <span>{n(r.meta.coverage.fetched_count)} of {n(r.meta.coverage.total_count)} trials read{r.meta.coverage.truncated ? " (sample)" : ""}</span>
             {r.meta.warnings.map((w) => <span key={w} style={{ color: "var(--warn)" }}>{w}</span>)}
             <span style={{ marginLeft: "auto" }}><JsonToggle value={r} /></span>

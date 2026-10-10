@@ -75,9 +75,22 @@ export const HeatmapViz = z.object({
   data: z.array(DataRow),
 });
 
+/** One bar per trial from its start date to its primary completion date (null when the registry has none). Rows: `{ nct_id, title, start_date, end_date, phase, status }`. */
+export const TimelineViz = z.object({
+  type: z.literal("timeline"), ...head,
+  encoding: z.object({
+    start: z.object({ field: z.string(), type: z.literal("temporal"), label: z.string() }),
+    end: z.object({ field: z.string(), type: z.literal("temporal"), label: z.string() }),
+    label: z.object({ field: z.string() }),
+    color: z.object({ field: z.string(), label: z.string(), values: z.array(z.string()) }),
+    point_id: z.literal("nct_id"),
+  }),
+  data: z.array(DataRow),
+});
+
 export const Visualization = z.discriminatedUnion("type", [
   BarViz, GroupedBarViz, StackedBarViz, LineViz, HistogramViz, ScatterViz, NetworkViz, MapViz, TableViz, SingleValueViz,
-  BubbleViz, HeatmapViz,
+  BubbleViz, HeatmapViz, TimelineViz,
 ]);
 export type Visualization = z.infer<typeof Visualization>;
 export type BarViz = z.infer<typeof BarViz>;
@@ -92,3 +105,4 @@ export type TableViz = z.infer<typeof TableViz>;
 export type SingleValueViz = z.infer<typeof SingleValueViz>;
 export type BubbleViz = z.infer<typeof BubbleViz>;
 export type HeatmapViz = z.infer<typeof HeatmapViz>;
+export type TimelineViz = z.infer<typeof TimelineViz>;

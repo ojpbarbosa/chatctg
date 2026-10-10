@@ -61,6 +61,16 @@ describe("the engine over recorded registry pages", () => {
     const total = data.reduce((n, r) => n + Number(r.trial_count), 0);
     expect(total).toBeGreaterThanOrEqual(pembrolizumab.length - body.meta.coverage.studies_without_value);
   });
+  it("a timeline of the 25 most recently started trials, each from its start to its primary completion", async () => {
+    const body = okBody(await runQuery(req("Timeline of pembrolizumab trials"), fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "timeline" }, chart_named: { noul: 0.9 } }, { drugs: ["pembrolizumab"] }, pembrolizumab, 2909)));
+    if (body.visualization?.type !== "timeline") throw new Error(body.visualization?.type);
+    const { data } = body.visualization;
+    cited(data);
+    expect(data).toHaveLength(25);
+    expect(data.map((r) => String(r.start_date))).toEqual(data.map((r) => String(r.start_date)).sort());
+    for (const r of data) { expect(r.citations[0]!.nct_id).toBe(r.nct_id); if (r.end_date !== null) expect(String(r.end_date).slice(0, 7) >= String(r.start_date).slice(0, 7)).toBe(true); }
+    expect(body.meta.notes).toContain("The timeline shows the 25 most recently started of 2,909 trials.");
+  });
   it("sponsor to drug network", async () => {
     const body = okBody(await runQuery(req("Show a network of sponsors and drugs for pembrolizumab trials"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, { drugs: ["pembrolizumab"] }, pembrolizumab)));
     if (body.visualization?.type !== "network_graph") throw new Error(body.visualization?.type);

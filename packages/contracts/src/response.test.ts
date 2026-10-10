@@ -50,7 +50,7 @@ describe("Visualization", () => {
   });
 
   it("lists the ten first chart types, then the grid, timeline and flow types", () => {
-    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble", "heatmap"]);
+    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble", "heatmap", "timeline"]);
   });
 
   it("accepts a bubble spec over two categorical axes, and requires its size channel", () => {
@@ -73,6 +73,19 @@ describe("Visualization", () => {
     expect(Visualization.safeParse(v).success).toBe(true);
     const { color: _, ...uncoloured } = v.encoding;
     expect(Visualization.safeParse({ ...v, encoding: uncoloured }).success).toBe(false);
+  });
+
+  it("accepts a timeline spec with one row per trial, and an end date that may be unknown", () => {
+    const v = {
+      type: "timeline", title: "t", subtitle: "s",
+      encoding: {
+        start: { field: "start_date", type: "temporal", label: "Start date" }, end: { field: "end_date", type: "temporal", label: "Primary completion" },
+        label: { field: "title" }, color: { field: "phase", label: "Phase", values: ["Phase 3"] }, point_id: "nct_id",
+      },
+      data: [row({ nct_id: "NCT01234567", title: "A study", start_date: "2021-03", end_date: null, phase: "Phase 3", status: "Recruiting" })],
+    };
+    expect(Visualization.safeParse(v).success).toBe(true);
+    expect(Visualization.safeParse({ ...v, encoding: { ...v.encoding, point_id: "title" } }).success).toBe(false);
   });
 
   it("rejects a single_value with two rows", () => {

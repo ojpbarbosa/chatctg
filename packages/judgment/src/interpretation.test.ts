@@ -42,6 +42,13 @@ describe("interpretation questions", () => {
     expect(CHART_TYPES.slice(10).length).toBeGreaterThan(0);
   });
 
+  it("routes timelines and schedules to the timeline, and counts a timeline of trials as a lookup", () => {
+    const timeline = q.chart.criteria.timeline as { what: string; examples: string[] };
+    expect(timeline.what).toMatch(/start date to its primary completion date/);
+    expect(timeline.examples.join(" ")).toMatch(/timeline/); expect(timeline.examples.join(" ")).toMatch(/schedule/); expect(timeline.examples.join(" ")).toMatch(/start and end/);
+    expect((q.intent.criteria.lookup as { what: string }).what).toMatch(/timeline/);
+  });
+
   it("builds a small state with only the provided fields", () => {
     expect(interpretationState("q", {})).toEqual({ question: "q", provided: {} });
     expect(interpretationState("q", { drugs: ["a"], start_year: 2015 })).toEqual({ question: "q", provided: { drugs: ["a"], start_year: 2015 } });

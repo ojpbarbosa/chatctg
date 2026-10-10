@@ -198,8 +198,8 @@ describe("chart matrix", () => {
     expect(unasked.chart).toBe("table"); expect(unasked.interpretation.chart.reason).toMatch(/only used when asked for; using table$/);
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "bar" } }), entities: none, request: req({ chart: "scatter" }), models })).chart).toBe("scatter");
     expect(okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "table" } }), entities: none, request: req(), models })).chart).toBe("table");
-    expect(allowedCharts("lookup", null, null, false)).toEqual(["table"]);
-    expect(allowedCharts("lookup", null, null, true).sort()).toEqual(["scatter", "table"]);
+    expect(allowedCharts("lookup", null, null, false).sort()).toEqual(["table", "timeline"]);
+    expect(allowedCharts("lookup", null, null, true).sort()).toEqual(["scatter", "table", "timeline"]);
   });
   it("falls back to the allowed chart Jev rates next most likely", async () => {
     // A distribution over enrollment defaults to a histogram and may be a bar; a line cannot render it.
@@ -285,6 +285,35 @@ describe("chart matrix: heatmap", () => {
     const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
     expect(p.interpretation.chart).toEqual({ chosen: "heatmap", applied: "stacked_bar", explicit: false, reason: "heatmap cannot render a time trend over start date; the next most likely chart that can, stacked_bar, is used" });
     expect(provisionalChart(a)).toBe("stacked_bar");
+  });
+});
+
+describe("chart matrix: timeline", () => {
+  it("a timeline draws a lookup's trials, and only a lookup's, without needing to be named", () => {
+    expect(allowedCharts("lookup", null, null, false)).toContain("timeline");
+    for (const intent of ["time_trend", "distribution", "comparison", "ranking", "geographic", "network", "count"] as const) expect(allowedCharts(intent, "phase", "status", true), intent).not.toContain("timeline");
+    expect(defaultChart("lookup", null, null)).toBe("table");
+  });
+  it("applies the timeline Jev chose for a lookup, over the 25 most recently started trials by default", async () => {
+    const p = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "timeline" }, recruiting_only: { noul: 0.9 }, phase_filter: { choice: "PHASE3" } }), entities: { ...none, conditions: ["lupus"] }, request: req(), models }));
+    expect(p.chart).toBe("timeline"); expect(p.limit).toBe(25); expect(p.interpretation.chart.reason).toBeNull();
+    expect(p.arms[0]!.query).toEqual({ cond: '"lupus"', overallStatus: "RECRUITING", advanced: "AREA[Phase]PHASE3" });
+  });
+  it("caps a timeline at 60 trials, with a note", async () => {
+    const big = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "timeline" } }), entities: { ...none, limit: 100 }, request: req(), models }));
+    expect(big.limit).toBe(60); expect(big.interpretation.limit).toBe(100);
+    expect(big.notes).toContain("A timeline draws at most 60 trials, so the 60 most recently started are shown.");
+    const ten = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "timeline" } }), entities: { ...none, limit: 10 }, request: req(), models }));
+    expect(ten.limit).toBe(10); expect(ten.notes.join(" ")).not.toMatch(/at most 60/);
+    const table = okPlan(plan({ answers: await answers({ intent: { choice: "lookup" }, chart: { choice: "table" } }), entities: { ...none, limit: 100 }, request: req(), models }));
+    expect(table.limit).toBe(100);
+  });
+  it("a timeline over counts falls back, and the provisional chart agrees", async () => {
+    const a = await withChartMass({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "timeline" } }, { timeline: 0.6, line: 0.3 });
+    const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
+    expect(p.interpretation.chart).toEqual({ chosen: "timeline", applied: "line", explicit: false, reason: "timeline cannot render a time trend over start date; the next most likely chart that can, line, is used" });
+    expect(provisionalChart(a)).toBe("line");
+    expect(provisionalChart(await answers({ intent: { choice: "lookup" }, chart: { choice: "timeline" } }))).toBe("timeline");
   });
 });
 

@@ -195,6 +195,21 @@ describe("runQuery", () => {
     await runQuery(req("how many trials"), count);
     expect(count.ctgov.maxStudies).toEqual([50]);
   });
+  it("a timeline fetches only its rows, like a table, and leaves out the trials without a start date", async () => {
+    const deps = fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "timeline" }, chart_named: { noul: 0.9 } }, {}, SAMPLE, 3000);
+    const body = okBody(await runQuery(req("Timeline of the trials"), deps));
+    if (body.visualization?.type !== "timeline") throw new Error(body.visualization?.type);
+    expect(deps.ctgov.maxStudies).toEqual([25]);
+    expect(body.visualization.data).toHaveLength(11);
+    expect(body.visualization.data[0]).toMatchObject({ nct_id: "NCT00000007", start_date: "2018-09-09" });
+    expect(body.meta.coverage).toMatchObject({ total_count: 3000, fetched_count: 12, truncated: false, studies_without_value: 1 });
+    expect(body.meta.warnings).toEqual([]);
+    expect(body.meta.notes).toContain("The timeline shows the 11 most recently started of 3,000 trials.");
+    expect(body.meta.notes).toContain("1 trial without a start date is not shown.");
+    const capped = fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "timeline" } }, { limit: 200 });
+    await runQuery(req("Timeline of the 200 latest trials"), capped);
+    expect(capped.ctgov.maxStudies).toEqual([60]);
+  });
   it("lookup, scatter when asked, map", async () => {
     expect(okBody(await runQuery(req("list the trials"), fakeDeps({ intent: { choice: "lookup" }, chart: { choice: "table" } }, {}))).visualization?.type).toBe("table");
     expect(okBody(await runQuery(req("scatter of enrollment vs start"), fakeDeps({ intent: { choice: "distribution" }, chart: { choice: "scatter" }, chart_named: { noul: 0.9 } }, {}))).visualization?.type).toBe("scatter");
