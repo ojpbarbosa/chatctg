@@ -240,7 +240,7 @@ Example response, trimmed from [examples/distribution-melanoma-phases.json](exam
   "visualization": {
     "type": "bar",
     "title": "Melanoma trials by phase",
-    "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 531 trials without a phase are not shown. Data as of 2026-10-09.",
+    "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 531 trials without a phase are not shown. Data as of October 9, 2026.",
     "encoding": {
       "x": { "field": "phase", "type": "ordinal", "label": "Phase",
              "order": ["Early Phase 1", "Phase 1", "Phase 2", "Phase 3", "Phase 4", "Not applicable"] },

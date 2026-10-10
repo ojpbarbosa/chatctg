@@ -7,8 +7,8 @@
   "response": {
     "visualization": {
       "type": "sankey",
-      "title": "Melanoma trials by sponsor class and phase",
-      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. 531 trials without a phase are not shown. Data as of 2026-10-09.",
+      "title": "Melanoma trials flowing from sponsor class to phase",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. 531 trials without a phase are not shown. Data as of October 9, 2026.",
       "encoding": {
         "nodes": {
           "id_field": "id",
@@ -696,17 +696,17 @@
       "interpretation": {
         "intent": {
           "value": "distribution",
-          "p": 0.97,
-          "confidence": 0.97,
+          "p": 0.98,
+          "confidence": 0.98,
           "alternatives": []
         },
         "dimension": {
           "value": "sponsor_class",
-          "p": 0.94
+          "p": 0.93
         },
         "secondary_dimension": {
           "value": "phase",
-          "p": 0.92
+          "p": 0.88
         },
         "chart": {
           "chosen": "sankey",
@@ -787,13 +787,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 300,
-        "judged_ms": 300,
-        "extract_ms": 1182,
+        "jev_ms": 202,
+        "judged_ms": 202,
+        "extract_ms": 951,
         "fetch_ms": 1,
-        "title_ms": 533,
-        "aggregate_ms": 8,
-        "total_ms": 1721
+        "title_ms": 641,
+        "aggregate_ms": 10,
+        "total_ms": 1598
       },
       "notes": [
         "531 trials without a phase are not shown."

@@ -8,7 +8,7 @@
     "visualization": {
       "type": "network_graph",
       "title": "Sponsors and the drugs they test in melanoma trials",
-      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. The 40 strongest links are shown. Data as of 2026-10-09.",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. The 40 strongest links are shown. Data as of October 9, 2026.",
       "encoding": {
         "nodes": {
           "id_field": "id",
@@ -1415,13 +1415,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 596,
-        "judged_ms": 596,
-        "extract_ms": 1265,
+        "jev_ms": 228,
+        "judged_ms": 228,
+        "extract_ms": 889,
         "fetch_ms": 1,
-        "title_ms": 911,
-        "aggregate_ms": 30,
-        "total_ms": 2180
+        "title_ms": 668,
+        "aggregate_ms": 28,
+        "total_ms": 1560
       },
       "notes": [
         "Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur."

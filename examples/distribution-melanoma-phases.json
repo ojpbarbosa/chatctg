@@ -7,7 +7,7 @@
     "visualization": {
       "type": "bar",
       "title": "Melanoma trials by phase",
-      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 531 trials without a phase are not shown. Data as of 2026-10-09.",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 531 trials without a phase are not shown. Data as of October 9, 2026.",
       "encoding": {
         "x": {
           "field": "phase",
@@ -355,13 +355,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 366,
-        "judged_ms": 366,
-        "extract_ms": 870,
-        "fetch_ms": 2237,
-        "title_ms": 898,
+        "jev_ms": 571,
+        "judged_ms": 571,
+        "extract_ms": 1002,
+        "fetch_ms": 2330,
+        "title_ms": 580,
         "aggregate_ms": 12,
-        "total_ms": 3124
+        "total_ms": 3348
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

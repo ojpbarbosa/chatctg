@@ -8,7 +8,7 @@
     "visualization": {
       "type": "bubble",
       "title": "Melanoma trials by sponsor class and phase",
-      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. 531 trials without a phase are not shown. Data as of 2026-10-09.",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. 531 trials without a phase are not shown. Data as of October 9, 2026.",
       "encoding": {
         "x": {
           "field": "x",
@@ -739,17 +739,17 @@
       "interpretation": {
         "intent": {
           "value": "distribution",
-          "p": 0.99,
-          "confidence": 0.99,
+          "p": 1,
+          "confidence": 1,
           "alternatives": []
         },
         "dimension": {
           "value": "sponsor_class",
-          "p": 0.75
+          "p": 0.71
         },
         "secondary_dimension": {
           "value": "phase",
-          "p": 0.54
+          "p": 0.53
         },
         "chart": {
           "chosen": "bubble",
@@ -830,13 +830,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 203,
-        "judged_ms": 203,
-        "extract_ms": 754,
+        "jev_ms": 193,
+        "judged_ms": 193,
+        "extract_ms": 874,
         "fetch_ms": 0,
-        "title_ms": 1979,
-        "aggregate_ms": 12,
-        "total_ms": 2739
+        "title_ms": 618,
+        "aggregate_ms": 11,
+        "total_ms": 1497
       },
       "notes": [
         "531 trials without a phase are not shown."

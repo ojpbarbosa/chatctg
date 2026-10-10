@@ -31,6 +31,12 @@ const EDGE_PHRASE: Record<EdgeKind, string> = {
 const METRIC_PHRASE: Record<Metric, string> = { trial_count: "the number of trials", enrollment_total: "the total enrollment", enrollment_median: "the median enrollment" };
 const fmt = (n: number) => n.toLocaleString("en-US");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const LONG_DATE = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+/** The registry's data date spelled out, "October 9, 2026", read from the timestamp's own calendar date; anything else is returned as is. */
+export const dataDate = (timestamp: string): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(timestamp);
+  return m ? LONG_DATE.format(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))) : timestamp;
+};
 const trials = (n: number) => `${fmt(n)} ${n === 1 ? "trial" : "trials"}`;
 /** "a", "a and b", "a, b and c". */
 const listed = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}` : (xs[0] ?? ""));
@@ -148,7 +154,7 @@ export function subtitle(p: Plan, ctx: SpecContext, agg: Aggregate): string {
   if (agg.kind === "points" && agg.dropped > 0) sentences.push(shownCut(agg.points.length, "most recent trial", "most recent trials"));
   if ((agg.kind === "rows" || agg.kind === "spans") && agg.studies.length < ctx.total_count) sentences.push(shownCut(agg.studies.length, "most recently started trial", "most recently started"));
   if (agg.kind === "graph" && agg.prunedEdges > 0) sentences.push(shownCut(agg.edges.length, "strongest link", "strongest links"));
-  sentences.push(`Data as of ${ctx.data_timestamp.slice(0, 10)}.`);
+  sentences.push(`Data as of ${dataDate(ctx.data_timestamp)}.`);
   return sentences.join(" ");
 }
 

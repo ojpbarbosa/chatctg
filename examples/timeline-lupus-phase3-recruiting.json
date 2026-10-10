@@ -7,8 +7,8 @@
   "response": {
     "visualization": {
       "type": "timeline",
-      "title": "Recruiting phase 3 lupus trials from start date to completion date",
-      "subtitle": "17 trials on ClinicalTrials.gov. Recruiting phase 3 trials only. Data as of 2026-10-09.",
+      "title": "Recruiting phase 3 lupus trials timeline from start to completion",
+      "subtitle": "17 trials on ClinicalTrials.gov. Recruiting phase 3 trials only. Data as of October 9, 2026.",
       "encoding": {
         "start": {
           "field": "start_date",
@@ -330,8 +330,8 @@
       "interpretation": {
         "intent": {
           "value": "lookup",
-          "p": 0.84,
-          "confidence": 0.82,
+          "p": 0.85,
+          "confidence": 0.83,
           "alternatives": []
         },
         "dimension": null,
@@ -409,13 +409,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 239,
-        "judged_ms": 239,
-        "extract_ms": 910,
-        "fetch_ms": 138,
-        "title_ms": 667,
+        "jev_ms": 205,
+        "judged_ms": 205,
+        "extract_ms": 827,
+        "fetch_ms": 150,
+        "title_ms": 628,
         "aggregate_ms": 0,
-        "total_ms": 1579
+        "total_ms": 1457
       },
       "notes": [],
       "warnings": [],

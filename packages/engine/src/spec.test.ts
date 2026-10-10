@@ -4,7 +4,7 @@ import { bucketize, mergeArms } from "./aggregate/buckets";
 import { buildGraph } from "./aggregate/graph";
 import { scatterPoints } from "./aggregate/points";
 import { timelineRows } from "./aggregate/spans";
-import { buildVisualization, notShown, planSummary, singular, subtitle, templateTitle, type Aggregate } from "./spec";
+import { buildVisualization, dataDate, notShown, planSummary, singular, subtitle, templateTitle, type Aggregate } from "./spec";
 import type { Plan } from "./plan";
 import { SAMPLE, study } from "./test-studies";
 
@@ -49,10 +49,16 @@ describe("titles", () => {
   });
   it("subtitle states counts, truncation, counting rule and the data date", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "phase", metric: "trial_count" }) };
-    expect(subtitle(base({}), ctx, agg)).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
-    expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Recruiting trials only. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+    expect(subtitle(base({}), ctx, agg)).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of October 8, 2026.");
+    expect(subtitle(base({ recruiting_only: true }), { ...ctx, total_count: 12480, fetched: 3000, truncated: true }, agg)).toBe("12,480 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Recruiting trials only. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of October 8, 2026.");
     const bySponsor: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor_class", metric: "trial_count" }) };
-    expect(subtitle(base({ dimension: "sponsor_class", phase: "PHASE3" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov. Phase 3 trials only. Data as of 2026-10-08.");
+    expect(subtitle(base({ dimension: "sponsor_class", phase: "PHASE3" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov. Phase 3 trials only. Data as of October 8, 2026.");
+  });
+  it("spells the data date out as month, day and year", () => {
+    expect(dataDate("2026-10-08T09:00:05")).toBe("October 8, 2026");
+    expect(dataDate("2026-01-31T23:59:59")).toBe("January 31, 2026");
+    expect(dataDate("2025-12-01")).toBe("December 1, 2025");
+    expect(dataDate("not a date")).toBe("not a date");
   });
   it("makes a dimension's plural label singular", () => {
     expect(["phases", "statuses", "sponsor classes", "countries", "sexes", "age groups", "enrollment sizes"].map(singular))
@@ -60,20 +66,20 @@ describe("titles", () => {
   });
   it("states the other cuts as sentences", () => {
     const bySponsor: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor", metric: "trial_count", limit: 1 }) };
-    expect(subtitle(base({ intent: "ranking", dimension: "sponsor" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov. 4 more sponsors are not shown. Data as of 2026-10-08.");
+    expect(subtitle(base({ intent: "ranking", dimension: "sponsor" }), ctx, bySponsor)).toBe("12 trials on ClinicalTrials.gov. 4 more sponsors are not shown. Data as of October 8, 2026.");
     const byFour: Aggregate = { kind: "buckets", result: bucketize(SAMPLE, { dimension: "sponsor", metric: "trial_count", limit: 4 }) };
-    expect(subtitle(base({ intent: "ranking", dimension: "sponsor" }), ctx, byFour)).toBe("12 trials on ClinicalTrials.gov. 1 more sponsor is not shown. Data as of 2026-10-08.");
+    expect(subtitle(base({ intent: "ranking", dimension: "sponsor" }), ctx, byFour)).toBe("12 trials on ClinicalTrials.gov. 1 more sponsor is not shown. Data as of October 8, 2026.");
     const network = base({ intent: "network", chart: "network_graph", dimension: null });
-    expect(subtitle(network, ctx, { kind: "graph", ...buildGraph(SAMPLE, "sponsor_drug", 2) })).toBe("12 trials on ClinicalTrials.gov. The 2 strongest links are shown. Data as of 2026-10-08.");
-    expect(subtitle(network, ctx, { kind: "graph", ...buildGraph(SAMPLE, "sponsor_drug", 1) })).toBe("12 trials on ClinicalTrials.gov. The strongest link is shown. Data as of 2026-10-08.");
+    expect(subtitle(network, ctx, { kind: "graph", ...buildGraph(SAMPLE, "sponsor_drug", 2) })).toBe("12 trials on ClinicalTrials.gov. The 2 strongest links are shown. Data as of October 8, 2026.");
+    expect(subtitle(network, ctx, { kind: "graph", ...buildGraph(SAMPLE, "sponsor_drug", 1) })).toBe("12 trials on ClinicalTrials.gov. The strongest link is shown. Data as of October 8, 2026.");
     const one = buildVisualization(base({ intent: "lookup", chart: "table", dimension: null, limit: 1 }), { kind: "rows", studies: SAMPLE.slice(0, 1) }, ctx, null);
-    expect(one.subtitle).toBe("12 trials on ClinicalTrials.gov. The most recently started trial is shown. Data as of 2026-10-08.");
+    expect(one.subtitle).toBe("12 trials on ClinicalTrials.gov. The most recently started trial is shown. Data as of October 8, 2026.");
   });
   it("a comparison states each arm's total, since arms can share trials", () => {
     const agg: Aggregate = { kind: "buckets", result: bucketize(SAMPLE.filter((s) => s.phases.length), { dimension: "phase", metric: "trial_count" }) };
     const p = base({ intent: "comparison", chart: "grouped_bar", arms: [{ label: "pembrolizumab", query: {} }, { label: "nivolumab", query: {} }] });
     expect(subtitle(p, { ...ctx, total_count: 4707, arm_totals: [{ label: "pembrolizumab", total: 2973 }, { label: "nivolumab", total: 1734 }] }, agg))
-      .toBe("Pembrolizumab 2,973 and Nivolumab 1,734 trials on ClinicalTrials.gov. Each trial is counted once per phase. Data as of 2026-10-08.");
+      .toBe("Pembrolizumab 2,973 and Nivolumab 1,734 trials on ClinicalTrials.gov. Each trial is counted once per phase. Data as of October 8, 2026.");
     const three = [{ label: "pembrolizumab", total: 2973 }, { label: "nivolumab", total: 1734 }, { label: "ipilimumab", total: 1200 }];
     expect(subtitle(p, { ...ctx, total_count: 5907, arm_totals: three }, agg)).toMatch(/^Pembrolizumab 2,973, Nivolumab 1,734 and Ipilimumab 1,200 trials on ClinicalTrials\.gov\. /);
   });
@@ -202,7 +208,7 @@ describe("buildVisualization", () => {
     ]);
     expect(v.data[1]).toMatchObject({ title: "NCT00000023", study_count: 1 });
     expect(v.data[0]!.citations).toEqual([{ nct_id: "NCT00000022", title: "Study NCT00000022", field: "protocolSection.identificationModule.nctId", excerpt: "NCT00000022" }]);
-    expect(v.subtitle).toBe("4 trials on ClinicalTrials.gov. 1 trial without a start date is not shown. The 3 most recently started are shown. Data as of 2026-10-08.");
+    expect(v.subtitle).toBe("4 trials on ClinicalTrials.gov. 1 trial without a start date is not shown. The 3 most recently started are shown. Data as of October 8, 2026.");
     expect(v.title).toBe("Pembrolizumab trials from start to primary completion");
     expect(planSummary(base({ intent: "lookup", chart: "timeline", dimension: null, recruiting_only: true, phase: "PHASE3", entities: { drugs: [], conditions: ["lupus"], sponsors: [], countries: [], start_year: null, end_year: null, limit: null } })))
       .toBe("A timeline chart of each trial from its start date to its primary completion date, for recruiting phase 3 lupus trials.");
@@ -260,7 +266,7 @@ describe("buildVisualization", () => {
     if (t.type !== "table") throw new Error(t.type);
     expect(t.encoding.columns.map((c) => c.field)).toEqual(["nct_id", "title", "status", "phases", "start_date", "sponsor", "conditions", "enrollment"]);
     expect(t.data[0]).toMatchObject({ nct_id: "NCT00000001", phases: "Phase 3", study_count: 1 });
-    expect(t.subtitle).toBe("12 trials on ClinicalTrials.gov. The 3 most recently started are shown. Data as of 2026-10-08.");
+    expect(t.subtitle).toBe("12 trials on ClinicalTrials.gov. The 3 most recently started are shown. Data as of October 8, 2026.");
     const s = valid(buildVisualization(base({ intent: "count", chart: "single_value", dimension: null }), { kind: "value", total: 2973, studies: SAMPLE }, ctx, null));
     if (s.type !== "single_value") throw new Error(s.type);
     expect(s.data[0]).toMatchObject({ value: 2973, label: "trials", study_count: 2973 }); expect(s.data[0]!.citations).toHaveLength(2);

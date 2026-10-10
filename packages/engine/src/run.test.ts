@@ -17,7 +17,7 @@ describe("runQuery", () => {
     expect(body.meta.coverage).toMatchObject({ total_count: 12, fetched_count: 12, truncated: false, studies_without_value: 1 });
     expect(body.meta.notes.join(" ")).toMatch(/once per phase/);
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
-    expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+    expect(body.visualization?.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of October 8, 2026.");
     expect(body.meta.source.requests[0]?.url).toContain("query.intr");
     expect(body.meta.timing.total_ms).toBeGreaterThanOrEqual(0);
     expect(events.map((e) => e.event)).toEqual(["judged", "interpretation", "progress", "title"]);
@@ -78,7 +78,7 @@ describe("runQuery", () => {
     expect(body.meta.source.requests[2]).toMatchObject({ total_count: 250, fetched: 1 });
     expect(body.meta.notes).toContain("Counts per year are exact (one registry count per year); citations show the 1 most recent trials of each year.");
     expect(body.meta.warnings).toEqual([]);
-    expect(body.visualization.subtitle).toBe("3,000 trials on ClinicalTrials.gov. Data as of 2026-10-08.");
+    expect(body.visualization.subtitle).toBe("3,000 trials on ClinicalTrials.gov. Data as of October 8, 2026.");
   });
   it("exact yearly counts start at the question's start year, and keep at most 40 years", async () => {
     const trend = { intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, chart: { choice: "bar" } };
@@ -141,7 +141,7 @@ describe("runQuery", () => {
     expect(body.visualization.data.filter((r) => r.study_count === 0).length).toBeGreaterThan(0);
     expect(body.meta.interpretation.chart).toMatchObject({ chosen: "bubble", applied: "bubble", reason: null });
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
-    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of October 8, 2026.");
   });
   it("heatmap over a comparison: one fetch per arm, the arms down, phases across, every cell present", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "heatmap" }, chart_named: { noul: 0.9 } }, { drugs: ["pembrolizumab", "nivolumab"] });
@@ -160,7 +160,7 @@ describe("runQuery", () => {
     expect(body.visualization.data.links).toHaveLength(6);
     expect(body.meta.interpretation.chart).toMatchObject({ chosen: "sankey", applied: "sankey", reason: null });
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
-    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. 1 trial without a phase is not shown. Data as of 2026-10-08.");
+    expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. 1 trial without a phase is not shown. Data as of October 8, 2026.");
   });
   it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
