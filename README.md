@@ -4,19 +4,19 @@ ChatCTG (short for ChatClinicalTrials.gov) answers a question about clinical tri
 
 The judge, a System One model (TypeSafe's Jev in this build), answers every closed decision as a probability over fixed options. The extractor, an LLM under a strict JSON schema (`gpt-5.4-nano` in this build), copies the names the question mentions, and the titler, the same LLM, titles the finished plan. The rest is code: plan the requests to the registry (ClinicalTrials.gov v2), fetch, aggregate, cite, and validate against a zod contract. No number comes from a model.
 
-The diagram gives each stage's typical time in the nine example runs, which took 1.4 to 4.7 s end to end; [docs/architecture.excalidraw](docs/architecture.excalidraw) is the detailed drawing.
+The diagram gives each stage's typical time in the nine example runs, which took 1.5 to 5.0 s end to end. The detailed drawing is [docs/architecture.excalidraw](docs/architecture.excalidraw), which opens at [excalidraw.com](https://excalidraw.com).
 
 ```mermaid
 flowchart LR
   Q([Question]) --> J[Judge]
   Q --> X[Extractor]
-  J -- "about 0.2 s" --> P[Plan]
-  X -- "about 0.9 s" --> P
+  J -- "about 0.3 s" --> P[Plan]
+  X -- "about 1 s" --> P
   P --> F[Fetch from the registry]
   P --> T[Titler]
-  F -- "about 2.5 s for 3,000 trials" --> A[Aggregate and cite]
-  A -- "about 10 ms" --> S[Spec and meta]
-  T -- "about 0.7 s" --> S
+  F -- "2.4 to 3.2 s for 3,000 trials" --> A[Aggregate and cite]
+  A -- "about 5 ms" --> S[Spec and meta]
+  T -- "about 0.6 s" --> S
   S --> R(["JSON response, or SSE events to the UI"])
 ```
 
@@ -48,7 +48,7 @@ Docker: `docker build -t chatctg . && docker run --rm -p 3001:3001 --env-file .e
 
 ### Deploy
 
-`fly.toml` runs one `shared-cpu-1x` machine with 512 MB in `gru` (São Paulo), health-checked on `/health`. A deployed instance answers at https://chatctg.fly.dev.
+`fly.toml` runs one `shared-cpu-1x` machine with 512 MB in `gru` (São Paulo), health-checked on `/health`. A deployed instance answers at https://chatctg.fly.dev. To deploy your own, set `app` in `fly.toml` to a name of yours, then:
 
 ```bash
 fly auth login
@@ -97,7 +97,7 @@ The body is `{ visualization, meta }`. `visualization` is a union on `type`, eac
 | `type` | `encoding` | `data` |
 |---|---|---|
 | `bar` | `x` (dimension or `period`), `y` (metric), `orientation`, `sort` | `{ <x>, <x>_key, <metric>, iso3? }` |
-| `grouped_bar`, `stacked_bar` | as `bar`, plus `series` | as `bar`, plus `series`, zero-filled; at most 8 series |
+| `grouped_bar`, `stacked_bar` | as `bar`, plus `series` | as `bar`, plus `series`, zero-filled; an open second grouping keeps its top 8 |
 | `line` | `x` (`period`, `granularity`), `y`, `series?` | `{ period, series?, <metric> }`, gap-filled |
 | `histogram` | `x` with `bins`, `y` | `{ <x>: bin, <x>_key, <metric> }`; enrollment bins `1-50` to `1001+` |
 | `scatter` | `x` start date, `y` enrollment, `color?`, `series?`, `point_id` | one per trial, at most 500: `{ nct_id, title, start_date, enrollment, phase, series? }` |
@@ -117,7 +117,7 @@ The body is `{ visualization, meta }`. `visualization` is a union on `type`, eac
 | `meta` field | Meaning |
 |---|---|
 | `request` | the validated request as received, with defaults applied |
-| `extraction` | the extractor's raw output, before request fields override it: `{ drugs, conditions, sponsors, countries, start_year, end_year, limit }` |
+| `extraction` | the extractor's reading of the question, before request fields override it: `{ drugs, conditions, sponsors, countries, start_year, end_year, limit }` |
 | `interpretation` | every decision, with the judge's probability where it has one: `intent` (with `alternatives` when the confidence is below 0.4), `dimension`, `secondary_dimension`, `chart` (`chosen`, `applied`, `explicit`, `reason`), `metric`, `granularity`, `edge_kind`, `entities`, `time_window`, `limit`, `recruiting_only`, `combination`, `phase_filter`, `provided_fields`, `question_set` (version 3) and `models` |
 | `arms` | each arm's label and exact registry parameters |
 | `source` | the registry's version and `data_timestamp`, and every URL sent with its `total_count` and `fetched` |
@@ -167,7 +167,7 @@ Every error is `{ "error": { "code", "message", "details"? } }`.
 |---|---|---|---|
 | 400 | `invalid_request` | the body fails the schema | the zod issues |
 | 422 | `not_answerable` | `in_scope` below 0.5, or intent `other` | the interpretation |
-| 502 | `upstream_failed` | the judge, the extractor or the registry failed after retries | `upstream`, `reason`, and `detail` (only the status after a 401 or 403) |
+| 502 | `upstream_failed` | the judge, the extractor or the registry failed after retries | `upstream`, `reason`, and `detail` (after a 401 or 403, only the status) |
 | 504 | `timeout` | the 40 s budget ran out | none |
 | 500 | `internal` | anything else, including a response that fails its own contract | `issues` or `detail` |
 
@@ -190,7 +190,7 @@ sequenceDiagram
     A->>X: question
   end
   J-->>A: probabilities
-  A-->>C: judged, about 0.2 s
+  A-->>C: judged, about 0.3 s
   X-->>A: names
   A-->>C: interpretation, about 1 s
   par
@@ -229,9 +229,10 @@ flowchart TD
   IT -- "any other intent" --> NO[Normalise the dimensions to the intent]
   NO --> FL[Flags]
   FL -- "recruiting_only ≥ 0.7" --> F1[Recruiting trials only]
-  FL -- "combination ≥ 0.6" --> F2[Drugs joined with AND]
+  FL -- "combination ≥ 0.6" --> F2["AND between two or more drugs, outside a comparison"]
   FL -- "phase_filter ≥ 0.5" --> F3[One phase on every arm]
   FL -- "chart_named ≥ 0.6" --> F4[The chart is explicit]
+  FL -- "none reached" --> AR
   F1 & F2 & F3 & F4 --> AR{Comparison?}
   AR -- "two or more names in one list" --> AN[One arm per name]
   AR -- "fewer than two" --> A1[One arm, drawn as a distribution]
@@ -246,7 +247,7 @@ flowchart TD
 
 ### The twelve judge questions
 
-The judge answers all twelve in one request ([wording](packages/judgment/src/interpretation.ts)), an answer that omits an option or does not sum to 1 is rejected, and the thresholds are `THRESHOLDS` in [plan.ts](packages/engine/src/plan.ts).
+The judge answers all twelve in one request, worded in [interpretation.ts](packages/judgment/src/interpretation.ts), and an answer that omits an option or does not sum to 1 is rejected. The thresholds are `THRESHOLDS` in [plan.ts](packages/engine/src/plan.ts).
 
 | Key | Type | Decides | Threshold or rule |
 |---|---|---|---|
@@ -270,7 +271,7 @@ The judge answers all twelve in one request ([wording](packages/judgment/src/int
 | Intent | Default | Also allowed |
 |---|---|---|
 | `time_trend` | `line` | `bar`; `stacked_bar` with a second grouping; `scatter` when asked |
-| `distribution` | `bar`; `stacked_bar` with a second grouping; `histogram` over enrollment | `grouped_bar`, `bubble`, `heatmap` and `sankey` with a second grouping, but no `sankey` of a median; `scatter` when asked |
+| `distribution` | `bar`; `stacked_bar` with a second grouping; `histogram` over enrollment | `bar` over enrollment; `grouped_bar`, `bubble`, `heatmap` and `sankey` with a second grouping, but no `sankey` of a median; `scatter` when asked |
 | `comparison` | `grouped_bar`; `line` over start year | `stacked_bar`; `bubble` and `heatmap` with the arms as y, except over start year; `scatter` when asked |
 | `ranking` | `bar`, horizontal, sorted by value | `map` over country |
 | `geographic` | `map` | `bar` (top 15) when asked |
@@ -278,7 +279,7 @@ The judge answers all twelve in one request ([wording](packages/judgment/src/int
 | `lookup` | `table` | `timeline` (at most 60 trials); `scatter` when asked |
 | `other` | none (422) | none |
 
-A `bar` with a second grouping is drawn stacked, and a `histogram` drops the second grouping. When the judge names one attribute for both groupings of a bubble, heatmap or sankey, the second becomes its next most likely attribute. Each adjustment adds a note.
+With a second grouping, a `bar` is drawn stacked and a `histogram` drops it, and a grid or sankey given one attribute twice takes the next most likely one as the second.
 
 ## Data handling
 
@@ -287,7 +288,7 @@ A `bar` with a second grouping is drawn stacked, and a `histogram` drops the sec
 | Fields | Every request asks for the same 19 fields, checked against the live API on 2026-10-09: `NCTId`, `BriefTitle`, `OverallStatus`, `Phase`, `StartDate`, `PrimaryCompletionDate`, `LeadSponsorName`, `LeadSponsorClass`, `CollaboratorName`, `Condition`, `InterventionName`, `InterventionType`, `LocationCountry`, `EnrollmentCount`, `StudyType`, `Sex`, `StdAge`, `ConditionMeshTerm`, `InterventionMeshTerm`. A missing value becomes an empty list or null. |
 | Identity | A drug is its intervention MeSH terms, else the lowercased names of its drug and biological interventions. A condition is its MeSH terms, else its registered conditions. Both are deduplicated case-insensitively. |
 | Counting | A trial counts once per value of a multi-valued attribute (phase, intervention type, drug, condition, country, age group), so a Phase 1/2 trial counts in both phases. The subtitle says so ("Each trial is counted once per phase."), for the grouping and for a second grouping alike. Trials without a value are counted in `studies_without_value` and named in the subtitle. |
-| Truncation | Pages of 1,000, sorted `StartDate:desc`, up to `max_studies`. Past it, counts cover the most recently started trials, `truncated` is true, and the subtitle says how many were read. A count is the registry's `totalCount`, and a table or a timeline reads only its rows, so neither is a sample. |
+| Truncation | Pages of 1,000, sorted `StartDate:desc`, up to `max_studies`. Past it, counts cover the most recently started trials, `truncated` is true, and the subtitle says how many were read. A count is the registry's exact `totalCount`, and a table or a timeline reads only its own rows; none of the three is a sample. |
 | Exact yearly counts | A yearly trial count over a truncated fetch asks the registry for each year's count, one request per year and arm, up to 40 years. Other trends over a truncated fetch keep the sample and drop the incomplete periods, with a warning. |
 | Caching | 200 registry responses in memory for an hour, keyed by URL; the registry's version for ten minutes. |
 
@@ -296,10 +297,12 @@ A `bar` with a second grouping is drawn stacked, and a `histogram` drops the sec
 A data point is one bar, one point of a line or scatter, one country, one network edge or sankey link, one grid cell, one table row or timeline bar, or the single value. Each data point cites up to `citations_per_point` of its trials, the most recently started first, and `study_count` gives how many there are. A citation names the trial, the JSON path in its registry record, and the value found there. A network edge, a sankey link or a grid cell of a distribution cites both values, as in this one from [the sankey example](examples/sankey-melanoma-sponsor-class-phase.json)'s largest link:
 
 ```json
-{ "nct_id": "NCT07170293", "title": "Phase II Trial of Tunlametinib in Patients With NRAS Mutant Non-melanoma Refractory Solid Tumors",
+{ "nct_id": "NCT07807878", "title": "Trial of Temozolomide in BAP1 Mutated Patients With Advanced or Metastatic Cutaneous Melanoma",
   "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
   "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE2\"" }
 ```
+
+The registry URLs in `meta.source` let anyone re-check a number while the registry's `data_timestamp` holds.
 
 ```mermaid
 flowchart LR
@@ -316,15 +319,15 @@ flowchart LR
 
 | File | Question | Type | Total trials | Judge | Total |
 |---|---|---|---|---|---|
-| [time-trend-pembrolizumab.json](examples/time-trend-pembrolizumab.json) | How has the number of trials for this drug changed per year since 2015? (drug_name pinned in the request) | line | 2,909 | 472 ms | 4700 ms |
-| [distribution-melanoma-phases.json](examples/distribution-melanoma-phases.json) | How are melanoma trials distributed across phases? | bar | 3,775 | 388 ms | 3152 ms |
-| [comparison-pembrolizumab-nivolumab.json](examples/comparison-pembrolizumab-nivolumab.json) | Compare phases for trials involving pembrolizumab vs nivolumab | grouped_bar | 5,004 | 206 ms | 3561 ms |
-| [geographic-lupus-recruiting.json](examples/geographic-lupus-recruiting.json) | Which countries have the most recruiting trials for lupus? (chart pinned in the request) | map | 324 | 249 ms | 2311 ms |
-| [network-sponsors-drugs-melanoma.json](examples/network-sponsors-drugs-melanoma.json) | Show a network of sponsors and drugs for melanoma trials | network_graph | 3,775 | 249 ms | 1892 ms |
-| [bubble-melanoma-phase-sponsor-class.json](examples/bubble-melanoma-phase-sponsor-class.json) | Show phase by sponsor class for melanoma trials as bubbles | bubble | 3,775 | 209 ms | 1880 ms |
-| [heatmap-asthma-status-phase.json](examples/heatmap-asthma-status-phase.json) | Heatmap of trial status by phase for asthma | heatmap | 5,298 | 207 ms | 3760 ms |
-| [timeline-lupus-phase3-recruiting.json](examples/timeline-lupus-phase3-recruiting.json) | Timeline of recruiting phase 3 lupus trials (trial_status pinned in the request) | timeline | 17 | 258 ms | 1431 ms |
-| [sankey-melanoma-sponsor-class-phase.json](examples/sankey-melanoma-sponsor-class-phase.json) | Show how melanoma trials flow from sponsor class to phase as a sankey | sankey | 3,775 | 195 ms | 1644 ms |
+| [time-trend-pembrolizumab.json](examples/time-trend-pembrolizumab.json) | How has the number of trials for this drug changed per year since 2015? (drug_name pinned in the request) | line | 2,909 | 497 ms | 5010 ms |
+| [distribution-melanoma-phases.json](examples/distribution-melanoma-phases.json) | How are melanoma trials distributed across phases? | bar | 3,775 | 364 ms | 3692 ms |
+| [comparison-pembrolizumab-nivolumab.json](examples/comparison-pembrolizumab-nivolumab.json) | Compare phases for trials involving pembrolizumab vs nivolumab | grouped_bar | 5,004 | 205 ms | 3528 ms |
+| [geographic-lupus-recruiting.json](examples/geographic-lupus-recruiting.json) | Which countries have the most recruiting trials for lupus? (chart pinned in the request) | map | 324 | 228 ms | 1590 ms |
+| [network-sponsors-drugs-melanoma.json](examples/network-sponsors-drugs-melanoma.json) | Show a network of sponsors and drugs for melanoma trials | network_graph | 3,775 | 268 ms | 1486 ms |
+| [bubble-melanoma-phase-sponsor-class.json](examples/bubble-melanoma-phase-sponsor-class.json) | Show phase by sponsor class for melanoma trials as bubbles | bubble | 3,775 | 230 ms | 1491 ms |
+| [heatmap-asthma-status-phase.json](examples/heatmap-asthma-status-phase.json) | Heatmap of trial status by phase for asthma | heatmap | 5,298 | 194 ms | 4511 ms |
+| [timeline-lupus-phase3-recruiting.json](examples/timeline-lupus-phase3-recruiting.json) | Timeline of recruiting phase 3 lupus trials (trial_status pinned in the request) | timeline | 17 | 365 ms | 4195 ms |
+| [sankey-melanoma-sponsor-class-phase.json](examples/sankey-melanoma-sponsor-class-phase.json) | Show how melanoma trials flow from sponsor class to phase as a sankey | sankey | 3,775 | 268 ms | 1572 ms |
 
 ## Validation
 
@@ -334,7 +337,7 @@ Each check, its latest result, and where its full numbers live.
 |---|---|---|
 | Judge agreement: TypeSafe's `jev-latest`, question set version 3 | 122 of 123 labels (99%) on 33 questions, p50 211 ms. The miss: phase named for both groupings of a heatmap, which the planner repairs. | [eval/report.md](eval/report.md) |
 | Extractor benchmark: 24 questions with labelled names | OpenAI's `gpt-5.4-nano` 23 of 24 at p50 770 ms, against `gpt-4.1-nano` 22 of 24 at p50 795 ms | [eval/report.md](eval/report.md) |
-| Offline tests, with fakes for the three services over twelve studies built to exercise every counting rule | 307 tests in 29 files pass | `npm run check` |
+| Offline tests, with fakes for the three services over twelve studies built to exercise every counting rule | 310 tests in 29 files pass | `npm run check` |
 | Two registry pages recorded on 2026-10-09, run through the engine | a distribution, a network, a map, a bubble, a heatmap, a timeline and a sankey, each valid against the contract | `packages/engine/src/fixtures.test.ts` |
 
 ## Design decisions and trade-offs
@@ -346,7 +349,7 @@ Each choice, why it was made, and what it costs.
 | A judged pipeline, not an agent or text-to-SQL | An agent needs three to six round trips and plans inside a generative model. Text-to-SQL needs a registry mirror that goes stale. Here generation only copies names and rephrases the plan. The cost: only the classes the options describe (nine intents, thirteen dimensions, fourteen charts). |
 | A judge plus an extractor, not one LLM call | The judge gives a probability for every option, which thresholds can act on and `meta` can show, and it cannot answer outside its options. The cost: two vendors, and wording matters (four edits took agreement from 95% to 99%). |
 | Download and aggregate, not a count query per bucket | One fetch serves any grouping, medians, networks and scatters, and every bucket can cite its trials. The cost: past `max_studies` the answer covers the most recently started trials, and says so. |
-| 19 fields and a cap of 3,000 | Small pages, about 2.5 s for three, and a deterministic sample. A caller can raise the cap to 10,000 and wait longer. |
+| 19 fields and a cap of 3,000 | Small pages, 2.4 to 3.2 s for three, and a deterministic sample. A caller can raise the cap to 10,000 and wait longer. |
 | A title from the plan, not from the question | The titler can only rephrase what was built. It runs beside the fetch, capped at 4 s with a template fallback. The subtitle is never generated. The cost: titles follow the plan's wording. |
 | zod as the one contract | Validation, types, `/schema` and the check of every response come from one schema. The cost: the JSON Schema loses refinements such as the year order. |
 | Clients that never throw | Every failure is a typed value with one status and one `reason`, and the tests assert each. |
@@ -357,8 +360,8 @@ What this build does not do yet, and the fix for each where there is one.
 
 | Limitation | Mitigation or next step |
 |---|---|
-| An arm's pages are fetched one after another, about 0.8 s each | Split the query by start date so they run in parallel |
-| The extractor takes about 0.9 s, the judge about 0.2 s | Let the judge pick spans from the question's own n-grams |
+| An arm's pages are fetched one after another, 0.8 to 1.1 s each | Split the query by start date so they run in parallel |
+| The extractor takes about 1 s, the judge about 0.3 s | Let the judge pick spans from the question's own n-grams |
 | No synonyms: "Keytruda" and "pembrolizumab" are separate queries, and a drug with and without MeSH terms can make two buckets | A synonym table or a MeSH lookup before the fetch |
 | Extractor slips, such as "started in 2023" read as from 2023 on | Check each name and year against the registry before the fetch |
 | Quarterly, monthly, split and enrollment trends over more than `max_studies` show only the periods the sample covers in full | Exact counts per period, one request per period and series |
@@ -377,7 +380,7 @@ Designed deliberately by the author:
 - the thresholds and the chart compatibility matrix;
 - the request and response contract;
 - the citation rules: what a data point cites, the field path and excerpt per dimension, the two-ended edge citation, `meta.source.requests`;
-- the evaluation set: the 33 questions and their labels (25, plus eight for the four chart types the chart question gained in version 3).
+- the evaluation set: the 25 original questions and their labels (eight more were added with the four new chart types).
 
 Generated with Claude Code and adapted: the workspace boilerplate, the Recharts and D3 chart components, the CSS, and the test scaffolding. The four wording clarifications after the first evaluation run were made during implementation and checked against the unchanged labels. The twelfth question, `phase_filter`, was specified by the author after the first evaluation and scored on five new labels. The Jev client is adapted from the author's own earlier client (fetch over `POST /v1/systemone`, timeouts, retries with jitter, strict validation of every answer, never throwing).
 
