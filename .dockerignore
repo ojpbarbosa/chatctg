@@ -1,9 +1,17 @@
 node_modules
+**/node_modules
 .env
 .env.*
 api_key
 *.png
+*.md
 .git
+.DS_Store
+.superpowers
+.vscode
+coverage
+**/dist
+**/*.tsbuildinfo
 apps/api/public
 examples
 docs

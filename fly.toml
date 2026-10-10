@@ -1,0 +1,31 @@
+# Fly.io configuration for ChatCTG: one small machine serving the API and the built web app.
+# Deploy: fly auth login; fly launch --copy-config --no-deploy; fly secrets set TYPESAFE_API_KEY=… OPENAI_API_KEY=…; fly deploy.
+# The keys are Fly secrets, never in this file or the image (.dockerignore drops .env).
+app = "chatctg"
+primary_region = "gru" # São Paulo
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3001" # read by apps/api/src/index.ts; must match internal_port
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # One machine stays up so a question never waits for a cold start; 0 lets Fly stop it when idle.
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
