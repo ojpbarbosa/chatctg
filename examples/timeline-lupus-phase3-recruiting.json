@@ -7,7 +7,7 @@
   "response": {
     "visualization": {
       "type": "timeline",
-      "title": "Recruiting phase 3 lupus trials timeline from start to completion",
+      "title": "Recruiting phase 3 lupus trials from start to primary completion dates",
       "subtitle": "17 trials on ClinicalTrials.gov. Recruiting phase 3 trials only. Data as of October 9, 2026.",
       "encoding": {
         "start": {
@@ -27,7 +27,6 @@
           "field": "phase",
           "label": "Phase",
           "values": [
-            "Phase 2",
             "Phase 3"
           ]
         },
@@ -286,7 +285,7 @@
           "title": "Sirolimus in Patients With Systemic Lupus Erythematosus-Associated Immune Thrombocytopenia",
           "start_date": "2026-06-07",
           "end_date": "2027-09-30",
-          "phase": "Phase 2",
+          "phase": "Phase 3",
           "status": "Recruiting"
         },
         {
@@ -330,8 +329,8 @@
       "interpretation": {
         "intent": {
           "value": "lookup",
-          "p": 0.85,
-          "confidence": 0.83,
+          "p": 0.87,
+          "confidence": 0.85,
           "alternatives": []
         },
         "dimension": null,
@@ -409,13 +408,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 205,
-        "judged_ms": 205,
-        "extract_ms": 827,
-        "fetch_ms": 150,
-        "title_ms": 628,
+        "jev_ms": 258,
+        "judged_ms": 258,
+        "extract_ms": 899,
+        "fetch_ms": 138,
+        "title_ms": 531,
         "aggregate_ms": 0,
-        "total_ms": 1457
+        "total_ms": 1431
       },
       "notes": [],
       "warnings": [],

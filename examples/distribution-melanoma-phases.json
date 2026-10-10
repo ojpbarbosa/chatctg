@@ -355,13 +355,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 571,
-        "judged_ms": 571,
-        "extract_ms": 1002,
-        "fetch_ms": 2330,
-        "title_ms": 580,
-        "aggregate_ms": 12,
-        "total_ms": 3348
+        "jev_ms": 388,
+        "judged_ms": 388,
+        "extract_ms": 935,
+        "fetch_ms": 2201,
+        "title_ms": 889,
+        "aggregate_ms": 11,
+        "total_ms": 3152
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

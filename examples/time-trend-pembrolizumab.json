@@ -603,13 +603,13 @@
       },
       "granularity": "year",
       "timing": {
-        "jev_ms": 533,
-        "judged_ms": 533,
-        "extract_ms": 1417,
-        "fetch_ms": 3258,
-        "title_ms": 781,
-        "aggregate_ms": 7,
-        "total_ms": 4902
+        "jev_ms": 472,
+        "judged_ms": 472,
+        "extract_ms": 1361,
+        "fetch_ms": 3182,
+        "title_ms": 641,
+        "aggregate_ms": 6,
+        "total_ms": 4700
       },
       "notes": [],
       "warnings": [],

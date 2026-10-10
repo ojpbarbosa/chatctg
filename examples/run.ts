@@ -18,6 +18,15 @@ const EXAMPLES: { slug: string; request: QueryRequestInput }[] = [
   { slug: "sankey-melanoma-sponsor-class-phase", request: { query: "Show how melanoma trials flow from sponsor class to phase as a sankey", citations_per_point: 3 } },
 ];
 
+/**
+ * The request fields that decide part of the answer, which the index names after the question: "(trial_status pinned in the request)".
+ * `citations_per_point` and `max_studies` only shape the response, so they are not named.
+ */
+const pinned = (request: QueryRequestInput): string => {
+  const fields = Object.keys(request).filter((k) => k !== "query" && k !== "citations_per_point" && k !== "max_studies");
+  return fields.length ? ` (${fields.join(", ")} pinned in the request)` : "";
+};
+
 const deps = depsFromEnv();
 const dir = new URL("./", import.meta.url);
 mkdirSync(dir, { recursive: true });
@@ -27,8 +36,8 @@ for (const ex of EXAMPLES) {
   const request = QueryRequest.parse(ex.request);
   const r = await runQuery(request, deps);
   writeFileSync(new URL(`./${ex.slug}.json`, dir), JSON.stringify({ request: ex.request, status: r.status, response: r.body }, null, 2));
-  if (r.ok) index.push(`| [${ex.slug}.json](./${ex.slug}.json) | ${request.query} | ${r.body.visualization?.type} | ${r.body.meta.coverage.total_count.toLocaleString("en-US")} | ${r.body.meta.timing.jev_ms} ms | ${r.body.meta.timing.total_ms} ms |`);
-  else { failed++; index.push(`| [${ex.slug}.json](./${ex.slug}.json) | ${request.query} | ERROR ${r.status} | | | |`); }
+  if (r.ok) index.push(`| [${ex.slug}.json](./${ex.slug}.json) | ${request.query}${pinned(ex.request)} | ${r.body.visualization?.type} | ${r.body.meta.coverage.total_count.toLocaleString("en-US")} | ${r.body.meta.timing.jev_ms} ms | ${r.body.meta.timing.total_ms} ms |`);
+  else { failed++; index.push(`| [${ex.slug}.json](./${ex.slug}.json) | ${request.query}${pinned(ex.request)} | ERROR ${r.status} | | | |`); }
   console.log(ex.slug, r.status, r.ok ? r.body.visualization?.type : JSON.stringify(r.body));
 }
 writeFileSync(new URL("./README.md", dir), index.join("\n") + "\n");

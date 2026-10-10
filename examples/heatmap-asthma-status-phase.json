@@ -1372,7 +1372,7 @@
         },
         "dimension": {
           "value": "phase",
-          "p": 0.8
+          "p": 0.82
         },
         "secondary_dimension": {
           "value": "status",
@@ -1457,16 +1457,16 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 242,
-        "judged_ms": 242,
-        "extract_ms": 908,
-        "fetch_ms": 2122,
-        "title_ms": 536,
-        "aggregate_ms": 6,
-        "total_ms": 3039
+        "jev_ms": 207,
+        "judged_ms": 207,
+        "extract_ms": 910,
+        "fetch_ms": 2843,
+        "title_ms": 544,
+        "aggregate_ms": 4,
+        "total_ms": 3760
       },
       "notes": [
-        "Phase was judged both groupings; the second is status, the next most likely attribute (p=0.19).",
+        "Phase was judged both groupings; the second is status, the next most likely attribute (p=0.17).",
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
         "923 trials without a phase are not shown."
       ],

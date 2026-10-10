@@ -1415,13 +1415,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 228,
-        "judged_ms": 228,
-        "extract_ms": 889,
+        "jev_ms": 249,
+        "judged_ms": 249,
+        "extract_ms": 1131,
         "fetch_ms": 1,
-        "title_ms": 668,
-        "aggregate_ms": 28,
-        "total_ms": 1560
+        "title_ms": 759,
+        "aggregate_ms": 26,
+        "total_ms": 1892
       },
       "notes": [
         "Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur."
