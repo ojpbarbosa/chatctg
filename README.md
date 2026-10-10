@@ -1,10 +1,12 @@
 # ChatCTG
 
+![How a question becomes a cited chart](docs/architecture.jpeg)
+
 ChatCTG (short for ChatClinicalTrials.gov) answers a question about clinical trials with a chart spec built from live registry data. `POST /query` with "How are melanoma trials distributed across phases?" returns a typed spec (chart type, encoding, rows) and metadata that explains each decision and cites the records behind each number. A small React app renders it.
 
 The judge, a System One model (TypeSafe's Jev in this build), answers every closed decision as a probability over fixed options. The extractor, an LLM under a strict JSON schema (`gpt-5.4-nano` in this build), copies the names the question mentions, and the titler, the same LLM, titles the finished plan. The rest is code: plan the requests to the registry (ClinicalTrials.gov v2), fetch, aggregate, cite, and validate against a zod contract. No number comes from a model.
 
-The diagram gives each stage's typical time in the nine example runs, which took 1.5 to 5.0 s end to end. The detailed drawing is [docs/architecture.excalidraw](docs/architecture.excalidraw), which opens at [excalidraw.com](https://excalidraw.com).
+The diagram gives each stage's typical time in the nine example runs, which took 1.5 to 5.0 s end to end. The drawing above is also [docs/architecture.excalidraw](docs/architecture.excalidraw), which opens at [excalidraw.com](https://excalidraw.com).
 
 ```mermaid
 flowchart LR
