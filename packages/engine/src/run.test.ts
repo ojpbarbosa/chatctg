@@ -143,6 +143,15 @@ describe("runQuery", () => {
     expect(body.meta.notes).toContain("1 trial without a phase is not shown.");
     expect(body.visualization.subtitle).toBe("12 trials on ClinicalTrials.gov. Each trial is counted once per phase. 1 trial without a phase is not shown. Data as of 2026-10-08.");
   });
+  it("heatmap over a comparison: one fetch per arm, the arms down, phases across, every cell present", async () => {
+    const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "heatmap" }, chart_named: { noul: 0.9 } }, { drugs: ["pembrolizumab", "nivolumab"] });
+    const body = okBody(await runQuery(req("Show a heatmap of phases for pembrolizumab vs nivolumab trials"), deps));
+    expect(deps.ctgov.calls).toEqual([{ intr: '"pembrolizumab"' }, { intr: '"nivolumab"' }]);
+    if (body.visualization?.type !== "heatmap") throw new Error(body.visualization?.type);
+    expect(body.visualization.encoding.y).toEqual({ field: "y", type: "nominal", label: "Drug", order: ["pembrolizumab", "nivolumab"] });
+    expect(body.visualization.data).toHaveLength(5 * 2);
+    expect(body.visualization.subtitle).toMatch(/^Pembrolizumab 12 and Nivolumab 12 trials on ClinicalTrials\.gov\. /);
+  });
   it("comparison: one fetch per arm, grouped bar with two series, totals per arm", async () => {
     const deps = fakeDeps({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "grouped_bar" } }, { drugs: ["pembrolizumab", "nivolumab"] });
     const body = okBody(await runQuery(req("Compare phases for pembrolizumab vs nivolumab"), deps));

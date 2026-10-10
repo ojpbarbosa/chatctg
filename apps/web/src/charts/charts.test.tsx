@@ -1,12 +1,13 @@
 // @vitest-environment jsdom
 import { Visualization } from "@chatctg/contracts";
-import type { BarViz, BubbleViz, GroupedBarViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
+import type { BarViz, BubbleViz, GroupedBarViz, HeatmapViz, HistogramViz, LineViz, MapViz, NetworkViz, ScatterViz, SingleValueViz, StackedBarViz, TableViz } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BarView, widen } from "./Bar";
 import { BubbleView } from "./Bubble";
+import { HeatmapView, ZERO } from "./Heatmap";
 import { HistogramView } from "./Histogram";
 import { LineView } from "./Line";
 import { CATEGORICAL, colorFor, sequential } from "./palette";
@@ -250,6 +251,7 @@ const gridRows = (values: number[][]) => ["Phase 1", "Phase 2", "Phase 3"].flatM
 }));
 const gridAxes = { x: { field: "x", type: "ordinal", label: "Phase", order: ["Phase 1", "Phase 2", "Phase 3"] }, y: { field: "y", type: "ordinal", label: "Sponsor class", order: ["Industry", "Other"] } };
 const bubble = parse<BubbleViz>({ type: "bubble", title: "T", subtitle: "S", encoding: { ...gridAxes, size: { field: "trial_count", label: "Trials", unit: "trials" } }, data: gridRows([[10, 0], [3, 1], [40, 0]]) });
+const heatmap = parse<HeatmapViz>({ type: "heatmap", title: "T", subtitle: "S", encoding: { ...gridAxes, color: { field: "trial_count", label: "Trials", unit: "trials" } }, data: gridRows([[10, 0], [3, 1], [40, 0]]) });
 /** The grid cell whose hover title is `title`. */
 const cellTitled = (el: HTMLElement, title: string) => [...el.querySelectorAll("g.cell")].find((g) => g.querySelector("title")?.textContent === title)!;
 
@@ -273,6 +275,26 @@ describe("grid charts", () => {
   });
 });
 
+describe("heatmap", () => {
+  it("a cell per pair of categories, empty ones neutral, shaded by the blue ramp, labelled in the ink its fill needs", async () => {
+    const picked: { c: unknown; l: string }[] = [];
+    const { el, done } = await mount(<HeatmapView viz={heatmap} onPick={(c, l) => picked.push({ c, l })} />, async () => {});
+    expect(el.querySelectorAll("rect.heat")).toHaveLength(6);
+    const fill = (title: string) => cellTitled(el, title).querySelector("rect.heat")!.getAttribute("fill");
+    expect(fill("Phase 1, Other, 0 trials")).toBe(ZERO);
+    expect(fill("Phase 3, Industry, 40 trials")).toBe(sequential(1));
+    expect(new Set([fill("Phase 1, Industry, 10 trials"), fill("Phase 2, Industry, 3 trials"), fill("Phase 2, Other, 1 trial")]).size).toBe(3);
+    expect(cellTitled(el, "Phase 3, Industry, 40 trials").querySelector("text")!.getAttribute("fill")).toBe("#fff");
+    expect(cellTitled(el, "Phase 2, Other, 1 trial").querySelector("text")!.getAttribute("fill")).toBe("var(--fg)");
+    expect(cellTitled(el, "Phase 1, Other, 0 trials").querySelector("text")).toBeNull();
+    // The scale legend names the measure and runs from 0 to the largest value.
+    expect(el.querySelector(".legend")!.textContent).toBe("Trials040");
+    act(() => { cellTitled(el, "Phase 2, Industry, 3 trials").querySelector("rect.heat")!.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    expect(picked).toEqual([{ c: heatmap.data[2]!.citations, l: "Phase 2, Industry" }]);
+    done();
+  });
+});
+
 describe("labels", () => {
   it("name what was clicked with commas, not separator characters", () => {
     expect(pickLabel("Phase 3", "nivolumab")).toBe("Phase 3, nivolumab");
@@ -285,7 +307,7 @@ describe("labels", () => {
 
 describe("renderChart", () => {
   it("routes the non-cartesian types to their renderers", () => {
-    for (const [viz, mark] of [[bubble, 'class="bubble"']] as const) {
+    for (const [viz, mark] of [[bubble, 'class="bubble"'], [heatmap, 'class="heat"']] as const) {
       const html = renderToStaticMarkup(<>{renderChart(viz, noop)}</>);
       expect(html, viz.type).toContain(mark); expect(html, viz.type).not.toContain("<pre");
     }

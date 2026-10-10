@@ -204,9 +204,9 @@ export function buildVisualization(p: Plan, agg: Aggregate, ctx: SpecContext, ti
     if (p.chart === "map") {
       return { type: "map", ...head, encoding: { geo: { field: "country", code_field: "iso3", level: "country" }, value: { field: m, label: METRIC_LABEL[m], unit: METRIC_UNIT[m] } }, data: r.buckets.map((b) => rowOf(b, { country: b.key, iso3: iso3(b.key) })) };
     }
-    if (p.chart === "bubble" && series) {
+    if ((p.chart === "bubble" || p.chart === "heatmap") && series) {
       const { x, y, data } = grid(p, r, k);
-      return { type: "bubble", ...head, encoding: { x, y, size: measure(m) }, data };
+      return p.chart === "bubble" ? { type: "bubble", ...head, encoding: { x, y, size: measure(m) }, data } : { type: "heatmap", ...head, encoding: { x, y, color: measure(m) }, data };
     }
     const xField = dim === "start_year" ? "period" : dim;
     const ordinal = dim === "start_year" || fixedOrder(dim) !== null;

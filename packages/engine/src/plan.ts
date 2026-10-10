@@ -40,7 +40,7 @@ export function defaultChart(intent: Intent, dimension: Dimension | null, second
 }
 
 /** The grids of two categorical attributes: one cell per pair of categories, the second attribute a secondary dimension or a comparison's arms. */
-const GRIDS: ChartType[] = ["bubble"];
+const GRIDS: ChartType[] = ["bubble", "heatmap"];
 
 /**
  * The matrix from the spec: what the data shape of an intent can render. `scatter`, and `bar` for a geographic question, are in the set

@@ -1,6 +1,6 @@
 export const CHART_TYPES = [
   "bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value",
-  "bubble",
+  "bubble", "heatmap",
 ] as const;
 export type ChartType = (typeof CHART_TYPES)[number];
 

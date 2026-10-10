@@ -52,6 +52,15 @@ describe("the engine over recorded registry pages", () => {
     expect(data).toHaveLength(encoding.x.order!.length * encoding.y.order!.length);
     for (const r of data) for (const c of r.citations) expect(c.excerpt).toBe(`designModule.phases "${r.x_key}"; leadSponsor.class "${r.y_key}"`);
   });
+  it("status by phase as a heatmap: a complete grid over the recorded page", async () => {
+    const body = okBody(await runQuery(req("Heatmap of trial status by phase for pembrolizumab"), fakeDeps({ dimension: { choice: "status" }, secondary_dimension: { choice: "phase" }, chart: { choice: "heatmap" }, chart_named: { noul: 0.9 } }, { drugs: ["pembrolizumab"] }, pembrolizumab)));
+    if (body.visualization?.type !== "heatmap") throw new Error(body.visualization?.type);
+    const { encoding, data } = body.visualization;
+    cited(data);
+    expect(data).toHaveLength(encoding.x.order!.length * encoding.y.order!.length);
+    const total = data.reduce((n, r) => n + Number(r.trial_count), 0);
+    expect(total).toBeGreaterThanOrEqual(pembrolizumab.length - body.meta.coverage.studies_without_value);
+  });
   it("sponsor to drug network", async () => {
     const body = okBody(await runQuery(req("Show a network of sponsors and drugs for pembrolizumab trials"), fakeDeps({ intent: { choice: "network" }, edge_kind: { choice: "sponsor_drug" }, chart: { choice: "network_graph" } }, { drugs: ["pembrolizumab"] }, pembrolizumab)));
     if (body.visualization?.type !== "network_graph") throw new Error(body.visualization?.type);

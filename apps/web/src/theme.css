@@ -106,6 +106,7 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 .chart { min-height: 360px; position: relative; }
 /* SVG charts: the hovered mark lifts so the reader sees it respond. */
 .cell .bubble { transition: fill-opacity 120ms ease; } .cell:hover .bubble { fill-opacity: 1; }
+.cell:hover .heat { stroke: var(--fg); stroke-width: 1.5; }
 .skeleton { background: linear-gradient(90deg, var(--raised), #eef0f4, var(--raised)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: var(--radius-sm); }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .error { border-color: rgba(180, 35, 24, 0.3); background: rgba(180, 35, 24, 0.35); width: 400px; display: flex; }

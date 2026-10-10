@@ -157,7 +157,7 @@ describe("chart matrix", () => {
 
   it("allows only what the shape can render", () => {
     expect(allowedCharts("distribution", "phase", null, false)).toEqual(["bar"]);
-    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "bubble", "grouped_bar", "stacked_bar"]);
+    expect(allowedCharts("distribution", "phase", "status", false).sort()).toEqual(["bar", "bubble", "grouped_bar", "heatmap", "stacked_bar"]);
     expect(allowedCharts("distribution", "enrollment", null, false).sort()).toEqual(["bar", "histogram"]);
     expect(allowedCharts("time_trend", "start_year", null, false).sort()).toEqual(["bar", "line"]);
     expect(allowedCharts("time_trend", "start_year", null, true)).toContain("scatter");
@@ -261,6 +261,30 @@ describe("chart matrix: two categorical attributes", () => {
       const a = await answers(s);
       expect(provisionalChart(a), JSON.stringify(s)).toBe(okPlan(plan({ answers: a, entities: none, request: req(), models })).chart);
     }
+  });
+});
+
+describe("chart matrix: heatmap", () => {
+  it("a heatmap is allowed exactly where a bubble is", () => {
+    const shapes: Parameters<typeof allowedCharts>[] = [
+      ["distribution", "status", "phase", false], ["distribution", "phase", null, true], ["comparison", "phase", null, false], ["comparison", "start_year", null, true],
+      ["time_trend", "start_year", "phase", true], ["ranking", "sponsor", null, true], ["lookup", null, null, true],
+    ];
+    for (const s of shapes) expect(allowedCharts(...s).includes("heatmap"), JSON.stringify(s)).toBe(allowedCharts(...s).includes("bubble"));
+    expect(allowedCharts("distribution", "status", "phase", false)).toContain("heatmap");
+  });
+  it("applies a heatmap of status by phase, and over a comparison of two conditions", async () => {
+    const d = okPlan(plan({ answers: await answers({ dimension: { choice: "status" }, secondary_dimension: { choice: "phase" }, chart: { choice: "heatmap" }, chart_named: { noul: 0.95 } }), entities: { ...none, conditions: ["asthma"] }, request: req(), models }));
+    expect(d.interpretation.chart).toEqual({ chosen: "heatmap", applied: "heatmap", explicit: true, reason: null });
+    expect(d.dimension).toBe("status"); expect(d.secondary).toBe("phase");
+    const c = okPlan(plan({ answers: await answers({ intent: { choice: "comparison" }, dimension: { choice: "phase" }, chart: { choice: "heatmap" } }), entities: { ...none, conditions: ["asthma", "COPD"] }, request: req(), models }));
+    expect(c.chart).toBe("heatmap"); expect(c.arms.map((a) => a.label)).toEqual(["asthma", "COPD"]);
+  });
+  it("a heatmap over a time trend falls back to the next most likely chart, and the provisional chart agrees", async () => {
+    const a = await withChartMass({ intent: { choice: "time_trend" }, dimension: { choice: "start_year" }, secondary_dimension: { choice: "phase" }, chart: { choice: "heatmap" } }, { heatmap: 0.5, stacked_bar: 0.3, line: 0.1 });
+    const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
+    expect(p.interpretation.chart).toEqual({ chosen: "heatmap", applied: "stacked_bar", explicit: false, reason: "heatmap cannot render a time trend over start date; the next most likely chart that can, stacked_bar, is used" });
+    expect(provisionalChart(a)).toBe("stacked_bar");
   });
 });
 

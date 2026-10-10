@@ -159,6 +159,27 @@ describe("buildVisualization", () => {
     expect(v.data.find((d) => d.x_key === "PHASE3" && d.y === "Merck")).toMatchObject({ y_key: "Merck", trial_count: 3 });
     expect(v.data.find((d) => d.x_key === "PHASE3" && d.y === "Merck")!.citations[0]).toMatchObject({ field: "protocolSection.designModule.phases", excerpt: "PHASE3" });
   });
+  it("heatmap: status by phase, a colour channel and every cell, empty ones included", () => {
+    const r = bucketize(SAMPLE, { dimension: "status", secondary: "phase", metric: "trial_count" });
+    const v = valid(buildVisualization(base({ chart: "heatmap", dimension: "status", secondary: "phase" }), { kind: "buckets", result: r }, ctx, null));
+    if (v.type !== "heatmap") throw new Error(v.type);
+    expect(v.encoding).toEqual({
+      x: { field: "x", type: "ordinal", label: "Status", order: ["Recruiting", "Completed"] },
+      y: { field: "y", type: "ordinal", label: "Phase", order: ["Early Phase 1", "Phase 1", "Phase 2", "Phase 3", "Not applicable"] },
+      color: { field: "trial_count", label: "Trials", unit: "trials" },
+    });
+    expect(v.data).toHaveLength(2 * 5);
+    expect(v.data.find((d) => d.x_key === "RECRUITING" && d.y_key === "PHASE1")).toMatchObject({ x: "Recruiting", y: "Phase 1", trial_count: 1 });
+    expect(v.data.find((d) => d.x_key === "RECRUITING" && d.y_key === "PHASE1")!.citations[0]!.excerpt).toBe('statusModule.overallStatus "RECRUITING"; designModule.phases "PHASE1"');
+    expect(v.data.find((d) => d.x_key === "RECRUITING" && d.y_key === "PHASE3")).toMatchObject({ trial_count: 0, citations: [] });
+  });
+  it("heatmap of the median enrollment: the colour carries the metric and its unit", () => {
+    const r = bucketize(SAMPLE, { dimension: "status", secondary: "phase", metric: "enrollment_median" });
+    const v = valid(buildVisualization(base({ chart: "heatmap", dimension: "status", secondary: "phase", metric: "enrollment_median" }), { kind: "buckets", result: r }, ctx, null));
+    if (v.type !== "heatmap") throw new Error(v.type);
+    expect(v.encoding.color).toEqual({ field: "enrollment_median", label: "Median enrollment", unit: "participants" });
+    expect(v.data.find((d) => d.x_key === "COMPLETED" && d.y_key === "PHASE3")).toMatchObject({ enrollment_median: 1050, study_count: 4 });
+  });
   it("histogram over enrollment bins", () => {
     const v = valid(buildVisualization(base({ chart: "histogram", dimension: "enrollment" }), { kind: "buckets", result: bucketize(SAMPLE, { dimension: "enrollment", metric: "trial_count" }) }, ctx, null));
     if (v.type !== "histogram") throw new Error(v.type);

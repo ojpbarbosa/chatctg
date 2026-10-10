@@ -50,7 +50,7 @@ describe("Visualization", () => {
   });
 
   it("lists the ten first chart types, then the grid, timeline and flow types", () => {
-    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble"]);
+    expect(CHART_TYPES).toEqual(["bar", "grouped_bar", "stacked_bar", "line", "histogram", "scatter", "network_graph", "map", "table", "single_value", "bubble", "heatmap"]);
   });
 
   it("accepts a bubble spec over two categorical axes, and requires its size channel", () => {
@@ -62,6 +62,17 @@ describe("Visualization", () => {
     expect(Visualization.safeParse(v).success).toBe(true);
     const { size: _, ...unsized } = v.encoding;
     expect(Visualization.safeParse({ ...v, encoding: unsized }).success).toBe(false);
+  });
+
+  it("accepts a heatmap spec over two categorical axes, and requires its colour channel", () => {
+    const v = {
+      type: "heatmap", title: "t", subtitle: "s",
+      encoding: { x: { field: "x", type: "ordinal", label: "Status", order: ["Recruiting"] }, y: { field: "y", type: "ordinal", label: "Phase", order: ["Phase 2"] }, color: { field: "trial_count", label: "Trials", unit: "trials" } },
+      data: [row({ x: "Recruiting", x_key: "RECRUITING", y: "Phase 2", y_key: "PHASE2", trial_count: 0 })],
+    };
+    expect(Visualization.safeParse(v).success).toBe(true);
+    const { color: _, ...uncoloured } = v.encoding;
+    expect(Visualization.safeParse({ ...v, encoding: uncoloured }).success).toBe(false);
   });
 
   it("rejects a single_value with two rows", () => {

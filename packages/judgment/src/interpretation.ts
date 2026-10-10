@@ -69,6 +69,7 @@ export function interpretationQuestions() {
       table: { what: "A list of individual trials with their details.", not_for: "Counts per category such as per phase (bar)." },
       single_value: { what: "One number, such as a total count." },
       bubble: { what: "A grid of two attributes, one circle per pair of categories sized by its number of trials, such as phase by sponsor class, or the categories of one attribute for each of several named things.", not_for: "A single attribute (bar), or change over time (line)." },
+      heatmap: { what: "A grid of two attributes with each cell shaded by its number of trials, such as status by phase, or the categories of one attribute for each of several named things.", not_for: "A single attribute (bar), or change over time (line)." },
     }),
     chart_named: noul("Does the user explicitly name the kind of visual they want?", {
       true: "The question contains a word for a visual form: chart, graph, plot, map, network, table, list, timeline, histogram, scatter, pie.",

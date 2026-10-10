@@ -68,9 +68,16 @@ export const BubbleViz = z.object({
   data: z.array(DataRow),
 });
 
+/** The same grid with every cell shaded by its value on a sequential ramp. Rows: `{ x, x_key, y, y_key, [color.field] }`. */
+export const HeatmapViz = z.object({
+  type: z.literal("heatmap"), ...head,
+  encoding: z.object({ x: CatAxis, y: CatAxis, color: Measure }),
+  data: z.array(DataRow),
+});
+
 export const Visualization = z.discriminatedUnion("type", [
   BarViz, GroupedBarViz, StackedBarViz, LineViz, HistogramViz, ScatterViz, NetworkViz, MapViz, TableViz, SingleValueViz,
-  BubbleViz,
+  BubbleViz, HeatmapViz,
 ]);
 export type Visualization = z.infer<typeof Visualization>;
 export type BarViz = z.infer<typeof BarViz>;
@@ -84,3 +91,4 @@ export type MapViz = z.infer<typeof MapViz>;
 export type TableViz = z.infer<typeof TableViz>;
 export type SingleValueViz = z.infer<typeof SingleValueViz>;
 export type BubbleViz = z.infer<typeof BubbleViz>;
+export type HeatmapViz = z.infer<typeof HeatmapViz>;

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
 import type { HistoryItem } from "../history";
 import { isNarrow, loadCollapsed, NARROW, saveCollapsed } from "../sidebar";
 
-const GLYPH: Record<string, string> = { bar: "▮", grouped_bar: "▮▮", stacked_bar: "▮", line: "⟋", histogram: "▥", scatter: "⁘", network_graph: "⬡", map: "◍", table: "☰", single_value: "#", bubble: "◉" };
+const GLYPH: Record<string, string> = { bar: "▮", grouped_bar: "▮▮", stacked_bar: "▮", line: "⟋", histogram: "▥", scatter: "⁘", network_graph: "⬡", map: "◍", table: "☰", single_value: "#", bubble: "◉", heatmap: "▦" };
 const ago = (iso: string) => { const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000); return m < 1 ? "now" : m < 60 ? `${m}m` : m < 1440 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`; };
 
 const Chevron = () => <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className="chevron"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;

@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
 
 /** The ghost each chart type draws. */
-function shapeOf(type: string): "bars" | "bubble" | "block" {
+function shapeOf(type: string): "bars" | "bubble" | "heatmap" | "block" {
   if (type.includes("bar") || type === "histogram") return "bars";
-  if (type === "bubble") return "bubble";
+  if (type === "bubble" || type === "heatmap") return type;
   return "block";
 }
 
@@ -21,6 +21,7 @@ export function ChartSkeleton({ type }: { type: string }) {
     <div className="chart" aria-busy="true" data-shape={shape} style={{ display: "flex", alignItems: "flex-end", gap: 12, padding: "24px 8px" }}>
       {shape === "bars" && [0.5, 0.8, 0.35, 0.95, 0.6, 0.25].map((h, i) => <div key={i} className="skeleton" style={{ flex: 1, height: `${h * 100}%` }} />)}
       {shape === "bubble" && grid((r, c) => { const d = 18 + ((r * 7 + c * 5) % 5) * 9; return { width: d, height: d, borderRadius: "50%" }; })}
+      {shape === "heatmap" && grid(() => ({ width: "100%", height: "100%", borderRadius: 3 }))}
       {shape === "block" && <div className="skeleton" style={{ width: "100%", height: "100%", borderRadius: type === "network_graph" ? "50%" : undefined }} />}
     </div>
   );
