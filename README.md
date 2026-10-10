@@ -165,6 +165,43 @@ Row: one per trial, `{ nct_id, title, start_date, enrollment, phase, series?, st
 
 `value: { field: "value", label, unit }`. There is exactly one row: `{ value, label: "trials", study_count, citations }`. `value` is the registry's `totalCount`, which is exact. Only the 50 most recently started studies are read (one page with `pageSize=50`), for the citations.
 
+#### `bubble`
+
+| `encoding` field | Value |
+|---|---|
+| `x` | `{ field: "x", type: "nominal" \| "ordinal", label, order }`: the dimension's categories, in the order a bar would show them |
+| `y` | `{ field: "y", type, label, order }`: the secondary dimension's categories, or a comparison's arms (`label` is then "Drug", "Condition", "Sponsor" or "Country") |
+| `size` | `{ field, label, unit }`: the metric, which sets each circle's area |
+
+Row: one per cell, empty cells included so the grid is complete: `{ x, x_key, y, y_key, [size.field], study_count, citations }`. A cell of a distribution cites both values that put a study there, with the two paths joined by ` | ` in `field` and an excerpt such as `designModule.phases "PHASE3"; leadSponsor.class "INDUSTRY"`; a comparison's cell cites its category, since an arm is a query rather than a value.
+
+#### `heatmap`
+
+As `bubble`, with `color: { field, label, unit }` in place of `size`: the metric, which shades each cell on the sequential blue ramp. Rows and citations are the same.
+
+#### `timeline`
+
+| `encoding` field | Value |
+|---|---|
+| `start` | `{ field: "start_date", type: "temporal", label: "Start date" }` |
+| `end` | `{ field: "end_date", type: "temporal", label: "Primary completion" }` |
+| `label` | `{ field: "title" }` |
+| `color` | `{ field: "phase", label: "Phase", values }`: the phases present, in phase order |
+| `point_id` | `"nct_id"` |
+
+Row: one per trial, oldest start first: `{ nct_id, title, start_date, end_date, phase, status, study_count: 1, citations }`. `end_date` is the primary completion date, or `null` when the registry has none (the bar then runs to today); `phase` holds the trial's first phase, and each row cites itself. Like a table, a timeline fetches only its rows, the 25 most recently started by default (or the N the question names, at most 60), and is not a sample; trials without a start date are left out and counted in `meta.coverage.studies_without_value`.
+
+#### `sankey`
+
+| `encoding` field | Value |
+|---|---|
+| `nodes` | `{ id_field: "id", label_field: "label", side_field: "side" }` |
+| `links` | `{ source_field: "source", target_field: "target", value_field: "value", unit: "trials" \| "participants" }` |
+| `left` | `{ field, label }`: the dimension, whose categories are the left nodes |
+| `right` | `{ field, label }`: the secondary dimension, whose categories are the right nodes |
+
+`data` is an object: `{ nodes: [{ id, label, side: "left" | "right", study_count }], links: [{ source, target, value, study_count, citations }] }`. A node id is `left:<key>` or `right:<key>`, such as `left:INDUSTRY` or `right:PHASE3`, and a node's `study_count` is the number of distinct trials in it. There is one link per non-empty pair: `value` is the metric and `study_count` the trials, and the link cites both values as a `bubble` cell does.
+
 ### `meta`
 
 | Field | Type | Meaning |
@@ -317,13 +354,13 @@ Jev's chart (or the request's) is applied when the matrix allows it for the inte
 | Intent | Data shape | Default | Also allowed |
 |---|---|---|---|
 | `time_trend` | buckets over time, optional series | `line` | `bar` (drawn as `stacked_bar` with a secondary dimension); `stacked_bar` with a secondary dimension; `scatter` when explicit |
-| `distribution` | buckets over a dimension, optional series | `bar`; `stacked_bar` with a secondary dimension; `histogram` over enrollment (without a secondary dimension) | `bar` in every case (drawn as `stacked_bar` with a secondary dimension); `stacked_bar` and `grouped_bar` with a secondary dimension; `scatter` when explicit |
-| `comparison` | arms × dimension | `grouped_bar`; `line` over start year | `stacked_bar`; `scatter` when explicit |
+| `distribution` | buckets over a dimension, optional series | `bar`; `stacked_bar` with a secondary dimension; `histogram` over enrollment (without a secondary dimension) | `bar` in every case (drawn as `stacked_bar` with a secondary dimension); `stacked_bar`, `grouped_bar`, `bubble`, `heatmap` and `sankey` with a secondary dimension (when Jev names one attribute for both groupings and chose one of the last three, its next most likely attribute is the second); `scatter` when explicit |
+| `comparison` | arms × dimension | `grouped_bar`; `line` over start year | `stacked_bar`; `bubble` and `heatmap` with the arms as the y axis, except over start year; `scatter` when explicit |
 | `ranking` | top N over an open dimension | `bar`, horizontal and value-sorted | `map` over country |
 | `geographic` | buckets over country | `map` | `bar` (top 15) when explicit |
 | `network` | nodes and edges | `network_graph` | none |
 | `count` | one number | `single_value` | none |
-| `lookup` | rows of studies | `table` | `scatter` when explicit |
+| `lookup` | rows of studies | `table` | `timeline` (at most 60 trials); `scatter` when explicit |
 | `other` | none | none (422) | none |
 
 ## Data handling

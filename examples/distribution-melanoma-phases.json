@@ -304,7 +304,7 @@
         "provided_fields": [],
         "question_set": {
           "id": "query-interpretation",
-          "version": 2
+          "version": 3
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -355,13 +355,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 423,
-        "judged_ms": 423,
-        "extract_ms": 1013,
-        "fetch_ms": 2459,
-        "title_ms": 821,
-        "aggregate_ms": 10,
-        "total_ms": 3484
+        "jev_ms": 366,
+        "judged_ms": 366,
+        "extract_ms": 870,
+        "fetch_ms": 2237,
+        "title_ms": 898,
+        "aggregate_ms": 12,
+        "total_ms": 3124
       },
       "notes": [
         "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",

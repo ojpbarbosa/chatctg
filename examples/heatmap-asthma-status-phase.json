@@ -1,0 +1,1479 @@
+{
+  "request": {
+    "query": "Heatmap of trial status by phase for asthma",
+    "citations_per_point": 3
+  },
+  "status": 200,
+  "response": {
+    "visualization": {
+      "type": "heatmap",
+      "title": "Asthma trials by phase by status",
+      "subtitle": "5,298 trials on ClinicalTrials.gov; the 3,000 most recently started were read. Each trial is counted once per phase. 923 trials without a phase are not shown. Data as of 2026-10-09.",
+      "encoding": {
+        "x": {
+          "field": "x",
+          "type": "ordinal",
+          "label": "Phase",
+          "order": [
+            "Early Phase 1",
+            "Phase 1",
+            "Phase 2",
+            "Phase 3",
+            "Phase 4",
+            "Not applicable"
+          ]
+        },
+        "y": {
+          "field": "y",
+          "type": "ordinal",
+          "label": "Status",
+          "order": [
+            "Recruiting",
+            "Not yet recruiting",
+            "Enrolling by invitation",
+            "Active not recruiting",
+            "Completed",
+            "Suspended",
+            "Terminated",
+            "Withdrawn",
+            "Unknown"
+          ]
+        },
+        "color": {
+          "field": "trial_count",
+          "label": "Trials",
+          "unit": "trials"
+        }
+      },
+      "data": [
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06137040",
+              "title": "Timely Administration of IV Magnesium Sulfate in Patients With a Moderate Asthma Exacerbation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 1
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 0
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 0
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07036887",
+              "title": "Effectiveness of 1st Rib Mobilization and Scalene Muscles Muscle Energy Technique Among Patients With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT03567707",
+              "title": "Vaginal Microbiome Exposure and Immune Responses in C-section Infants",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 2
+        },
+        {
+          "study_count": 7,
+          "citations": [
+            {
+              "nct_id": "NCT03615248",
+              "title": "Effectiveness of a Mobile Health Intervention in Improving the Technique of Inhaled Medications Among Children With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT03705832",
+              "title": "Ginger's Therapeutic Potential in Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT03926741",
+              "title": "GSNOR Phenotyping/GSNO Challenge in Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 7
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 0
+        },
+        {
+          "study_count": 3,
+          "citations": [
+            {
+              "nct_id": "NCT02748798",
+              "title": "Developing Optimal Parameters for Hyperpolarized Noble Gas and Inert Fluorinated Gas MRI of Lung Disorders",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT03780387",
+              "title": "Identification of Allergic Asthmatics Reactive to Felis Catus (Cat Hair) Allergen Inhalation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT03049111",
+              "title": "Screening Inhaled Allergen Challenge for Dermatophagoides Farinae",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 3
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT05994183",
+              "title": "The Bronchiolitis in Hospitalized Infants Study",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 1
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT06319183",
+              "title": "The Regulatory Function of Inhaled Asthma Medication Salbutamol on Thermogenesis",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT04250779",
+              "title": "Evaluating Efficacy of Smart Device in Assisting With Inhaler Technique and Adherence",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"EARLY_PHASE1\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Early Phase 1",
+          "x_key": "EARLY_PHASE1",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 2
+        },
+        {
+          "study_count": 15,
+          "citations": [
+            {
+              "nct_id": "NCT07732023",
+              "title": "A Randomized, Phase Ib, Double-Blind, Placebo-Controlled Study to Evaluate the Safety and Efficacy of SKB575 (HBM7575) in Participants With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07745907",
+              "title": "A Phase 1 Trial of AMG 691 in Healthy Chinese and Japanese Volunteers",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07712393",
+              "title": "A Comparative Study to Investigate the Difference in Blood Levels of Two Different Formulations of GSK5784283",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 15
+        },
+        {
+          "study_count": 7,
+          "citations": [
+            {
+              "nct_id": "NCT07600190",
+              "title": "Anakinra Rescue Treatment for Moderate Asthma Attacks (ARTMA)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07828405",
+              "title": "Genes, Soy Isoflavones, and Virus",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07851623",
+              "title": "Evaluation of Safety, Side Effects, and How the Drug, Inhaled CHF10136, Is Absorbed, Modified and Removed From the Body in Healthy Adults and Adults With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 7
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 0
+        },
+        {
+          "study_count": 4,
+          "citations": [
+            {
+              "nct_id": "NCT06920901",
+              "title": "A Study to Evaluate the Safety, Tolerability, Pharmacokinetics (PK), and Immunogenicity of APG777 in Adults With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06637371",
+              "title": "A Phase 1, Randomized, Double-blind, Placebo-controlled Study Evaluating AMG 691 in Healthy Participants and Participants With Mild-to-Moderate Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07116889",
+              "title": "A Study to Investigate GB-0895 in Adults With Mild to Moderate Asthma or COPD",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 4
+        },
+        {
+          "study_count": 187,
+          "citations": [
+            {
+              "nct_id": "NCT07433569",
+              "title": "A Study to Investigate How Budesonide and Formoterol Move Through the Body (Pharmacokinetics) When Delivered With Different Devices in Participants Aged 4 to Less Than 12 Years Old With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT07231861",
+              "title": "Bioequivalence Study of AJU-R713 and R713R in Healthy Adult Volunteers",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT07466940",
+              "title": "A Clinical Study to Evaluate SM17 in Healthy Participants",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 187
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 0
+        },
+        {
+          "study_count": 18,
+          "citations": [
+            {
+              "nct_id": "NCT06592768",
+              "title": "A Double-blind, Placebo-controlled, Parallel-group Study to Evaluate the Safety and Efficacy of Briquilimab in Participants With Allergic Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05794672",
+              "title": "A Study to Investigate the Safety, Tolerability and Pharmacokinetics of Elarekibep in Healthy Japanese Subjects",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05292950",
+              "title": "Study of ARO-MUC5AC in Healthy Subjects and Patients With Muco-Obstructive Lung Disease",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 18
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07408869",
+              "title": "A Phase 1 Study of Cizutamig in IgE Mediated Diseases",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT03567694",
+              "title": "Single and Multiple Doses of HA115 and Food Effect in Healthy Adult Volunteers",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT03513458",
+              "title": "Late Phase Administration Anakinra as a Rescue Treatment for Inhaled Allergen Challenge-Induced Airway Inflammation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 8
+        },
+        {
+          "study_count": 18,
+          "citations": [
+            {
+              "nct_id": "NCT06449859",
+              "title": "A Clinical Trial of TQC2938 Injection in Healthy Adult Subjects",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05659927",
+              "title": "Single Dose Clinical Trial of MG-ZG122 in Chinese Healthy Adult Subjects",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05382910",
+              "title": "A Study of MG-K10 in Subjects With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE1\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Phase 1",
+          "x_key": "PHASE1",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 18
+        },
+        {
+          "study_count": 46,
+          "citations": [
+            {
+              "nct_id": "NCT07705737",
+              "title": "Rademikibart IV for Acute Asthma and COPD Exacerbation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07455396",
+              "title": "Pediatric Asthma Trial of Corticosteroid Heterogeneity (PATCH): Trial of Dexamethasone Versus Methylprednisolone for Pediatric Critical Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07532265",
+              "title": "A Clinical Study to Evaluate the Efficacy and Safety of Frevecitinib (KN-002) in Patients With Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 46
+        },
+        {
+          "study_count": 12,
+          "citations": [
+            {
+              "nct_id": "NCT07191535",
+              "title": "Effect of Linvemastat in Patients With Partially Controlled Asthma (syMMPonia)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07179952",
+              "title": "Efficacy and Safety of Slow Release Dehydroepiandrosterone (DHEA )",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07728851",
+              "title": "Nebulized Ketamine for Severe Asthma Attacks in Children",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 12
+        },
+        {
+          "study_count": 3,
+          "citations": [
+            {
+              "nct_id": "NCT06820749",
+              "title": "A Study to Evaluate the Efficacy and Safety of HSK31858 Tablets in Patients with Airway Mucus Hypersecretion",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            },
+            {
+              "nct_id": "NCT06637254",
+              "title": "A Study to Evaluate the Efficacy and Safety of HSK31858 Tablets in Patients with Bronchial Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            },
+            {
+              "nct_id": "NCT06609239",
+              "title": "Long-term Safety and Efficacy Evaluation of Lunsekimig (SAR443765) in Adult Participants With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 3
+        },
+        {
+          "study_count": 19,
+          "citations": [
+            {
+              "nct_id": "NCT07120503",
+              "title": "Study to Evaluate the Safety, Pharmacology and Efficacy of WIN378 in Adults With Moderate or Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06966479",
+              "title": "A Long-Term Safety and Efficacy Study of Verekitug (UPB-101) in Adult Participants With Severe Asthma (VALOUR)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07054034",
+              "title": "Study of MG-ZG122 Humanized Monoclonal Antibody in Asthma Subjects",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 19
+        },
+        {
+          "study_count": 180,
+          "citations": [
+            {
+              "nct_id": "NCT07807007",
+              "title": "Efficacy and Safety of CP006 Inhalation Powder in Participants With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06940141",
+              "title": "Rademikibart Add-on Treatment of an Acute Asthma Exacerbation (Seabreeze STAT Asthma)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06900816",
+              "title": "A Comparison Study Between Adolescents With Asthma and Adults With Asthma on How They Absorb, Metabolise and Eliminate CHF 6001",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 180
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 0
+        },
+        {
+          "study_count": 28,
+          "citations": [
+            {
+              "nct_id": "NCT06376045",
+              "title": "A Phase 2, Dose Ranging Study Assessing Rocatinlimab in Moderate-to-severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT06029595",
+              "title": "Efficacy and Safety of Tanimilast in Asthmatics uNcontrolled on ICS-containinG backgrOund Maintenance Therapy",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT06033833",
+              "title": "Long-term Safety and Efficacy Evaluation of Subcutaneous Amlitelimab in Adult Participants With Moderate-to-severe Asthma Who Completed Treatment Period of Previous Amlitelimab Asthma Clinical Study",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 28
+        },
+        {
+          "study_count": 16,
+          "citations": [
+            {
+              "nct_id": "NCT05113394",
+              "title": "Preventing Childhood Asthma Using Prophylactic House Dust Mite Allergen Immunotherapy",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT03277170",
+              "title": "Pragmatic RCT of High-dose Oral Montelukast for Moderate and Severe Pediatric Acute Asthma Exacerbations",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT06885229",
+              "title": "Reusable Face Masks to Reduce Risk of Viral Respiratory Infections and Asthma Exacerbations",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 16
+        },
+        {
+          "study_count": 24,
+          "citations": [
+            {
+              "nct_id": "NCT06482294",
+              "title": "CIVETTA: Correlating Inflammatory Values of FEno, SympToms, SpuTum and Lung Function in Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05774340",
+              "title": "A Study of CM326 in Subjects With Moderate to Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT02153541",
+              "title": "Assessing the Efficacy of CREWS01 to Decrease Usage of Rescue Inhalers in Moderate to Severe Asthmatic Adults",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE2\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Phase 2",
+          "x_key": "PHASE2",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 24
+        },
+        {
+          "study_count": 40,
+          "citations": [
+            {
+              "nct_id": "NCT07869043",
+              "title": "A Study to Learn About the Study Medicine Called Tilrekimig ( PF-07275315) in People With Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07645248",
+              "title": "A Study to Compare Safety of 4 Weeks Exposure to Propellants Hydrofluoroalkane 1,1-difluoroethane (HFA-152a) and HFA-1,1,1,2-tetrafluoroethane (134a)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07780643",
+              "title": "A Study to Investigate the Efficacy and Safety of GSK5784283 Compared With Placebo in Participants With Uncontrolled Asthma (PERSIST ASTHMA-1)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 40
+        },
+        {
+          "study_count": 9,
+          "citations": [
+            {
+              "nct_id": "NCT07858123",
+              "title": "Safety and Efficacy Comparison Between CHF5993 100/6 12.5µg pMDI to Seretide Evohaler 125/25µg pMDI in Adolescent Subjects With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07622290",
+              "title": "Metformin Treatment for Children With Obesity-associated Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07302516",
+              "title": "Compare the Efficacy and Safety of QL2302 Versus Tezspire® in Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 9
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT06191315",
+              "title": "Efficacy and Safety of Subcutaneous Dupilumab in Participants With Asthma/Asthmatic Wheeze Aged 2 to <6 Years (LIBERTY ASTHMA TREKIDS)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 1
+        },
+        {
+          "study_count": 10,
+          "citations": [
+            {
+              "nct_id": "NCT06664619",
+              "title": "A Randomized, Double-Blind, Placebo-Controlled Trial on Efficacy and Safety of Fluticasone Propionate/Albuterol Sulfate Combination in Participants 12 Years and Older With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06653322",
+              "title": "A Multi-centered，Randomized，Double-blind，Placebo-controlled Study to Evaluate the Efficacy and Safety of SHR-1703 in Eosinophilic Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06721247",
+              "title": "Oral Intake of Mg in Controlled Asthmatic Patients",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 10
+        },
+        {
+          "study_count": 190,
+          "citations": [
+            {
+              "nct_id": "NCT07060885",
+              "title": "A Research Study of House Dust Mite (HDM) SLIT-tablet for the Treatment of HDM Allergy in Chinese Participants Aged 12-65",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06920771",
+              "title": "A Randomized, Double-Blind, Placebo-Controlled, Multi-Centre Study to Assess the Efficacy of PURETHAL Mites Mixture 50,000 AUeq/mL Subcutaneous Immunotherapy in Adult Subjects With Moderate to Severe Allergic Rhinitis/Rhinoconjunctivitis With or Without Asthma Induced by House Dust Mite (HDM)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06502366",
+              "title": "A Study to Investigate the Effect on Lung Function of BDA Formulated With a Next Generation Propellant Compared With an Approved Asthma Treatment (BDA With HFA Propellant) in Participants With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 190
+        },
+        {
+          "study_count": 1,
+          "citations": [
+            {
+              "nct_id": "NCT02853578",
+              "title": "Busonid® (Budesonide 200 mcg and 400 mcg) to Treat Asthma Not Controlled or Partially Controlled",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"SUSPENDED\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 1
+        },
+        {
+          "study_count": 22,
+          "citations": [
+            {
+              "nct_id": "NCT06388889",
+              "title": "Phase III Long-Term Extension Study With Dexpramipexole",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05813288",
+              "title": "A Study to Assess the Effect of Dexpramipexole in Adolescents and Adults With Severe Eosinophilic Asthma (EXHALE-3)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05763121",
+              "title": "A Study to Assess the Effect of Dexpramipexole in Adolescents and Adults With Severe Eosinophilic Asthma.",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 22
+        },
+        {
+          "study_count": 15,
+          "citations": [
+            {
+              "nct_id": "NCT07318350",
+              "title": "Study of Formoterol 6 mcg/Fluticasone 125 mcg by Eurofarma Laboratórios S.A. Versus Alenia® 6 mcg/200 mcg in Patients With Asthma (FORASMA)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT05735431",
+              "title": "Non-Inferiority,Combination Formoterol/FluticasonexAlenia®Formoterol/Budesonide for Asthma in Brazil",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT07223294",
+              "title": "Study to Evaluate the Therapeutic Equivalence and Safety of Fluticasone Furoate and Vilanterol Inhalation Powder 100 mcg/25 mcg and BREO ELLIPTA 100 mcg/25 mcg in Participants With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 15
+        },
+        {
+          "study_count": 21,
+          "citations": [
+            {
+              "nct_id": "NCT06618105",
+              "title": "Bronchoprovocation Study to Demonstrate the Pharmacodynamic Bioequivalence of Albuterol Sulfate HFA Inhalation Aerosol (E.Q. 90 mcg of Albuterol Base/Inh) of Macleods Pharmaceuticals Ltd",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05884970",
+              "title": "In Vivo Efficacy of Salbutamol (Sandoz) Versus Salbutamol Ventolin (GSK) in Children With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05664061",
+              "title": "Bioequivalence With Clinical Endpoint Study of Fluticasone Propionate 100 mcg and Salmeterol 50 mcg Inhalation Powder/Respirent Pharmaceuticals vs. ADVAIR DISKUS® 100/50 mcg Inhalation Powder/GSK in Patients With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE3\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Phase 3",
+          "x_key": "PHASE3",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 21
+        },
+        {
+          "study_count": 19,
+          "citations": [
+            {
+              "nct_id": "NCT07651891",
+              "title": "Evaluation of ALLERgen Specific Vaccination of DOG Allergic Patients in Swedish Practice",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07228052",
+              "title": "Giving Asthmatics Intramuscular Steroids for Preventing Return to the Emergency Department",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07666490",
+              "title": "BETRI-Prospective: Asthma Control in Single Inhaler ICS/LABA/LAMA (87/5/9 pMDI [BDP/FF/GB - 100/6/12.5 μg]) vs Single Inhaler ICS/LABA (200/6 pMDI [BDP/FF - 200/6 μg])",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 19
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT07858773",
+              "title": "Prevent Wheeze Trial",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07664527",
+              "title": "Novel Method for Removal of Orally Deposited Inhaled Fluticasone Propionate",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06833814",
+              "title": "DOSE Trial: Optimal Dose of Oral Corticosteroids to Treat Asthma Exacerbations",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 6
+        },
+        {
+          "study_count": 2,
+          "citations": [
+            {
+              "nct_id": "NCT07654842",
+              "title": "Fasenra: An Asthma Study",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            },
+            {
+              "nct_id": "NCT07343661",
+              "title": "Beyond EOsinophils: proteoMICS to Identify Potential Biomarker of Organ Damage and Response to MEPOLIZUMAB in EGPA",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 2
+        },
+        {
+          "study_count": 12,
+          "citations": [
+            {
+              "nct_id": "NCT06572228",
+              "title": "Efficacy of Dupilumab Added to Medium Dose Inhaled Corticosteroid/Long-acting Beta-agonist (ICS/LABA) in Comparison to ICS Dose Escalation to High Dose ICS/LABA in Adolescent and Adult Patients With Uncontrolled Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06422689",
+              "title": "Combination Short-Acting BroNchodilator and Inhaled Corticosteroid Rescue Therapy on Health Outcomes in Routine Care",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06372496",
+              "title": "Pragmatic Open - Label Randomized Clinical Trial of FF/UMEC/VI vs Non-ellipta Usual Care ICS-LABA for Adult Participants With Uncontrolled Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 12
+        },
+        {
+          "study_count": 111,
+          "citations": [
+            {
+              "nct_id": "NCT07731217",
+              "title": "IV DEXAMETHASONE VS. METHYLPREDNISOLONE IN CHILDREN WITH SEVERE ASTHMA EXACERBATION",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06590740",
+              "title": "Establish FeNO Cut-off Value for Predicting Budesonide-formoterol Response in Chronic Cough Suggestive of CVA Patients.",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT06563102",
+              "title": "Study to Investigate Changes in Airway Inflammation, Symptoms, and Rescue Therapy Utilization With AIRSUPRA Compared to Albuterol as Needed in Adults With Mild Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 111
+        },
+        {
+          "study_count": 0,
+          "citations": [],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 0
+        },
+        {
+          "study_count": 23,
+          "citations": [
+            {
+              "nct_id": "NCT05018598",
+              "title": "Step-up to Medium Strength Triple Therapy vs High Strength ICS/LABA in Adult Asthmatics Uncontrolled on Medium Strength ICS/LABA",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT04195958",
+              "title": "A Study to Assess the Impact of Omalizumab on Exercise Capacity, Physical Activity, and Sleep Quality in Participants With Moderate to Severe Allergic Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT03822637",
+              "title": "The Effect of NAC on Lung Function and CT Mucus Score",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 23
+        },
+        {
+          "study_count": 6,
+          "citations": [
+            {
+              "nct_id": "NCT04184609",
+              "title": "Mechanisms for Dyspnea on Exertion in Children With Obesity and Asthma: Distinct Physiological Phenotypes",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT05919394",
+              "title": "Triple vs High Dose Inhaled CORticosteroids",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT04271839",
+              "title": "Efficiency Control of Fluticasone/Formoterol K-haler (Medium Strength) vs ICS/LABA (High Strength) in Asthma Patients",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 6
+        },
+        {
+          "study_count": 30,
+          "citations": [
+            {
+              "nct_id": "NCT06556264",
+              "title": "Immunologic Impact of Dupilumab in Patients Suffering From Asthma and Chronic Rhinosinusitis With Polyps",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT06288516",
+              "title": "BenRalizumab Effect on Airway Remodeling in Severe asTHma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT05642806",
+              "title": "Comparison of Immune Profiles in Chronic Rhinosinusitis Patients After Mepolizumab Treatment",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"PHASE4\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Phase 4",
+          "x_key": "PHASE4",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 30
+        },
+        {
+          "study_count": 124,
+          "citations": [
+            {
+              "nct_id": "NCT07718724",
+              "title": "Impact of GDMT in Uncontrolled Asthma Patients Receiving MHD Inhaled Corticosteroids + Long-acting β2 Agonist",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07582211",
+              "title": "Bilevel Positive Airway Pressure (BPAP) for Severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07709754",
+              "title": "PULmonary Stimulation for Asthma Relief",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"RECRUITING\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Recruiting",
+          "y_key": "RECRUITING",
+          "trial_count": 124
+        },
+        {
+          "study_count": 70,
+          "citations": [
+            {
+              "nct_id": "NCT07816718",
+              "title": "Sustained Asthma Remission and Reduced Relapse Using a Comprehensive Management Strategy (SARRE-COMS)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07815730",
+              "title": "Development and Validation of the Indian Asthma Care Bundle for Reducing Readmission and Improving Post-hospitalisation Care After Discharge From Hospital Due to an Acute Asthma Exacerbation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT06796387",
+              "title": "SMART-School-based Asthma Therapy",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"NOT_YET_RECRUITING\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Not yet recruiting",
+          "y_key": "NOT_YET_RECRUITING",
+          "trial_count": 70
+        },
+        {
+          "study_count": 8,
+          "citations": [
+            {
+              "nct_id": "NCT07638735",
+              "title": "eAMS-Eco: Implementation of a Tool for Climate Conscious Inhaler Prescribing",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            },
+            {
+              "nct_id": "NCT03249428",
+              "title": "Cytisine vs Nicotine Replacement Therapy",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            },
+            {
+              "nct_id": "NCT07114133",
+              "title": "A Study on the Efficacy of Environmental Probiotics in Patients With Cat Hair Allergies",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ENROLLING_BY_INVITATION\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Enrolling by invitation",
+          "y_key": "ENROLLING_BY_INVITATION",
+          "trial_count": 8
+        },
+        {
+          "study_count": 33,
+          "citations": [
+            {
+              "nct_id": "NCT07642388",
+              "title": "Scaling up the Integrated Care Pathway for Acute Asthma to All Osakidetza Pediatric Services Through a Cluster-randomized SMART Design",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07765264",
+              "title": "Clinical and Autonomic Efficacy of Digital-Gamified Diaphragmatic Training in Pediatric Pulmonary Rehabilitation",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            },
+            {
+              "nct_id": "NCT07390669",
+              "title": "OptimAIR: Towards Right Care in Asthma Through Point-of-care Phenotyping, Guideline-based Assessment and Management Optimalisation Using the AsthmaOptimiser in Primary Care",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"ACTIVE_NOT_RECRUITING\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Active not recruiting",
+          "y_key": "ACTIVE_NOT_RECRUITING",
+          "trial_count": 33
+        },
+        {
+          "study_count": 525,
+          "citations": [
+            {
+              "nct_id": "NCT07453615",
+              "title": "Effect of AI(Artificial Intelligence)-Based Storytelling Video on Anxiety and Fear During Skin Prick Test in Children",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT07742085",
+              "title": "Self-Management in Adults With Asthma or COPD",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"COMPLETED\""
+            },
+            {
+              "nct_id": "NCT07394127",
+              "title": "A Community-Based Swimming and Inspiratory Muscle Training Intervention to Promote Physical Activity and Asthma Control in Children With Mild Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"COMPLETED\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Completed",
+          "y_key": "COMPLETED",
+          "trial_count": 525
+        },
+        {
+          "study_count": 3,
+          "citations": [
+            {
+              "nct_id": "NCT04109807",
+              "title": "Effects of Low Dose Ozone on Airway Inflammatory Responses in Adults With Asthma - Sedentary Nasal Ozone (Asthma SNOZ)",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"SUSPENDED\""
+            },
+            {
+              "nct_id": "NCT02767973",
+              "title": "To Identify Persons Who Are Susceptible to WSP-induced Inflammation and Examine the Role of GSTM1 and Other Factors in This Susceptibility",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"SUSPENDED\""
+            },
+            {
+              "nct_id": "NCT02047370",
+              "title": "Manual Therapy in Patients With Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"SUSPENDED\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Suspended",
+          "y_key": "SUSPENDED",
+          "trial_count": 3
+        },
+        {
+          "study_count": 26,
+          "citations": [
+            {
+              "nct_id": "NCT05826561",
+              "title": "Developing a Childhood Asthma Risk Passive Digital Marker",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05848115",
+              "title": "BiPAP in Pediatric Moderate to Severe Asthma Randomized Control Trial",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"TERMINATED\""
+            },
+            {
+              "nct_id": "NCT05609760",
+              "title": "Pictograms to Facilitate Comprehension of Medical Indications",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"TERMINATED\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Terminated",
+          "y_key": "TERMINATED",
+          "trial_count": 26
+        },
+        {
+          "study_count": 33,
+          "citations": [
+            {
+              "nct_id": "NCT02809235",
+              "title": "Fatty Acids in Airway Smooth Muscle of Asthmatics",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT07044388",
+              "title": "Coping With Asthma Throughout Life Management Program",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"WITHDRAWN\""
+            },
+            {
+              "nct_id": "NCT07071194",
+              "title": "Asthma and Osteopathic Manipulative Technique",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"WITHDRAWN\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Withdrawn",
+          "y_key": "WITHDRAWN",
+          "trial_count": 33
+        },
+        {
+          "study_count": 188,
+          "citations": [
+            {
+              "nct_id": "NCT03193242",
+              "title": "The Electronic Asthma Management System",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT06278649",
+              "title": "Relaxation and Guided Imagery as an Intervention for Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"UNKNOWN\""
+            },
+            {
+              "nct_id": "NCT06147453",
+              "title": "Effect of OPEP on Mucus Plugging and Airflow Obstruction in Patients with Moderate-to-severe Asthma",
+              "field": "protocolSection.designModule.phases | protocolSection.statusModule.overallStatus",
+              "excerpt": "designModule.phases \"NA\"; statusModule.overallStatus \"UNKNOWN\""
+            }
+          ],
+          "x": "Not applicable",
+          "x_key": "NA",
+          "y": "Unknown",
+          "y_key": "UNKNOWN",
+          "trial_count": 188
+        }
+      ]
+    },
+    "meta": {
+      "query": "Heatmap of trial status by phase for asthma",
+      "interpretation": {
+        "intent": {
+          "value": "distribution",
+          "p": 1,
+          "confidence": 1,
+          "alternatives": []
+        },
+        "dimension": {
+          "value": "phase",
+          "p": 0.82
+        },
+        "secondary_dimension": {
+          "value": "status",
+          "p": 0.04
+        },
+        "chart": {
+          "chosen": "heatmap",
+          "applied": "heatmap",
+          "explicit": true,
+          "reason": null
+        },
+        "metric": "trial_count",
+        "granularity": null,
+        "edge_kind": null,
+        "entities": {
+          "drugs": [],
+          "conditions": [
+            "asthma"
+          ],
+          "sponsors": [],
+          "countries": []
+        },
+        "time_window": {
+          "start_year": null,
+          "end_year": null
+        },
+        "limit": null,
+        "recruiting_only": false,
+        "combination": null,
+        "phase_filter": null,
+        "provided_fields": [],
+        "question_set": {
+          "id": "query-interpretation",
+          "version": 3
+        },
+        "models": {
+          "judge": "jev-1.13.0",
+          "extractor": "gpt-5.4-nano",
+          "titler": "gpt-5.4-nano"
+        }
+      },
+      "arms": [
+        {
+          "label": "Asthma",
+          "filters": {
+            "query.cond": "\"asthma\""
+          }
+        }
+      ],
+      "source": {
+        "name": "clinicaltrials.gov",
+        "api_version": "2.0.5",
+        "data_timestamp": "2026-10-09T09:00:05",
+        "requests": [
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22asthma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&countTotal=true&sort=StartDate%3Adesc",
+            "total_count": 5298,
+            "fetched": 1000
+          },
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22asthma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuY_Sj1fMTnj6SuP08FCfCEvHY9tdO3Q&sort=StartDate%3Adesc",
+            "total_count": 5298,
+            "fetched": 1000
+          },
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22asthma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuYPCg2fAYmD6SuP08FCfCFfnU9dpJ1SI&sort=StartDate%3Adesc",
+            "total_count": 5298,
+            "fetched": 1000
+          }
+        ]
+      },
+      "coverage": {
+        "total_count": 5298,
+        "fetched_count": 3000,
+        "truncated": true,
+        "sorted_by": "StartDate:desc",
+        "studies_without_value": 923,
+        "omitted_categories": 0
+      },
+      "units": {
+        "y": "trials"
+      },
+      "granularity": null,
+      "timing": {
+        "jev_ms": 278,
+        "judged_ms": 278,
+        "extract_ms": 849,
+        "fetch_ms": 3224,
+        "title_ms": 516,
+        "aggregate_ms": 4,
+        "total_ms": 4080
+      },
+      "notes": [
+        "Phase was judged both groupings; the second is status, the next most likely attribute (p=0.17).",
+        "A trial with several phases is counted once per value (once per phase for a Phase 1/2 trial).",
+        "923 trials without a phase are not shown."
+      ],
+      "warnings": [
+        "Only the 3,000 most recently started of 5,298 trials were read; counts are over that sample, the total is exact."
+      ],
+      "version": "chatctg/0.1.0"
+    }
+  }
+}

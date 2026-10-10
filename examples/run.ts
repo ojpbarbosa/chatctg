@@ -10,6 +10,12 @@ const EXAMPLES: { slug: string; request: QueryRequestInput }[] = [
   // The request names the chart, so this run always draws the map and shows the request-level chart override.
   { slug: "geographic-lupus-recruiting", request: { query: "Which countries have the most recruiting trials for lupus?", chart: "map" } },
   { slug: "network-sponsors-drugs-melanoma", request: { query: "Show a network of sponsors and drugs for melanoma trials", citations_per_point: 3 } },
+  { slug: "bubble-melanoma-phase-sponsor-class", request: { query: "Show phase by sponsor class for melanoma trials as bubbles", citations_per_point: 3 } },
+  { slug: "heatmap-asthma-status-phase", request: { query: "Heatmap of trial status by phase for asthma", citations_per_point: 3 } },
+  // Jev's recruiting-only answer for this question sits near 0.5 (eval/report.md), below the 0.7 the planner needs, so the request pins
+  // the status, the way a client that knows it would.
+  { slug: "timeline-lupus-phase3-recruiting", request: { query: "Timeline of recruiting phase 3 lupus trials", trial_status: "RECRUITING" } },
+  { slug: "sankey-melanoma-sponsor-class-phase", request: { query: "Show how melanoma trials flow from sponsor class to phase as a sankey", citations_per_point: 3 } },
 ];
 
 const deps = depsFromEnv();

@@ -1,0 +1,807 @@
+{
+  "request": {
+    "query": "Show how melanoma trials flow from sponsor class to phase as a sankey",
+    "citations_per_point": 3
+  },
+  "status": 200,
+  "response": {
+    "visualization": {
+      "type": "sankey",
+      "title": "Melanoma trials by sponsor class and phase",
+      "subtitle": "3,775 trials on ClinicalTrials.gov; the 3,000 most recently started were read. 531 trials without a phase are not shown. Data as of 2026-10-09.",
+      "encoding": {
+        "nodes": {
+          "id_field": "id",
+          "label_field": "label",
+          "side_field": "side"
+        },
+        "links": {
+          "source_field": "source",
+          "target_field": "target",
+          "value_field": "value",
+          "unit": "trials"
+        },
+        "left": {
+          "field": "sponsor_class",
+          "label": "Sponsor class"
+        },
+        "right": {
+          "field": "phase",
+          "label": "Phase"
+        }
+      },
+      "data": {
+        "nodes": [
+          {
+            "id": "left:INDUSTRY",
+            "label": "Industry",
+            "side": "left",
+            "study_count": 945
+          },
+          {
+            "id": "left:NIH",
+            "label": "NIH",
+            "side": "left",
+            "study_count": 104
+          },
+          {
+            "id": "left:OTHER_GOV",
+            "label": "Other government",
+            "side": "left",
+            "study_count": 33
+          },
+          {
+            "id": "left:NETWORK",
+            "label": "Network",
+            "side": "left",
+            "study_count": 20
+          },
+          {
+            "id": "left:OTHER",
+            "label": "Other (academic, hospital)",
+            "side": "left",
+            "study_count": 1367
+          },
+          {
+            "id": "right:EARLY_PHASE1",
+            "label": "Early Phase 1",
+            "side": "right",
+            "study_count": 60
+          },
+          {
+            "id": "right:PHASE1",
+            "label": "Phase 1",
+            "side": "right",
+            "study_count": 1086
+          },
+          {
+            "id": "right:PHASE2",
+            "label": "Phase 2",
+            "side": "right",
+            "study_count": 1157
+          },
+          {
+            "id": "right:PHASE3",
+            "label": "Phase 3",
+            "side": "right",
+            "study_count": 162
+          },
+          {
+            "id": "right:PHASE4",
+            "label": "Phase 4",
+            "side": "right",
+            "study_count": 31
+          },
+          {
+            "id": "right:NA",
+            "label": "Not applicable",
+            "side": "right",
+            "study_count": 379
+          }
+        ],
+        "links": [
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:EARLY_PHASE1",
+            "value": 12,
+            "study_count": 12,
+            "citations": [
+              {
+                "nct_id": "NCT06305962",
+                "title": "177Lu-anti-PD-L1 sdAb in Metastatic Solid Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"EARLY_PHASE1\""
+              },
+              {
+                "nct_id": "NCT05961111",
+                "title": "A Clinical Study on Oncolytic Virus Injection (R130 OV) for the Treatment of Advanced Solid Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"EARLY_PHASE1\""
+              },
+              {
+                "nct_id": "NCT05932511",
+                "title": "Topical Ascorbic Acid for Treatment of Squamous Cell Skin Cancer",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"EARLY_PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:PHASE1",
+            "value": 612,
+            "study_count": 612,
+            "citations": [
+              {
+                "nct_id": "NCT07863024",
+                "title": "Safety and Efficacy Study in Adults With Advanced Solid Tumors Receiving REGN13089-M404-M2980, an Antibody-drug Conjugate That Targets MET Protein on Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT07747935",
+                "title": "Study of Neoadjuvant RBP-01 In Patients With Primary Uveal Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT07476326",
+                "title": "Pharmacokinetics, Safety, and Immunogenicity Comparison of Bmab1700 and Opdivo® as Adjuvant Monotherapy in Participants With Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:PHASE2",
+            "value": 413,
+            "study_count": 413,
+            "citations": [
+              {
+                "nct_id": "NCT06708455",
+                "title": "Phase 2b of RAPA-201 Cell Therapy in Post-PD-(L)-1 Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07863024",
+                "title": "Safety and Efficacy Study in Adults With Advanced Solid Tumors Receiving REGN13089-M404-M2980, an Antibody-drug Conjugate That Targets MET Protein on Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07808515",
+                "title": "A Study Comparing Cemiplimab-based Treatments for Adult Participants With Locally Advanced Basal Cell Skin Cancer (laBCC)",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE2\""
+              }
+            ]
+          },
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:PHASE3",
+            "value": 98,
+            "study_count": 98,
+            "citations": [
+              {
+                "nct_id": "NCT07815574",
+                "title": "iSCIB1+ in Combination With Ipilimumab and Nivolumab as First-Line Treatment for Advanced Unresectable Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT07804186",
+                "title": "Study of Adjuvant Darovasertib and Crizotinib in Participants With Primary Non-metastatic Uveal Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT07015190",
+                "title": "Neoadjuvant Darovasertib in Primary Uveal Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE3\""
+              }
+            ]
+          },
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:PHASE4",
+            "value": 9,
+            "study_count": 9,
+            "citations": [
+              {
+                "nct_id": "NCT07459543",
+                "title": "A Study to Assess the Safety, and Tolerability of Nivolumab + Relatlimab Fixed-Dose Combination (FDC) In Unresectable or Metastatic Melanoma Participants In India",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE4\""
+              },
+              {
+                "nct_id": "NCT03715205",
+                "title": "Study to Evaluate the Safety of Pembrolizumab in Participants With Unresectable or Metastatic Melanoma or Non-small Cell Lung Cancer in India (MK-3475-593/KEYNOTE-593)",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE4\""
+              },
+              {
+                "nct_id": "NCT03340506",
+                "title": "Dabrafenib and/or Trametinib Rollover Study",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"PHASE4\""
+              }
+            ]
+          },
+          {
+            "source": "left:INDUSTRY",
+            "target": "right:NA",
+            "value": 18,
+            "study_count": 18,
+            "citations": [
+              {
+                "nct_id": "NCT07689812",
+                "title": "A Multicenter Randomized Open-Label Trial Evaluating ctDNA-Guided Interruption Versus Standard of Care Immune-Checkpoint Inhibitor (ICI) Therapy In Patients With Advanced / Metastatic Solid Tumors.",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT06870994",
+                "title": "Intratumoral Targeted Hyperthermia Therapy (THT) for Cutaneous Metastatic Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT06919809",
+                "title": "Effectiveness and Safety of X A-DERM™ Microsurfaced Acellular Dermal Matrix for Wound Healing After MOHS Surgery",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"INDUSTRY\"; designModule.phases \"NA\""
+              }
+            ]
+          },
+          {
+            "source": "left:NIH",
+            "target": "right:PHASE1",
+            "value": 45,
+            "study_count": 45,
+            "citations": [
+              {
+                "nct_id": "NCT06066138",
+                "title": "A Study of Therapeutic Drug Monitoring-Based Atezolizumab Dosing",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT05896839",
+                "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT04648826",
+                "title": "Aerosolized Azacytidine as Epigenetic Priming for Bintrafusp Alfa-Mediated Immune Checkpoint Blockade in Patients With Unresectable Pulmonary Metastases From Sarcomas, Germ Cell Tumors, or Epithelial Malignancies",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:NIH",
+            "target": "right:PHASE2",
+            "value": 74,
+            "study_count": 74,
+            "citations": [
+              {
+                "nct_id": "NCT05896839",
+                "title": "Immunotherapy in Combination With Prednisone and Sirolimus for Kidney Transplant Recipients With Unresectable or Metastatic Skin Cancer",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT05136196",
+                "title": "BiCaZO: A Study Combining Two Immunotherapies (Cabozantinib and Nivolumab) to Treat Patients With Advanced Melanoma or Squamous Cell Head and Neck Cancer, an immunoMATCH Pilot Study",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT05155033",
+                "title": "Phase II Trial of Combination Anti-PD-1 and Aldesleukin for Metastatic Melanoma and Renal Cell Carcinoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE2\""
+              }
+            ]
+          },
+          {
+            "source": "left:NIH",
+            "target": "right:PHASE3",
+            "value": 4,
+            "study_count": 4,
+            "citations": [
+              {
+                "nct_id": "NCT02339571",
+                "title": "A Phase II/III Trial of Nivolumab, Ipilimumab, and GM-CSF in Patients With Advanced Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT02506153",
+                "title": "Physician/Patient Choice of Either High-Dose Recombinant Interferon Alfa-2B or Ipilimumab, Versus Pembrolizumab in Treating Patients With Stage III-IV High Risk Melanoma That Has Been Removed by Surgery",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT02224781",
+                "title": "Dabrafenib and Trametinib Followed by Ipilimumab and Nivolumab or Ipilimumab and Nivolumab Followed by Dabrafenib and Trametinib in Treating Patients With Stage III-IV BRAFV600 Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"PHASE3\""
+              }
+            ]
+          },
+          {
+            "source": "left:NIH",
+            "target": "right:NA",
+            "value": 1,
+            "study_count": 1,
+            "citations": [
+              {
+                "nct_id": "NCT04866810",
+                "title": "The Effect of Diet and Exercise on ImmuNotherapy and the Microbiome (EDEN)",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NIH\"; designModule.phases \"NA\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER_GOV",
+            "target": "right:PHASE1",
+            "value": 8,
+            "study_count": 8,
+            "citations": [
+              {
+                "nct_id": "NCT05903937",
+                "title": "Locoregional Administration of TIL and Lymphodepletion in Patients With Melanoma and Liver Metastases",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT07183852",
+                "title": "Locoregional or Systemic Administration of Autologous Tumor Infiltrating Lymphocytes in Patients With Metastatic Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT04812470",
+                "title": "Hepatic Arterial Infusion of Autologous Tumor Infiltrating Lymphocytes in Patients With Melanoma and Liver Metastases",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER_GOV",
+            "target": "right:PHASE2",
+            "value": 16,
+            "study_count": 16,
+            "citations": [
+              {
+                "nct_id": "NCT07651618",
+                "title": "A Phase II Trial of Tumour Infiltrating Lymphocyte Adoptive Cell Therapy in Patients With Immune Checkpoint Inhibitor Resistant Unresectable or Metastatic Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07349303",
+                "title": "Neoadjuvant Pembrolizumab in Patients With Stage IIb/c Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT06670300",
+                "title": "Clinical Observation on the Safety and Efficacy of Cardonilmab in the Treatment of Second-line and Above Advanced Melanoma and Advanced Renal Cancer",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE2\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER_GOV",
+            "target": "right:PHASE3",
+            "value": 3,
+            "study_count": 3,
+            "citations": [
+              {
+                "nct_id": "NCT07552597",
+                "title": "Superparamagnetic Iron Oxide for Sentinel Lymph Node Localization in Patients With Cutaneous Melanoma: MagMen-II",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT06519266",
+                "title": "PHP in Combination With IPI1/NIVO3 Compared to IPI3/NIVO1 Only in Patients With Uveal Melanoma Liver Metastases",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT01785316",
+                "title": "The Scandinavian Randomized Controlled Trial of Isolated Hepatic Perfusion for Uveal Melanoma Liver Metastases",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"PHASE3\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER_GOV",
+            "target": "right:NA",
+            "value": 7,
+            "study_count": 7,
+            "citations": [
+              {
+                "nct_id": "NCT06971848",
+                "title": "Evaluation of Skin Tests in Biotherapy Allergies",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT07349940",
+                "title": "Early Detection of Skin Tumors Using a Telemedicine Tool in Primary Care",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT06363591",
+                "title": "WoW - Single- vs Two-staged Excisions of Thin Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER_GOV\"; designModule.phases \"NA\""
+              }
+            ]
+          },
+          {
+            "source": "left:NETWORK",
+            "target": "right:PHASE1",
+            "value": 1,
+            "study_count": 1,
+            "citations": [
+              {
+                "nct_id": "NCT04851119",
+                "title": "Tegavivint for the Treatment of Recurrent or Refractory Solid Tumors, Including Lymphomas and Desmoid Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:NETWORK",
+            "target": "right:PHASE2",
+            "value": 14,
+            "study_count": 14,
+            "citations": [
+              {
+                "nct_id": "NCT07621614",
+                "title": "A Study on How to Safely Guide Surgery for Melanoma and Similar Skin Tumors in Children Using Pathology and Genetic Information",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07040280",
+                "title": "Sulforaphane for the Prevention of Melanoma in Patients With Multiple Atypical Nevi and a Prior History of Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07130032",
+                "title": "Efficacy And Safety Of Anti-PD-1/PD-L1 Antibodies In Combination With Bevacizumab And Metronomic Cyclophosphamide In Patients With Non-Small Cell Lung Cancer And Cutaneous Melanoma Previously Treated With Immune Checkpoint Blockade",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE2\""
+              }
+            ]
+          },
+          {
+            "source": "left:NETWORK",
+            "target": "right:PHASE3",
+            "value": 5,
+            "study_count": 5,
+            "citations": [
+              {
+                "nct_id": "NCT07068074",
+                "title": "Comparing the Effectiveness of Less Invasive Procedures With the Current Standard of Care for the Treatment of Older Adults With Early-Stage Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT06246149",
+                "title": "Adjuvant Tebentafusp in High Risk Ocular Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT05522660",
+                "title": "Immunotherapy or Targeted Therapy With or Without Stereotactic Radiosurgery for Patients With Brain Metastases From Melanoma or Non-small Cell Lung Cancer",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"PHASE3\""
+              }
+            ]
+          },
+          {
+            "source": "left:NETWORK",
+            "target": "right:NA",
+            "value": 1,
+            "study_count": 1,
+            "citations": [
+              {
+                "nct_id": "NCT04498767",
+                "title": "Stereotactic Body Radiotherapy in Patients With Rare Oligometastatic Cancers (OligoRARE)",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"NETWORK\"; designModule.phases \"NA\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:EARLY_PHASE1",
+            "value": 48,
+            "study_count": 48,
+            "citations": [
+              {
+                "nct_id": "NCT07700121",
+                "title": "PICSTAT Pilot Study for CD8 PET/CT-Guided Lifileucel Treatment in Advanced Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"EARLY_PHASE1\""
+              },
+              {
+                "nct_id": "NCT07813533",
+                "title": "A Pilot Study to Examine the Efficacy and Tolerability of Sirolimus on Epidermal Nevi Lesions in Patients 6 Years Old and Above.",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"EARLY_PHASE1\""
+              },
+              {
+                "nct_id": "NCT07389525",
+                "title": "Immune Checkpoint Inhibitor (ICI)-Drug-Drug Interaction (DDI) Study",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"EARLY_PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:PHASE1",
+            "value": 420,
+            "study_count": 420,
+            "citations": [
+              {
+                "nct_id": "NCT06739226",
+                "title": "Combination Immunotherapy Targeting Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT07628894",
+                "title": "Circadian-Optimized Light Therapy for the Treatment of Patients With Advanced Melanoma Receiving Tumor-Infiltrating Lymphocyte Therapy",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE1\""
+              },
+              {
+                "nct_id": "NCT07817901",
+                "title": "Phase 1b/2 Clinical Trial to Evaluate the Safety and Efficacy of Combination Therapy With Pembrolizumab and Irinotecan in Patients With Metastatic or Recurrent Malignant Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE1\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:PHASE2",
+            "value": 640,
+            "study_count": 640,
+            "citations": [
+              {
+                "nct_id": "NCT07170293",
+                "title": "Phase II Trial of Tunlametinib in Patients With NRAS Mutant Non-melanoma Refractory Solid Tumors",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT06739226",
+                "title": "Combination Immunotherapy Targeting Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE2\""
+              },
+              {
+                "nct_id": "NCT07807878",
+                "title": "Trial of Temozolomide in BAP1 Mutated Patients With Advanced or Metastatic Cutaneous Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE2\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:PHASE3",
+            "value": 52,
+            "study_count": 52,
+            "citations": [
+              {
+                "nct_id": "NCT07440290",
+                "title": "DETERMINE Trial Treatment Arm 07: Dabrafenib in Combination With Trametinib in Adult, Paediatric and Teenage/Young Adult Patients With BRAF V600 Mutation-Positive Cancers.",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT05770544",
+                "title": "DETERMINE Trial Treatment Arm 03: Entrectinib in Adult, Paediatric and Teenage/Young Adult Patients With ROS1 Gene Fusion-Positive Cancers.",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE3\""
+              },
+              {
+                "nct_id": "NCT07381972",
+                "title": "Photodynamic Therapy Associated With Sonodynamic Therapy for the Treatment of Nodular Basal Cell Carcinoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE3\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:PHASE4",
+            "value": 22,
+            "study_count": 22,
+            "citations": [
+              {
+                "nct_id": "NCT07854522",
+                "title": "A Study of QL1706 Combined With OH2 Injection in Perioperative Treatment of Stage III Resectable Acral Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE4\""
+              },
+              {
+                "nct_id": "NCT07720726",
+                "title": "Impact of Dysport on PMFF Donor Scar",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE4\""
+              },
+              {
+                "nct_id": "NCT07405086",
+                "title": "Morning Versus Afternoon Administration of Immunotherapy for the Treatment of Advanced or Metastatic Solid Tumors, The Knight SHIFT Study",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"PHASE4\""
+              }
+            ]
+          },
+          {
+            "source": "left:OTHER",
+            "target": "right:NA",
+            "value": 352,
+            "study_count": 352,
+            "citations": [
+              {
+                "nct_id": "NCT07819474",
+                "title": "Optimizing Tumor-Infiltrating Lymphocyte (TIL) Harvest Site and Patient Selection With CD8-PET Imaging in Patients With",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT07704918",
+                "title": "Aggressive Lipid Lowering Therapy in ICI-Treated Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"NA\""
+              },
+              {
+                "nct_id": "NCT07869381",
+                "title": "Trial Comparing CPDMA Versus Standard Breadloafing in WLE Specimens of Stage 1-II Cutaneous Melanoma",
+                "field": "protocolSection.sponsorCollaboratorsModule.leadSponsor.class | protocolSection.designModule.phases",
+                "excerpt": "leadSponsor.class \"OTHER\"; designModule.phases \"NA\""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "meta": {
+      "query": "Show how melanoma trials flow from sponsor class to phase as a sankey",
+      "interpretation": {
+        "intent": {
+          "value": "distribution",
+          "p": 0.97,
+          "confidence": 0.97,
+          "alternatives": []
+        },
+        "dimension": {
+          "value": "sponsor_class",
+          "p": 0.94
+        },
+        "secondary_dimension": {
+          "value": "phase",
+          "p": 0.92
+        },
+        "chart": {
+          "chosen": "sankey",
+          "applied": "sankey",
+          "explicit": true,
+          "reason": null
+        },
+        "metric": "trial_count",
+        "granularity": null,
+        "edge_kind": null,
+        "entities": {
+          "drugs": [],
+          "conditions": [
+            "melanoma"
+          ],
+          "sponsors": [],
+          "countries": []
+        },
+        "time_window": {
+          "start_year": null,
+          "end_year": null
+        },
+        "limit": null,
+        "recruiting_only": false,
+        "combination": null,
+        "phase_filter": null,
+        "provided_fields": [],
+        "question_set": {
+          "id": "query-interpretation",
+          "version": 3
+        },
+        "models": {
+          "judge": "jev-1.13.0",
+          "extractor": "gpt-5.4-nano",
+          "titler": "gpt-5.4-nano"
+        }
+      },
+      "arms": [
+        {
+          "label": "Melanoma",
+          "filters": {
+            "query.cond": "\"melanoma\""
+          }
+        }
+      ],
+      "source": {
+        "name": "clinicaltrials.gov",
+        "api_version": "2.0.5",
+        "data_timestamp": "2026-10-09T09:00:05",
+        "requests": [
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22melanoma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&countTotal=true&sort=StartDate%3Adesc",
+            "total_count": 3775,
+            "fetched": 1000
+          },
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22melanoma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuY_Ok1PUemD6SuP08FCfCF_HQ8tFO1CI&sort=StartDate%3Adesc",
+            "total_count": 3775,
+            "fetched": 1000
+          },
+          {
+            "url": "https://clinicaltrials.gov/api/v2/studies?format=json&query.cond=%22melanoma%22&fields=NCTId%2CBriefTitle%2COverallStatus%2CPhase%2CStartDate%2CPrimaryCompletionDate%2CLeadSponsorName%2CLeadSponsorClass%2CCollaboratorName%2CCondition%2CInterventionName%2CInterventionType%2CLocationCountry%2CEnrollmentCount%2CStudyType%2CSex%2CStdAge%2CConditionMeshTerm%2CInterventionMeshTerm&pageSize=1000&pageToken=ZVNj7o2Elu8o3lpzDMiio-numpOQJJxuYfSl3_UamD6SuP08FCfCFfPQ9tJL1iI&sort=StartDate%3Adesc",
+            "total_count": 3775,
+            "fetched": 1000
+          }
+        ]
+      },
+      "coverage": {
+        "total_count": 3775,
+        "fetched_count": 3000,
+        "truncated": true,
+        "sorted_by": "StartDate:desc",
+        "studies_without_value": 531,
+        "omitted_categories": 0
+      },
+      "units": {
+        "y": "trials"
+      },
+      "granularity": null,
+      "timing": {
+        "jev_ms": 300,
+        "judged_ms": 300,
+        "extract_ms": 1182,
+        "fetch_ms": 1,
+        "title_ms": 533,
+        "aggregate_ms": 8,
+        "total_ms": 1721
+      },
+      "notes": [
+        "531 trials without a phase are not shown."
+      ],
+      "warnings": [
+        "Only the 3,000 most recently started of 3,775 trials were read; counts are over that sample, the total is exact."
+      ],
+      "version": "chatctg/0.1.0"
+    }
+  }
+}

@@ -551,7 +551,7 @@
         ],
         "question_set": {
           "id": "query-interpretation",
-          "version": 2
+          "version": 3
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -603,13 +603,13 @@
       },
       "granularity": "year",
       "timing": {
-        "jev_ms": 618,
-        "judged_ms": 619,
-        "extract_ms": 1575,
-        "fetch_ms": 3101,
-        "title_ms": 870,
-        "aggregate_ms": 7,
-        "total_ms": 4850
+        "jev_ms": 500,
+        "judged_ms": 500,
+        "extract_ms": 1258,
+        "fetch_ms": 3300,
+        "title_ms": 759,
+        "aggregate_ms": 5,
+        "total_ms": 4787
       },
       "notes": [],
       "warnings": [],

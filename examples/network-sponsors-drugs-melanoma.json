@@ -1364,7 +1364,7 @@
         "provided_fields": [],
         "question_set": {
           "id": "query-interpretation",
-          "version": 2
+          "version": 3
         },
         "models": {
           "judge": "jev-1.13.0",
@@ -1415,13 +1415,13 @@
       },
       "granularity": null,
       "timing": {
-        "jev_ms": 463,
-        "judged_ms": 463,
-        "extract_ms": 1214,
+        "jev_ms": 596,
+        "judged_ms": 596,
+        "extract_ms": 1265,
         "fetch_ms": 1,
-        "title_ms": 822,
-        "aggregate_ms": 28,
-        "total_ms": 2039
+        "title_ms": 911,
+        "aggregate_ms": 30,
+        "total_ms": 2180
       },
       "notes": [
         "Nodes are identified by MeSH terms (drugs, conditions) or registered names (sponsors, collaborators); edge weight is the number of trials where both co-occur."
