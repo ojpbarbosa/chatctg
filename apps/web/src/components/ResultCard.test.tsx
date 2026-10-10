@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import type { Interpretation, Judged } from "@chatctg/contracts";
+import { Visualization } from "@chatctg/contracts";
+import type { Citation, Interpretation, Judged, Meta, QueryRequestInput, QueryResponse } from "@chatctg/contracts";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { describe, expect, it } from "vitest";
@@ -46,5 +47,112 @@ describe("ResultCard", () => {
 
     act(() => root.unmount());
     el.remove();
+  });
+});
+
+const cite = (n: number): Citation => ({ nct_id: `NCT0000000${n}`, title: `Trial ${n}`, field: "protocolSection.designModule.phases", excerpt: `PHASE${n}` });
+const phases = Visualization.parse({
+  type: "bar", title: "Melanoma trials by phase", subtitle: "S",
+  encoding: { x: { field: "phase", type: "ordinal", label: "Phase" }, y: { field: "trial_count", type: "quantitative", label: "Trials", unit: "trials" }, orientation: "vertical", sort: "x_order" },
+  data: [
+    { phase: "Phase 1", phase_key: "PHASE1", trial_count: 5, study_count: 5, citations: [cite(1), cite(2)] },
+    { phase: "Phase 2", phase_key: "PHASE2", trial_count: 3, study_count: 3, citations: [cite(3)] },
+    { phase: "Phase 3", phase_key: "PHASE3", trial_count: 1, study_count: 1, citations: [cite(4)] },
+  ],
+});
+const trials = Visualization.parse({
+  type: "table", title: "Recent trials", subtitle: "S",
+  encoding: { columns: [{ field: "nct_id", label: "NCT ID", type: "string" }, { field: "title", label: "Title", type: "string" }], sort: { field: "start_date", direction: "desc" } },
+  data: [1, 2].map((n) => ({ nct_id: `NCT0000000${n}`, title: `Trial ${n}`, study_count: 1, citations: [cite(n)] })),
+});
+const meta: Meta = {
+  query: "How are melanoma trials distributed across phases?", interpretation, arms: [{ label: "Melanoma", filters: { "query.cond": '"melanoma"' } }],
+  source: { name: "clinicaltrials.gov", api_version: "2.0.5", data_timestamp: "2026-10-09T09:00:05", requests: [] },
+  coverage: { total_count: 2909, fetched_count: 2909, truncated: false, sorted_by: "StartDate:desc", studies_without_value: 0, omitted_categories: 0 },
+  units: { y: "trials" }, granularity: null,
+  timing: { jev_ms: 180, judged_ms: 310, extract_ms: 1100, fetch_ms: 3500, title_ms: 700, aggregate_ms: 12, total_ms: 4700 },
+  notes: [], warnings: ["A warning stays as it is."], version: "chatctg/0.1.0",
+};
+const request: QueryRequestInput = { query: "How are melanoma trials distributed across phases?", citations_per_point: 2 };
+const answered = (visualization: Visualization, extra: Partial<HistoryItem> = {}): HistoryItem => ({ ...item, query: request.query, response: { visualization, meta } satisfies QueryResponse, request, ...extra });
+
+describe("ResultCard with an answer", () => {
+  function setup(it: HistoryItem) {
+    const el = document.createElement("div");
+    document.body.append(el);
+    const root = createRoot(el);
+    act(() => root.render(<ResultCard item={it} live={null} onDidYouMean={() => {}} />));
+    const drawer = () => el.querySelector<HTMLElement>('[aria-label="Cited trials"]');
+    const button = (name: string) => [...el.querySelectorAll("button")].find((b) => b.textContent === name)!;
+    const click = (b: Element) => act(() => { b.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    const cited = () => [...drawer()!.querySelectorAll(".cite a")].map((a) => a.textContent);
+    return { el, drawer, button, click, cited, done: () => { act(() => root.unmount()); el.remove(); } };
+  }
+
+  it("opens a bar result with the first row's citations, and Next and Previous step through the rows in order", () => {
+    const { drawer, button, click, cited, done } = setup(answered(phases));
+    expect(drawer()).not.toBeNull();
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 1 (point 1 of 3)");
+    expect(cited()).toEqual(["NCT00000001", "NCT00000002"]);
+    expect(drawer()!.textContent).toContain("or click any point on the chart");
+    expect(button("Previous").getAttribute("aria-disabled")).toBe("true");
+    click(button("Next"));
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 2 (point 2 of 3)");
+    expect(cited()).toEqual(["NCT00000003"]);
+    expect(button("Previous").getAttribute("aria-disabled")).toBe("false");
+    click(button("Next"));
+    expect(cited()).toEqual(["NCT00000004"]);
+    expect(button("Next").getAttribute("aria-disabled")).toBe("true");
+    click(button("Next"));
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 3 (point 3 of 3)");
+    click(button("Previous"));
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for Phase 2 (point 2 of 3)");
+    done();
+  });
+
+  it("still selects the point a click on the chart picks", () => {
+    const { el, drawer, click, cited, done } = setup(answered(trials));
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for NCT00000001 (point 1 of 2)");
+    click(el.querySelectorAll("tbody tr")[1]!.querySelectorAll("td")[1]!);
+    expect(drawer()!.querySelector("h3")!.textContent).toBe("Citations for NCT00000002 (point 2 of 2)");
+    expect(cited()).toEqual(["NCT00000002"]);
+    done();
+  });
+
+  it("times each stage in the footer with capitalised labels and no vendor name", () => {
+    const { el, done } = setup(answered(phases));
+    const foot = el.querySelector(".card .foot")!;
+    expect([...foot.children].map((c) => c.textContent)).toEqual(["Judged in 310 ms", "Extraction 1.1 s", "ClinicalTrials.gov 3.5 s", "Total 4.7 s", "2,909 of 2,909 trials read", "A warning stays as it is.", "Show JSON"]);
+    expect(foot.textContent).not.toContain("Jev");
+    done();
+  });
+
+  it("opens the request and the response as JSON below the footer, inside the card, with the button left in place", () => {
+    const { el, button, click, done } = setup(answered(phases));
+    const foot = el.querySelector(".card .foot")!;
+    const toggle = button("Show JSON");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    click(toggle);
+    expect(button("Hide JSON")).toBe(toggle);
+    expect(foot.lastElementChild!.contains(toggle)).toBe(true);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    const panel = el.querySelector<HTMLElement>("pre.json")!;
+    expect(foot.contains(panel)).toBe(false);
+    expect(panel.closest(".card")).not.toBeNull();
+    expect(foot.nextElementSibling).toBe(panel);
+    expect(toggle.getAttribute("aria-controls")).toBe(panel.id);
+    expect(JSON.parse(panel.textContent!)).toEqual({ request, response: { visualization: phases, meta } });
+    click(toggle);
+    expect(el.querySelector("pre.json")).toBeNull();
+    expect(toggle.textContent).toBe("Show JSON");
+    done();
+  });
+
+  it("shows a null request for an answer saved before requests were kept", () => {
+    const { request: _, ...old } = answered(phases);
+    const { el, button, click, done } = setup(old);
+    click(button("Show JSON"));
+    expect(JSON.parse(el.querySelector("pre.json")!.textContent!).request).toBeNull();
+    done();
   });
 });

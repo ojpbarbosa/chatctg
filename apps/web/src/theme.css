@@ -78,6 +78,9 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 .btn-primary:hover { background: var(--brand-deep); }
 .btn:disabled { opacity: 0.55; cursor: default; }
 .btn-ghost { border-color: transparent; }
+/* A step at an end: it keeps the focus, so it is marked rather than disabled. */
+.btn[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+.btn[aria-disabled="true"]:hover { background: var(--bg); }
 
 /* Query box */
 .landing { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; gap: 28px; }
@@ -102,7 +105,10 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); box-shadow: var(--lift); padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
 .card h2 { margin: 0; font-size: var(--t-xl); font-weight: 600; letter-spacing: -0.015em; line-height: 1.15; }
 .card .sub { margin: 0; color: var(--muted); font-size: var(--t-sm); }
-.card .foot { display: flex; flex-wrap: wrap; gap: 14px; color: var(--faint); font-size: var(--t-xs); border-top: 1px solid var(--line-soft); padding-top: 12px; }
+.card .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; color: var(--faint); font-size: var(--t-xs); border-top: 1px solid var(--line-soft); padding-top: 12px; }
+.foot-end { margin-left: auto; }
+/* As wide for either label, so toggling never moves it. */
+.json-toggle { min-width: 112px; justify-content: center; padding: 5px 10px; }
 .chart { min-height: 360px; position: relative; }
 /* SVG charts: the hovered mark lifts so the reader sees it respond. */
 .cell .bubble { transition: fill-opacity 120ms ease; } .cell:hover .bubble { fill-opacity: 1; }
@@ -113,13 +119,21 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 .error { border-color: rgba(180, 35, 24, 0.3); background: rgba(180, 35, 24, 0.35); width: 400px; display: flex; }
 .error h2 { font-size: var(--t-lg); }
-.drawer { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
-.drawer h3 { margin: 0; font-size: var(--t-md); font-weight: 600; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
-.drawer h3 .count { color: var(--muted); font-weight: 450; font-size: var(--t-sm); }
-.cite { display: grid; grid-template-columns: 120px 1fr; gap: 10px; font-size: var(--t-sm); padding: 8px 0; border-top: 1px solid var(--line-soft); }
-.cite .field { color: var(--faint); font-family: var(--mono); font-size: var(--t-xs); word-break: break-all; }
+.drawer { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+.drawer-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
+.drawer h3 { margin: 0; font-size: var(--t-md); font-weight: 600; }
+.stepper { display: flex; align-items: center; gap: 2px; }
+.stepper .btn { padding: 5px 10px; }
+.stepper .hint { color: var(--faint); font-size: var(--t-xs); margin-left: 6px; }
+.drawer .cites { max-height: 264px; overflow-y: auto; }
+.cite { display: grid; grid-template-columns: 112px 1fr; gap: 10px; font-size: var(--t-sm); padding: 6px 0; border-top: 1px solid var(--line-soft); }
+.cite > div { min-width: 0; }
+.cite .trial { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cite .where { font-size: var(--t-xs); overflow-wrap: anywhere; }
+.cite .field { color: var(--faint); font-family: var(--mono); }
 .cite .excerpt { color: var(--muted); }
-pre.json { margin: 0; padding: 14px; background: var(--raised); border-radius: var(--radius-sm); font-size: var(--t-xs); overflow: auto; max-height: 480px; font-family: var(--mono); }
+/* Wrapped to its container and scrolled only vertically, so a long line never widens the card. */
+pre.json { margin: 0; padding: 14px; background: var(--raised); border-radius: var(--radius-sm); font-size: var(--t-xs); font-family: var(--mono); min-width: 0; max-width: 100%; max-height: 480px; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
 .rise { animation: rise 240ms ease-out both; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .rise, .skeleton { animation: none; } .querybox, .sidebar, .sidebar-head .chevron { transition: none; } }

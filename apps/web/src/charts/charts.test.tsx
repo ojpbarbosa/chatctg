@@ -20,6 +20,7 @@ import { TableView } from "./Table";
 import { WorldMapView } from "./WorldMap";
 import { renderChart } from "./index";
 import { countLabel, pickLabel } from "./common";
+import { dataPoints } from "./points";
 
 // Two square "countries": USA (840) and Canada (124), as a topology without a transform.
 vi.mock("world-atlas/countries-110m.json", () => {
@@ -401,5 +402,39 @@ describe("renderChart", () => {
   });
   it("renders a cartesian type through the responsive path without throwing", () => {
     expect(() => renderToStaticMarkup(<>{renderChart(bar, noop)}</>)).not.toThrow();
+  });
+});
+
+describe("dataPoints", () => {
+  const labels = (v: Parameters<typeof dataPoints>[0]) => dataPoints(v).points.map((p) => p.label);
+  it("lists the rows of a row chart in the spec's data order, labelled as a click on each is, and opens on the first", () => {
+    expect(labels(bar)).toEqual(["Phase 1", "Phase 2", "Phase 3"]);
+    expect(dataPoints(bar).points[1]!.citations).toBe(bar.data[1]!.citations);
+    expect(labels(grouped)).toEqual(["Phase 1, Recruiting", "Phase 1, Completed", "Phase 2, Recruiting", "Phase 2, Completed"]);
+    expect(labels(stacked)).toEqual(labels(grouped));
+    expect(labels(line).slice(0, 3)).toEqual(["2020, Phase 2", "2020, Phase 3", "2021, Phase 2"]);
+    expect(labels(hist)).toEqual(["0-50", "51-200", "200+"]);
+    expect(labels(scatter)).toEqual(["NCT00000001", "NCT00000002", "NCT00000003", "NCT00000004", "NCT00000005"]);
+    expect(labels(map)).toEqual(["United States, 9 trials", "Canada, 4 trials", "Kosovo, 1 trial"]);
+    expect(labels(table)).toEqual(["NCT00000001", "NCT00000002"]);
+    expect(labels(timeline)).toEqual(["NCT00000001", "NCT00000002", "NCT00000003"]);
+    expect(dataPoints(single)).toEqual({ points: [{ label: "Trials", citations: single.data[0]!.citations }], initial: 0 });
+    for (const v of [bar, grouped, line, hist, scatter, map, table, timeline]) expect(dataPoints(v).initial, v.type).toBe(0);
+  });
+  it("lists only the non-empty cells of a grid and opens on the first of them", () => {
+    expect(labels(bubble)).toEqual(["Phase 1, Industry", "Phase 2, Industry", "Phase 2, Other", "Phase 3, Industry"]);
+    expect(dataPoints(bubble).initial).toBe(0);
+    const late = parse<HeatmapViz>({ ...heatmap, data: gridRows([[0, 2], [3, 0], [0, 0]]) });
+    expect(labels(late)).toEqual(["Phase 1, Other", "Phase 2, Industry"]);
+    expect(dataPoints(late).points[0]!.citations).toBe(late.data[1]!.citations);
+  });
+  it("opens a network on its heaviest edge and a sankey on its largest link, in data order", () => {
+    expect(labels(network)).toEqual(["Pfizer and Aspirin, 3 trials", "Pfizer and Placebo, 1 trial"]);
+    expect(dataPoints(network).initial).toBe(0);
+    const reversed = { ...network, data: { ...network.data, edges: [...network.data.edges].reverse() } };
+    expect(dataPoints(reversed).initial).toBe(1);
+    expect(labels(sankey)).toEqual(["Industry to Phase 2", "Industry to Phase 3", "NIH to Phase 2"]);
+    expect(dataPoints(sankey).initial).toBe(1);
+    expect(dataPoints(sankey).points[1]!.citations).toBe(sankey.data.links[1]!.citations);
   });
 });

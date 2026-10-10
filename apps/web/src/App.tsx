@@ -30,11 +30,12 @@ export function App() {
     const ac = new AbortController(); abortRef.current = ac;
     const current = () => abortRef.current === ac;
     const id = newId();
-    const item: HistoryItem = { id, query: q, created_at: new Date().toISOString(), response: null, error: null };
+    const request: QueryRequestInput = { query: q, ...extra };
+    const item: HistoryItem = { id, query: q, created_at: new Date().toISOString(), request, response: null, error: null };
     const settle = (patch: Partial<HistoryItem>) => { if (!removed.current.has(id)) setItems((xs) => pushHistory(xs, { ...item, ...patch })); };
     setItems((xs) => pushHistory(xs, item)); setActiveId(id); setQuery(q); setBusy(true); setLive({ id, state: {} });
     try {
-      await streamQuery({ query: q, ...extra }, {
+      await streamQuery(request, {
         onJudged: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, judged: e } } : l)); },
         onInterpretation: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, interpretation: e } } : l)); },
         onProgress: (e) => { if (current()) setLive((l) => (l ? { ...l, state: { ...l.state, progress: { fetched: e.fetched, total: e.total } } } : l)); },

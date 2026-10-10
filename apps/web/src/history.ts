@@ -1,6 +1,7 @@
-import type { QueryResponse } from "@chatctg/contracts";
+import type { QueryRequestInput, QueryResponse } from "@chatctg/contracts";
 
-export interface HistoryItem { id: string; query: string; created_at: string; response: QueryResponse | null; error: string | null }
+/** One asked question; `request` is the exact body sent, absent on items saved before it was kept. */
+export interface HistoryItem { id: string; query: string; created_at: string; request?: QueryRequestInput; response: QueryResponse | null; error: string | null }
 const KEY = "chatctg.history.v1";
 export const HISTORY_CAP = 30;
 
