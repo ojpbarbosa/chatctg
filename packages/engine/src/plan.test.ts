@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHART_TYPES, QueryRequest, type ChartType } from "@chatctg/contracts";
+import { CHART_TYPES, DIMENSIONS, QueryRequest, type ChartType, type Dimension } from "@chatctg/contracts";
 import { FakeJudgmentClient, interpretationQuestions, type InterpretationAnswers, type Scripted } from "@chatctg/judgment";
 import { allowedCharts, armFilters, defaultChart, entityLabel, plan, provisionalChart, type Entities } from "./plan";
 
@@ -23,6 +23,11 @@ async function withChartMass(script: Record<string, Scripted>, mass: Partial<Rec
   return { ...a, chart: { ...a.chart, probabilities: chartMass(mass) } };
 }
 const okPlan = (r: ReturnType<typeof plan>) => { if (!r.ok) throw new Error(r.message); return r.plan; };
+/** Jev's distributions over the dimension and the second grouping, every unnamed attribute at 0. */
+function withDimensionMass(a: InterpretationAnswers, dimension: Partial<Record<Dimension, number>>, secondary: Partial<Record<Dimension, number>>): InterpretationAnswers {
+  const full = (mass: Partial<Record<Dimension, number>>) => Object.fromEntries(DIMENSIONS.map((d) => [d, mass[d] ?? 0])) as Record<Dimension, number>;
+  return { ...a, dimension: { ...a.dimension, probabilities: full(dimension) }, secondary_dimension: { ...a.secondary_dimension, probabilities: full(secondary) } };
+}
 
 describe("plan: scope and intent", () => {
   it("refuses out-of-scope questions", async () => {
@@ -285,6 +290,32 @@ describe("chart matrix: heatmap", () => {
     const p = okPlan(plan({ answers: a, entities: none, request: req(), models }));
     expect(p.interpretation.chart).toEqual({ chosen: "heatmap", applied: "stacked_bar", explicit: false, reason: "heatmap cannot render a time trend over start date; the next most likely chart that can, stacked_bar, is used" });
     expect(provisionalChart(a)).toBe("stacked_bar");
+  });
+});
+
+describe("plan: a grid or a flow needs two attributes", () => {
+  // "Heatmap of trial status by phase for asthma", as Jev answered it: phase for both groupings, status next.
+  const doubled = async (chart: string) => withDimensionMass(await answers({ dimension: { choice: "phase" }, secondary_dimension: { choice: "phase" }, chart: { choice: chart }, chart_named: { noul: 0.98 } }),
+    { phase: 0.86, status: 0.13, condition: 0.01 }, { phase: 0.92, none: 0.04, status: 0.03, condition: 0.01 });
+  it("when Jev names the same attribute twice for a chart that needs two, the second is the next most likely attribute of either answer", async () => {
+    for (const chart of ["heatmap", "bubble", "sankey"]) {
+      const a = await doubled(chart);
+      const p = okPlan(plan({ answers: a, entities: { ...none, conditions: ["asthma"] }, request: req(), models }));
+      expect([p.dimension, p.secondary, p.chart], chart).toEqual(["phase", "status", chart]);
+      expect(p.notes).toContain("Phase was judged both groupings; the second is status, the next most likely attribute (p=0.13).");
+      expect(provisionalChart(a), chart).toBe(chart);
+    }
+  });
+  it("keeps one attribute for any other chart, and when no other attribute reaches 0.05", async () => {
+    const bar = okPlan(plan({ answers: await doubled("bar"), entities: none, request: req(), models }));
+    expect([bar.secondary, bar.chart]).toEqual([null, "bar"]); expect(bar.notes.join(" ")).not.toMatch(/both groupings/);
+    const sure = withDimensionMass(await doubled("heatmap"), { phase: 0.97, status: 0.03 }, { phase: 0.96, none: 0.04 });
+    const p = okPlan(plan({ answers: sure, entities: none, request: req(), models }));
+    expect([p.secondary, p.chart]).toEqual([null, "bar"]);
+  });
+  it("never takes none or start dates as the second attribute", async () => {
+    const a = withDimensionMass(await doubled("bubble"), { phase: 0.6, start_year: 0.3, sex: 0.06 }, { phase: 0.5, none: 0.4, sex: 0.1 });
+    expect(okPlan(plan({ answers: a, entities: none, request: req(), models })).secondary).toBe("sex");
   });
 });
 

@@ -127,8 +127,27 @@ export const recruitingOnly = (a: InterpretationAnswers, request: Pick<QueryRequ
 /** What the chart is drawn over: the intent, the dimension and an optional second grouping. */
 export interface Shape { intent: Intent; dimension: Dimension | null; secondary: Dimension | null }
 
-/** Jev's dimensions made consistent with the intent; the notes say what changed. */
-export function normalizeShape(intent: Intent, a: InterpretationAnswers): { shape: Shape; notes: string[] } {
+/** The charts that draw two attributes against each other: the grids and the flow. */
+const TWO_ATTRIBUTES: ChartType[] = [...GRIDS, "sankey"];
+const SECOND_ATTRIBUTE_FLOOR = 0.05;
+
+/**
+ * The second attribute when Jev named the first one twice: the dimension and the second grouping are separate questions, so for "status
+ * by phase" both can come back as phase. It is the next most likely attribute of either answer, other than the first, none and start
+ * dates, when Jev gives it at least 0.05; else null.
+ */
+export function secondAttribute(a: InterpretationAnswers, first: Dimension): { value: Dimension; p: number } | null {
+  const ranked = [a.dimension.probabilities, a.secondary_dimension.probabilities].flatMap((ps) => Object.entries(ps) as [Dimension, number][])
+    .filter(([d]) => d !== first && d !== "none" && d !== "start_year").sort((x, y) => y[1] - x[1]);
+  const best = ranked[0];
+  return best && best[1] >= SECOND_ATTRIBUTE_FLOOR ? { value: best[0], p: best[1] } : null;
+}
+
+/**
+ * Jev's dimensions made consistent with the intent; the notes say what changed. A distribution drawn as a grid or a flow needs two
+ * attributes, so when Jev named one twice for it, the second is its next most likely attribute.
+ */
+export function normalizeShape(intent: Intent, a: InterpretationAnswers, chosen: ChartType = a.chart.choice): { shape: Shape; notes: string[] } {
   const notes: string[] = [];
   let dimension: Dimension | null = a.dimension.choice === "none" ? null : a.dimension.choice;
   let secondary: Dimension | null = a.secondary_dimension.choice === "none" ? null : a.secondary_dimension.choice;
@@ -138,6 +157,13 @@ export function normalizeShape(intent: Intent, a: InterpretationAnswers): { shap
   if (intent === "network" || intent === "count" || intent === "lookup") { dimension = null; secondary = null; }
   if ((intent === "distribution" || intent === "ranking" || intent === "comparison") && !dimension) { dimension = "phase"; notes.push("No attribute was named; grouped by phase."); }
   if (secondary === "start_year" && intent !== "time_trend") secondary = null;
+  if (intent === "distribution" && dimension && secondary === dimension && TWO_ATTRIBUTES.includes(chosen)) {
+    const second = secondAttribute(a, dimension);
+    if (second) {
+      notes.push(`${DIMENSION_LABEL[dimension]} was judged both groupings; the second is ${DIMENSION_LABEL[second.value].toLowerCase()}, the next most likely attribute (p=${second.p.toFixed(2)}).`);
+      secondary = second.value;
+    }
+  }
   if (secondary === dimension) secondary = null;
   return { shape: { intent, dimension, secondary }, notes };
 }
@@ -180,8 +206,8 @@ export function phaseFilter(a: InterpretationAnswers, request: Pick<QueryRequest
 
 /** What the planner decides from the judgment alone, before the names are read; a comparison is assumed to find its arms. */
 export function provisionalPlan(a: InterpretationAnswers, request: Pick<QueryRequest, "intent" | "chart" | "trial_phase"> = {}): { shape: Shape; chosen: ChartType; chart: ChartType; phase: Phase | null } {
-  const shape = dropForeignSecondary(normalizeShape(judgedIntent(a, request).value, a).shape).shape;
   const chosen = request.chart ?? a.chart.choice;
+  const shape = dropForeignSecondary(normalizeShape(judgedIntent(a, request).value, a, chosen).shape).shape;
   const drawn = applyChart(shape, chosen, chartNamed(a, request), a.chart.probabilities);
   return { shape: drawn.shape, chosen, chart: drawn.applied, phase: phaseFilter(a, request, drawn.shape).phase };
 }
@@ -205,7 +231,8 @@ export function plan(input: PlanInput): PlanResult {
 
   // 1. Scope and intent, then 2. dimensions, normalized by intent.
   const judged = judgedIntent(a, request);
-  const normalized = normalizeShape(judged.value, a);
+  const chosen: ChartType = request.chart ?? a.chart.choice;
+  const normalized = normalizeShape(judged.value, a, chosen);
   const notes = normalized.notes;
   const { dimension } = normalized.shape;
   let { intent, secondary } = normalized.shape;
@@ -241,7 +268,6 @@ export function plan(input: PlanInput): PlanResult {
   }
 
   // 5. Chart: Jev's choice, validated against the shape, with Jev's next most likely allowed chart as the fallback.
-  const chosen: ChartType = request.chart ?? a.chart.choice;
   const explicit = chartNamed(a, request);
   const drawn = applyChart({ intent, dimension, secondary }, chosen, explicit, a.chart.probabilities);
   const { applied, reason } = drawn;
