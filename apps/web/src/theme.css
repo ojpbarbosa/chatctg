@@ -19,6 +19,7 @@
   --lift: 0 1px 2px rgba(11, 11, 12, 0.05), 0 12px 32px -16px rgba(11, 11, 12, 0.18);
   --radius: 12px; --radius-sm: 8px;
   --sidebar: 260px;
+  --rail: 56px;
   --t-xs: 12px; --t-sm: 13.5px; --t-md: 15px; --t-lg: 18px; --t-xl: 28px; --t-hero: 40px;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -29,16 +30,34 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
 /* Layout */
-.shell { display: grid; grid-template-columns: var(--sidebar) 1fr; height: 100%; }
-.sidebar { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
-.main { min-width: 0; overflow: auto; display: flex; flex-direction: column; }
-@media (max-width: 760px) { .shell { grid-template-columns: 1fr; } .sidebar { display: none; } }
+.shell { display: grid; grid-template-columns: auto 1fr; height: 100%; }
+.sidebar { width: var(--sidebar); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--bg); transition: width 180ms ease; }
+.sidebar.rail { width: var(--rail); }
+/* Pinned to the second column, so the page stays put when an open sidebar leaves the flow on a narrow screen. */
+.main { grid-column: 2; min-width: 0; overflow: auto; display: flex; flex-direction: column; }
+/* A narrow screen keeps the rail; opening it lays the history over the page. */
+@media (max-width: 760px) {
+  .shell { grid-template-columns: var(--rail) 1fr; }
+  .sidebar:not(.rail) { position: fixed; inset: 0 auto 0 0; z-index: 10; width: min(var(--sidebar), 85vw); box-shadow: var(--lift); }
+}
 
 /* Sidebar */
-.sidebar-head { padding: 18px 16px 10px; display: flex; align-items: center; justify-content: space-between; }
-.wordmark { font-weight: 650; letter-spacing: -0.01em; font-size: var(--t-lg); }
+/* The toggle comes first in the head, so the focus order matches the layout both open and on the rail. */
+.sidebar-head { padding: 18px 12px 10px 10px; display: flex; align-items: center; gap: 4px; }
+.sidebar-head .new { padding: 8px 10px; }
+.sidebar-head .toggle { width: 36px; height: 36px; padding: 0; justify-content: center; color: var(--muted); }
+.sidebar-head .chevron { transition: transform 180ms ease; }
+.sidebar.rail .sidebar-head { flex-direction: column; padding: 14px 0; gap: 6px; }
+.sidebar.rail .toggle { order: -1; }
+.sidebar.rail .chevron { transform: rotate(180deg); }
+.sidebar.rail .new { width: 36px; height: 36px; padding: 0; justify-content: center; }
+.wordmark { font-weight: 650; letter-spacing: -0.01em; font-size: var(--t-lg); margin-right: auto; white-space: nowrap; overflow: hidden; }
+/* A tooltip for the rail's icon buttons, on hover and on keyboard focus. */
+[data-tip] { position: relative; }
+[data-tip]:hover::after, [data-tip]:focus-visible::after { content: attr(data-tip); position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; background: var(--fg); color: var(--bg); font-size: var(--t-xs); font-weight: 500; padding: 4px 8px; border-radius: 6px; pointer-events: none; z-index: 20; }
 .wordmark small { color: var(--faint); font-weight: 450; font-size: var(--t-xs); margin-left: 8px; }
 .history { overflow: auto; padding: 4px 8px 16px; display: flex; flex-direction: column; gap: 2px; }
+.history[hidden] { display: none; }
 .history-item { position: relative; display: flex; align-items: center; border-radius: var(--radius-sm); }
 .history-item:hover { background: var(--raised); }
 .history-item:has(.select[aria-current="true"]) { background: var(--brand-tint); }
@@ -95,5 +114,5 @@ a { color: var(--brand); text-decoration: none; } a:hover { text-decoration: und
 pre.json { margin: 0; padding: 14px; background: var(--raised); border-radius: var(--radius-sm); font-size: var(--t-xs); overflow: auto; max-height: 480px; font-family: var(--mono); }
 .rise { animation: rise 240ms ease-out both; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .rise, .skeleton { animation: none; } .querybox { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .rise, .skeleton { animation: none; } .querybox, .sidebar, .sidebar-head .chevron { transition: none; } }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; } .querybox input:focus-visible { outline: 0; }
