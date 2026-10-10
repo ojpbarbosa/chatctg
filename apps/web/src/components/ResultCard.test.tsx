@@ -144,7 +144,7 @@ describe("ResultCard with an answer", () => {
     done();
   });
 
-  it("opens the request, the extraction and the response as JSON below the footer, inside the card, with the button left in place", () => {
+  it("opens the request, with the extraction at the same level as the query, and the response as JSON below the footer, inside the card, with the button left in place", () => {
     const { el, button, click, done } = setup(answered(phases));
     const foot = el.querySelector(".card .foot")!;
     const toggle = button("Show JSON");
@@ -158,7 +158,7 @@ describe("ResultCard with an answer", () => {
     expect(panel.closest(".card")).not.toBeNull();
     expect(foot.nextElementSibling).toBe(panel);
     expect(toggle.getAttribute("aria-controls")).toBe(panel.id);
-    expect(JSON.parse(panel.textContent!)).toEqual({ request, extraction: meta.extraction, response: { visualization: phases, meta } });
+    expect(JSON.parse(panel.textContent!)).toEqual({ request: { ...request, ...meta.extraction }, response: { visualization: phases, meta } });
     click(toggle);
     expect(el.querySelector("pre.json")).toBeNull();
     expect(toggle.textContent).toBe("Show JSON");

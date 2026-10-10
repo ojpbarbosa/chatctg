@@ -66,7 +66,7 @@ export function ResultCard({ item, live, onDidYouMean }: { item: HistoryItem; li
             <span className="foot-end"><JsonToggle open={showJson} onToggle={() => setShowJson((o) => !o)} controls={jsonId} /></span>
           </div>
         )}
-        {r && showJson && <JsonPanel id={jsonId} value={{ request: item.request ?? null, extraction: r.meta.extraction, response: r }} />}
+        {r && showJson && <JsonPanel id={jsonId} value={{ request: item.request ? { ...item.request, ...r.meta.extraction } : null, response: r }} />}
       </div>
       {selected && <CitationsDrawer label={selected.point.label} citations={selected.point.citations} step={step} />}
     </>
